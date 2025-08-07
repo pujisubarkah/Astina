@@ -89,302 +89,46 @@
               
               <!-- SVG Map Container -->
               <div class="relative bg-blue-50 rounded-lg p-4" style="height: 500px;">
-                <svg 
-                  viewBox="0 0 1000 600" 
+                <svg
+                  viewBox="0 0 1000 600"
                   class="w-full h-full cursor-pointer"
                   @mouseleave="hoveredProvince = null"
                 >
-                  <!-- Sumatra -->
-                  <g id="sumatra">
-                    <!-- Aceh -->
-                    <path 
-                      d="M 120 80 L 180 60 L 200 90 L 180 120 L 150 130 L 120 110 Z"
-                      :fill="getProvinceColor('aceh')"
-                      :class="getProvinceClass('aceh')"
-                      @click="selectProvince('aceh')"
-                      @mouseenter="hoveredProvince = 'aceh'"
-                    />
-                    <!-- Sumatera Utara -->
-                    <path 
-                      d="M 120 110 L 180 120 L 200 150 L 170 180 L 130 170 L 100 140 Z"
-                      :fill="getProvinceColor('sumut')"
-                      :class="getProvinceClass('sumut')"
-                      @click="selectProvince('sumut')"
-                      @mouseenter="hoveredProvince = 'sumut'"
-                    />
-                    <!-- Sumatera Barat -->
-                    <path 
-                      d="M 100 140 L 130 170 L 110 200 L 80 190 L 70 160 Z"
-                      :fill="getProvinceColor('sumbar')"
-                      :class="getProvinceClass('sumbar')"
-                      @click="selectProvince('sumbar')"
-                      @mouseenter="hoveredProvince = 'sumbar'"
-                    />
-                    <!-- Riau -->
-                    <path 
-                      d="M 130 170 L 170 180 L 180 210 L 150 230 L 110 200 Z"
-                      :fill="getProvinceColor('riau')"
-                      :class="getProvinceClass('riau')"
-                      @click="selectProvince('riau')"
-                      @mouseenter="hoveredProvince = 'riau'"
-                    />
-                    <!-- Jambi -->
-                    <path 
-                      d="M 110 200 L 150 230 L 140 260 L 100 250 L 90 220 Z"
-                      :fill="getProvinceColor('jambi')"
-                      :class="getProvinceClass('jambi')"
-                      @click="selectProvince('jambi')"
-                      @mouseenter="hoveredProvince = 'jambi'"
-                    />
-                    <!-- Sumatera Selatan -->
-                    <path 
-                      d="M 90 220 L 140 260 L 130 290 L 80 280 L 70 250 Z"
-                      :fill="getProvinceColor('sumsel')"
-                      :class="getProvinceClass('sumsel')"
-                      @click="selectProvince('sumsel')"
-                      @mouseenter="hoveredProvince = 'sumsel'"
-                    />
-                    <!-- Lampung -->
-                    <path 
-                      d="M 70 250 L 130 290 L 120 320 L 80 310 L 60 280 Z"
-                      :fill="getProvinceColor('lampung')"
-                      :class="getProvinceClass('lampung')"
-                      @click="selectProvince('lampung')"
-                      @mouseenter="hoveredProvince = 'lampung'"
-                    />
+                  <g id="indonesia-provinces">
+                    <template v-for="prov in provinsiList" :key="prov.id">
+                      <path
+                        v-if="prov.svgPath"
+                        :d="parseSvgPath(prov.svgPath)"
+                        :fill="getProvinceColor(prov.code)"
+                        :class="getProvinceClass(prov.code)"
+                        @click="selectProvince(prov.code)"
+                        @mouseenter="hoveredProvince = prov.code"
+                      />
+                    </template>
                   </g>
-
-                  <!-- Java -->
-                  <g id="java">
-                    <!-- DKI Jakarta -->
-                    <circle 
-                      cx="280" cy="350" r="8"
-                      :fill="getProvinceColor('jakarta')"
-                      :class="getProvinceClass('jakarta')"
-                      @click="selectProvince('jakarta')"
-                      @mouseenter="hoveredProvince = 'jakarta'"
-                    />
-                    <!-- Jawa Barat -->
-                    <path 
-                      d="M 200 340 L 320 330 L 340 360 L 280 370 L 220 365 Z"
-                      :fill="getProvinceColor('jabar')"
-                      :class="getProvinceClass('jabar')"
-                      @click="selectProvince('jabar')"
-                      @mouseenter="hoveredProvince = 'jabar'"
-                    />
-                    <!-- Jawa Tengah -->
-                    <path 
-                      d="M 340 360 L 480 350 L 500 380 L 440 390 L 340 385 Z"
-                      :fill="getProvinceColor('jateng')"
-                      :class="getProvinceClass('jateng')"
-                      @click="selectProvince('jateng')"
-                      @mouseenter="hoveredProvince = 'jateng'"
-                    />
-                    <!-- DI Yogyakarta -->
-                    <circle 
-                      cx="420" cy="390" r="6"
-                      :fill="getProvinceColor('yogya')"
-                      :class="getProvinceClass('yogya')"
-                      @click="selectProvince('yogya')"
-                      @mouseenter="hoveredProvince = 'yogya'"
-                    />
-                    <!-- Jawa Timur -->
-                    <path 
-                      d="M 500 380 L 620 370 L 640 400 L 580 410 L 500 405 Z"
-                      :fill="getProvinceColor('jatim')"
-                      :class="getProvinceClass('jatim')"
-                      @click="selectProvince('jatim')"
-                      @mouseenter="hoveredProvince = 'jatim'"
-                    />
-                  </g>
-
-                  <!-- Kalimantan -->
-                  <g id="kalimantan">
-                    <!-- Kalimantan Barat -->
-                    <path 
-                      d="M 320 200 L 420 190 L 440 240 L 380 260 L 300 250 Z"
-                      :fill="getProvinceColor('kalbar')"
-                      :class="getProvinceClass('kalbar')"
-                      @click="selectProvince('kalbar')"
-                      @mouseenter="hoveredProvince = 'kalbar'"
-                    />
-                    <!-- Kalimantan Tengah -->
-                    <path 
-                      d="M 380 260 L 480 250 L 500 300 L 440 320 L 360 310 Z"
-                      :fill="getProvinceColor('kalteng')"
-                      :class="getProvinceClass('kalteng')"
-                      @click="selectProvince('kalteng')"
-                      @mouseenter="hoveredProvince = 'kalteng'"
-                    />
-                    <!-- Kalimantan Selatan -->
-                    <path 
-                      d="M 440 320 L 520 310 L 540 340 L 480 350 L 420 345 Z"
-                      :fill="getProvinceColor('kalsel')"
-                      :class="getProvinceClass('kalsel')"
-                      @click="selectProvince('kalsel')"
-                      @mouseenter="hoveredProvince = 'kalsel'"
-                    />
-                    <!-- Kalimantan Timur -->
-                    <path 
-                      d="M 500 200 L 580 190 L 600 260 L 540 280 L 480 250 Z"
-                      :fill="getProvinceColor('kaltim')"
-                      :class="getProvinceClass('kaltim')"
-                      @click="selectProvince('kaltim')"
-                      @mouseenter="hoveredProvince = 'kaltim'"
-                    />
-                    <!-- Kalimantan Utara -->
-                    <path 
-                      d="M 480 150 L 580 140 L 600 180 L 550 190 L 480 185 Z"
-                      :fill="getProvinceColor('kalut')"
-                      :class="getProvinceClass('kalut')"
-                      @click="selectProvince('kalut')"
-                      @mouseenter="hoveredProvince = 'kalut'"
-                    />
-                  </g>
-
-                  <!-- Sulawesi -->
-                  <g id="sulawesi">
-                    <!-- Sulawesi Utara -->
-                    <path 
-                      d="M 700 180 L 750 170 L 770 200 L 740 220 L 700 210 Z"
-                      :fill="getProvinceColor('sulut')"
-                      :class="getProvinceClass('sulut')"
-                      @click="selectProvince('sulut')"
-                      @mouseenter="hoveredProvince = 'sulut'"
-                    />
-                    <!-- Sulawesi Tengah -->
-                    <path 
-                      d="M 680 220 L 740 220 L 750 270 L 700 280 L 660 250 Z"
-                      :fill="getProvinceColor('sulteng')"
-                      :class="getProvinceClass('sulteng')"
-                      @click="selectProvince('sulteng')"
-                      @mouseenter="hoveredProvince = 'sulteng'"
-                    />
-                    <!-- Sulawesi Selatan -->
-                    <path 
-                      d="M 660 280 L 720 290 L 730 340 L 680 350 L 640 320 Z"
-                      :fill="getProvinceColor('sulsel')"
-                      :class="getProvinceClass('sulsel')"
-                      @click="selectProvince('sulsel')"
-                      @mouseenter="hoveredProvince = 'sulsel'"
-                    />
-                    <!-- Sulawesi Tenggara -->
-                    <path 
-                      d="M 720 340 L 780 330 L 800 370 L 750 380 L 720 360 Z"
-                      :fill="getProvinceColor('sultra')"
-                      :class="getProvinceClass('sultra')"
-                      @click="selectProvince('sultra')"
-                      @mouseenter="hoveredProvince = 'sultra'"
-                    />
-                    <!-- Gorontalo -->
-                    <path 
-                      d="M 730 200 L 770 195 L 780 220 L 750 230 L 730 215 Z"
-                      :fill="getProvinceColor('gorontalo')"
-                      :class="getProvinceClass('gorontalo')"
-                      @click="selectProvince('gorontalo')"
-                      @mouseenter="hoveredProvince = 'gorontalo'"
-                    />
-                    <!-- Sulawesi Barat -->
-                    <path 
-                      d="M 620 280 L 660 270 L 670 310 L 640 320 L 610 300 Z"
-                      :fill="getProvinceColor('sulbar')"
-                      :class="getProvinceClass('sulbar')"
-                      @click="selectProvince('sulbar')"
-                      @mouseenter="hoveredProvince = 'sulbar'"
-                    />
-                  </g>
-
-                  <!-- Bali & Nusa Tenggara -->
-                  <g id="bali-nusa">
-                    <!-- Bali -->
-                    <path 
-                      d="M 650 400 L 680 395 L 690 415 L 670 425 L 650 420 Z"
-                      :fill="getProvinceColor('bali')"
-                      :class="getProvinceClass('bali')"
-                      @click="selectProvince('bali')"
-                      @mouseenter="hoveredProvince = 'bali'"
-                    />
-                    <!-- Nusa Tenggara Barat -->
-                    <path 
-                      d="M 690 415 L 730 410 L 750 440 L 720 450 L 690 435 Z"
-                      :fill="getProvinceColor('ntb')"
-                      :class="getProvinceClass('ntb')"
-                      @click="selectProvince('ntb')"
-                      @mouseenter="hoveredProvince = 'ntb'"
-                    />
-                    <!-- Nusa Tenggara Timur -->
-                    <path 
-                      d="M 750 440 L 820 430 L 840 460 L 810 470 L 750 460 Z"
-                      :fill="getProvinceColor('ntt')"
-                      :class="getProvinceClass('ntt')"
-                      @click="selectProvince('ntt')"
-                      @mouseenter="hoveredProvince = 'ntt'"
-                    />
-                  </g>
-
-                  <!-- Papua -->
-                  <g id="papua">
-                    <!-- Papua Barat -->
-                    <path 
-                      d="M 820 300 L 900 290 L 920 340 L 880 360 L 820 350 Z"
-                      :fill="getProvinceColor('papbar')"
-                      :class="getProvinceClass('papbar')"
-                      @click="selectProvince('papbar')"
-                      @mouseenter="hoveredProvince = 'papbar'"
-                    />
-                    <!-- Papua -->
-                    <path 
-                      d="M 880 360 L 950 350 L 970 400 L 930 420 L 880 410 Z"
-                      :fill="getProvinceColor('papua')"
-                      :class="getProvinceClass('papua')"
-                      @click="selectProvince('papua')"
-                      @mouseenter="hoveredProvince = 'papua'"
-                    />
-                  </g>
-
-                  <!-- Maluku -->
-                  <g id="maluku">
-                    <!-- Maluku -->
-                    <path 
-                      d="M 780 380 L 820 375 L 840 405 L 810 415 L 780 400 Z"
-                      :fill="getProvinceColor('maluku')"
-                      :class="getProvinceClass('maluku')"
-                      @click="selectProvince('maluku')"
-                      @mouseenter="hoveredProvince = 'maluku'"
-                    />
-                    <!-- Maluku Utara -->
-                    <path 
-                      d="M 780 320 L 820 315 L 840 345 L 810 355 L 780 340 Z"
-                      :fill="getProvinceColor('malut')"
-                      :class="getProvinceClass('malut')"
-                      @click="selectProvince('malut')"
-                      @mouseenter="hoveredProvince = 'malut'"
-                    />
-                  </g>
-
                   <!-- Tooltip for hovered province -->
                   <g v-if="hoveredProvince">
-                    <rect 
-                      :x="tooltipPosition.x" 
-                      :y="tooltipPosition.y" 
-                      :width="tooltipWidth" 
-                      height="40" 
-                      fill="rgba(0,0,0,0.8)" 
+                    <rect
+                      :x="tooltipPosition.x"
+                      :y="tooltipPosition.y"
+                      :width="tooltipWidth"
+                      height="40"
+                      fill="rgba(0,0,0,0.8)"
                       rx="4"
                     />
-                    <text 
-                      :x="tooltipPosition.x + 10" 
-                      :y="tooltipPosition.y + 15" 
-                      fill="white" 
-                      font-size="12" 
+                    <text
+                      :x="tooltipPosition.x + 10"
+                      :y="tooltipPosition.y + 15"
+                      fill="white"
+                      font-size="12"
                       font-weight="bold"
                     >
                       {{ getProvinceName(hoveredProvince) }}
                     </text>
-                    <text 
-                      :x="tooltipPosition.x + 10" 
-                      :y="tooltipPosition.y + 30" 
-                      fill="white" 
+                    <text
+                      :x="tooltipPosition.x + 10"
+                      :y="tooltipPosition.y + 30"
+                      fill="white"
                       font-size="10"
                     >
                       {{ getProvinceProjectCount(hoveredProvince) }} proyek
@@ -582,152 +326,45 @@ const stats = reactive({
   completionRate: 73
 })
 
-// Province data mapping
-const provinceData = {
-  jakarta: {
-    code: 'jakarta',
-    name: 'DKI Jakarta',
-    totalProjects: 15,
-    completedProjects: 8,
-    ongoingProjects: 7,
-    participants: 25,
-    projects: [
-      {
-        id: 1,
-        title: 'Smart City Dashboard Jakarta',
-        institution: 'Pemprov DKI Jakarta',
-        category: 'Digitalisasi',
-        status: 'ongoing',
-        progress: 75,
-        lastUpdate: '2024-12-15',
-        description: 'Pengembangan dashboard terintegrasi untuk monitoring smart city Jakarta',
-        startDate: '2024-08-01',
-        targetDate: '2024-12-31'
-      },
-      {
-        id: 2,
-        title: 'E-Government Pelayanan Publik',
-        institution: 'Diskominfotik DKI',
-        category: 'Digitalisasi',
-        status: 'completed',
-        progress: 100,
-        lastUpdate: '2024-12-10',
-        description: 'Implementasi sistem pelayanan publik berbasis digital',
-        startDate: '2024-06-01',
-        targetDate: '2024-11-30'
+// Province data from API
+const provinsiList = ref([])
+const provinceData = reactive({})
+
+onMounted(async () => {
+  const res = await $fetch('/api/provinsi')
+  if (res.success && Array.isArray(res.data)) {
+    provinsiList.value = res.data.map((prov) => {
+      // Kode provinsi cukup dari nama, lowercase dan tanpa spasi
+      const code = prov.nama.toLowerCase().replace(/\s+/g, '')
+      provinceData[code] = {
+        code,
+        name: prov.nama,
+        totalProjects: 0,
+        completedProjects: 0,
+        ongoingProjects: 0,
+        participants: 0,
+        projects: [],
       }
-    ]
-  },
-  jabar: {
-    code: 'jabar',
-    name: 'Jawa Barat',
-    totalProjects: 12,
-    completedProjects: 6,
-    ongoingProjects: 6,
-    participants: 20,
-    projects: [
-      {
-        id: 3,
-        title: 'Digital Village Jawa Barat',
-        institution: 'Pemprov Jabar',
-        category: 'Digitalisasi',
-        status: 'ongoing',
-        progress: 60,
-        lastUpdate: '2024-12-14',
-        description: 'Program digitalisasi desa di Jawa Barat',
-        startDate: '2024-09-01',
-        targetDate: '2025-03-31'
-      }
-    ]
-  },
-  jateng: {
-    code: 'jateng',
-    name: 'Jawa Tengah',
-    totalProjects: 8,
-    completedProjects: 5,
-    ongoingProjects: 3,
-    participants: 15,
-    projects: [
-      {
-        id: 4,
-        title: 'SAKIP Terintegrasi Jateng',
-        institution: 'Bappeda Jateng',
-        category: 'SAKIP & Reformasi',
-        status: 'completed',
-        progress: 100,
-        lastUpdate: '2024-12-01',
-        description: 'Implementasi SAKIP terintegrasi di Jawa Tengah',
-        startDate: '2024-05-01',
-        targetDate: '2024-11-30'
-      }
-    ]
-  },
-  jatim: {
-    code: 'jatim',
-    name: 'Jawa Timur',
-    totalProjects: 10,
-    completedProjects: 7,
-    ongoingProjects: 3,
-    participants: 18,
-    projects: [
-      {
-        id: 5,
-        title: 'Inovasi Pelayanan Publik Jatim',
-        institution: 'Pemprov Jatim',
-        category: 'Inovasi',
-        status: 'ongoing',
-        progress: 85,
-        lastUpdate: '2024-12-12',
-        description: 'Program inovasi pelayanan publik Jawa Timur',
-        startDate: '2024-07-01',
-        targetDate: '2024-12-31'
-      }
-    ]
-  },
-  sumut: {
-    code: 'sumut',
-    name: 'Sumatera Utara',
-    totalProjects: 6,
-    completedProjects: 3,
-    ongoingProjects: 3,
-    participants: 12,
-    projects: [
-      {
-        id: 6,
-        title: 'E-Government Sumut',
-        institution: 'Pemprov Sumut',
-        category: 'Digitalisasi',
-        status: 'ongoing',
-        progress: 50,
-        lastUpdate: '2024-12-10',
-        description: 'Pengembangan sistem e-government Sumatera Utara',
-        startDate: '2024-08-15',
-        targetDate: '2025-02-28'
-      }
-    ]
+      return { ...prov, code }
+    })
+  }
+  // Auto-select Jakarta jika ada
+  if (provinceData['jakarta']) selectProvince('jakarta')
+})
+
+// Helper untuk parse svgPath jika ada escape
+function parseSvgPath(svgPath) {
+  if (!svgPath) return ''
+  try {
+    // Jika path string ada escape quote, parse dulu
+    if (svgPath.startsWith('"') || svgPath.startsWith("'")) {
+      return JSON.parse(svgPath)
+    }
+    return svgPath
+  } catch {
+    return svgPath
   }
 }
-
-// Add default empty data for other provinces
-const allProvinces = [
-  'aceh', 'sumbar', 'riau', 'jambi', 'sumsel', 'lampung', 'yogya', 'bali', 'ntb', 'ntt',
-  'kalbar', 'kalteng', 'kalsel', 'kaltim', 'kalut', 'sulut', 'sulteng', 'sulsel', 'sultra', 
-  'gorontalo', 'sulbar', 'maluku', 'malut', 'papbar', 'papua'
-]
-
-allProvinces.forEach(province => {
-  if (!provinceData[province]) {
-    provinceData[province] = {
-      code: province,
-      name: getProvinceName(province),
-      totalProjects: 0,
-      completedProjects: 0,
-      ongoingProjects: 0,
-      participants: 0,
-      projects: []
-    }
-  }
-})
 
 // Computed properties
 const tooltipPosition = computed(() => {
