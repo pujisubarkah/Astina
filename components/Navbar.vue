@@ -26,7 +26,10 @@
           <li><a href="/statistik" class="hover:bg-primary-focus">Statistik</a></li>
         </ul>
       </div>
-      <a class="btn btn-ghost text-xl font-bold">Astina</a>
+      <a class="btn btn-ghost text-xl font-bold flex items-center gap-2">
+        <img src="/lanri.png" alt="LAN RI Logo" class="h-24 w-24 object-contain" />
+        <span class="astina-brand">Astina</span>
+      </a>
     </div>
     
     <div class="navbar-center hidden lg:flex">
@@ -107,5 +110,17 @@
 </script>
 
 <style scoped>
-/* Additional custom styles can be added here if needed */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+.astina-brand {
+  font-family: 'Pacifico', cursive, sans-serif;
+  font-size: 1.4rem;
+  background: linear-gradient(90deg, #fff 20%, #facc15 60%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  letter-spacing: 1px;
+  font-weight: bold;
+}
 </style>
