@@ -8,14 +8,8 @@ import { db } from '@/server/db'
 export default defineEventHandler(async (event) => {
   try {
     if (event.method === 'GET') {
-      // Select kolom sesuai schema
-      const data = await db.select({
-        id: provinsi.id,
-        nama: provinsi.nama,
-        svgPath: provinsi.svgPath,
-        idProvinsi: provinsi.idProvinsi,
-        createdAt: provinsi.createdAt
-      }).from(provinsi)
+      // Select semua kolom tanpa explicit mapping karena Drizzle akan handle otomatis
+      const data = await db.select().from(provinsi)
       return { success: true, data }
     }
 

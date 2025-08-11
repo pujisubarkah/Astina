@@ -1,9 +1,8 @@
 // db/schema/proper.ts
-import { pgSchema, serial, varchar, text, integer, timestamp } from 'drizzle-orm/pg-core'
+import { pgTable, serial, varchar, text, integer, timestamp } from 'drizzle-orm/pg-core'
 
-const proper = pgSchema('proper')
 
-export const provinsi = proper.table('provinsi', {
+export const provinsi = pgTable('provinsi', {
   id: serial('id').primaryKey(),
   nama: varchar('nama', { length: 255 }).notNull(),
   svgPath: text('svg_path'),

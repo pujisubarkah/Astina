@@ -9,11 +9,12 @@
             <span class="text-yellow-300">Astina</span>
           </h1>
           <p class="text-xl mb-8 opacity-90">
-            Platform Repositori Proyek Digital untuk Lembaga Administrasi Negara
+            Aplikasi Sentral Transformasi Inovasi dan Nilai Aparatur
           </p>
           <p class="text-lg mb-10 max-w-2xl mx-auto opacity-80">
-            Kelola repositori proyek, tracking perubahan, dan kolaborasi tim dengan mudah. 
-            Dokumentasikan setiap tahap perubahan proyek dengan sistem version control yang terintegrasi.
+            Astina adalah pusat dokumentasi dan kolaborasi untuk Proyek Perubahan peserta PKP, PKA, PKN Tk I, dan PKN Tk II. 
+    Menghimpun berbagai ide strategis, menyatukan kekuatan lintas instansi, 
+    dan menggerakkan transformasi menuju aparatur negara yang unggul
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <button class="btn btn-warning btn-lg text-blue-900">
@@ -55,7 +56,7 @@
               </div>
               <h3 class="card-title justify-center text-lg">Repositori Proyek</h3>
               <p class="text-sm opacity-70">
-                Simpan dan kelola semua file proyek dalam repositori yang terorganisir dengan sistem version control
+                Ruang penyimpanan ide dan hasil karya perubahan, tersusun rapi untuk memudahkan kolaborasi lintas generasi.
               </p>
             </div>
           </div>
@@ -70,7 +71,7 @@
               </div>
               <h3 class="card-title justify-center text-lg">Tracking Perubahan</h3>
               <p class="text-sm opacity-70">
-                Lacak setiap perubahan dengan detail commit, branch, dan merge history seperti Git workflow
+                Rekam jejak setiap tahapan proyek perubahan dengan detail kronologi dan milestone yang jelas untuk akuntabilitas
               </p>
             </div>
           </div>
@@ -85,7 +86,7 @@
               </div>
               <h3 class="card-title justify-center text-lg">Kolaborasi Tim</h3>
               <p class="text-sm opacity-70">
-                Berkolaborasi dengan tim melalui pull request, review code, dan diskusi pada setiap perubahan
+                Menghubungkan aparatur lintas instansi untuk berbagi best practice dan saling memberikan masukan konstruktif
               </p>
             </div>
           </div>
@@ -100,7 +101,7 @@
               </div>
               <h3 class="card-title justify-center text-lg">Dokumentasi</h3>
               <p class="text-sm opacity-70">
-                Buat dokumentasi lengkap dengan README, Wiki, dan issue tracking untuk setiap repositori proyek
+                Platform terpusat untuk menyimpan laporan, panduan, dan knowledge sharing setiap proyek perubahan
               </p>
             </div>
           </div>
@@ -126,9 +127,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z" />
               </svg>
             </div>
-            <div class="stat-title">Total Repositori</div>
+            <div class="stat-title">Proyek Perubahan</div>
             <div class="stat-value text-blue-600">1,250</div>
-            <div class="stat-desc">Repositori proyek aktif</div>
+            <div class="stat-desc">Proyek terdokumentasi</div>
           </div>
 
           <div class="stat bg-base-100 rounded-lg shadow-lg">
@@ -137,9 +138,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <div class="stat-title">Total Commits</div>
+            <div class="stat-title">Inovasi Berhasil</div>
             <div class="stat-value text-green-600">25,420</div>
-            <div class="stat-desc">Perubahan terdokumentasi</div>
+            <div class="stat-desc">Best practice tersimpan</div>
           </div>
 
           <div class="stat bg-base-100 rounded-lg shadow-lg">
@@ -148,9 +149,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
-            <div class="stat-title">Kontributor</div>
+            <div class="stat-title">Aparatur Aktif</div>
             <div class="stat-value text-purple-600">890</div>
-            <div class="stat-desc">Developer aktif</div>
+            <div class="stat-desc">Peserta berkolaborasi</div>
           </div>
 
           <div class="stat bg-base-100 rounded-lg shadow-lg">
@@ -171,7 +172,7 @@
     <div class="py-20 bg-blue-700 text-white">
       <div class="container mx-auto px-4 text-center">
         <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-          Bergabunglah dengan ribuan developer dan instansi yang telah menggunakan Astina untuk mengelola repositori proyek pemerintah
+          Bergabunglah dengan ribuan aparatur dan instansi yang telah menggunakan Astina untuk berkolaborasi dalam proyek transformasi pemerintahan
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <button class="btn btn-warning btn-lg text-blue-900">
