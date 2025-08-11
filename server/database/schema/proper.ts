@@ -1,4 +1,3 @@
-// server/database/schema/peserta.ts
 import { pgTable, serial, varchar, text, integer, timestamp } from 'drizzle-orm/pg-core'
 
 export const proper = pgTable('proper', {

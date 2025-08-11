@@ -1,36 +1,21 @@
 // server/api/proper/index.ts
 
-import { proper } from '@/server/database/schema/proper'
-import { db } from '@/server/db'
+import { proper } from '../../database/schema/proper'
+import { db } from '../../db'
 
-// GET: Ambil semua data proper
+// GET: Ambil semua data proper dengan join pelatihan
 export default defineEventHandler(async (event) => {
   try {
     if (event.method === 'GET') {
-      // Select kolom sesuai schema
-      const data = await db.select({
-        id: proper.id,
-        nama: proper.nama,
-        noIdentitas: proper.noIdentitas,
-        instansiId: proper.instansiId,
-        programId: proper.programId,
-        lemdikId: proper.lemdikId,
-        nomorKra: proper.nomorKra,
-        proyekPerubahan: proper.proyekPerubahan,
-        createdAt: proper.createdAt,
-
-      }).from(proper)
+      const data = await db.select().from(proper)
       return { success: true, data }
     }
 
     if (event.method === 'POST') {
       const body = await readBody(event)
-      
-      // Validasi data yang diperlukan
       if (!body.nama) {
-        throw createError({ statusCode: 400, statusMessage: 'Nama is required' })
+        throw createError({ statusCode: 400, statusMessage: 'Nama peserta wajib diisi' })
       }
-
       const newProper = await db.insert(proper).values({
         nama: body.nama,
         noIdentitas: body.noIdentitas,
@@ -40,11 +25,10 @@ export default defineEventHandler(async (event) => {
         nomorKra: body.nomorKra,
         proyekPerubahan: body.proyekPerubahan
       }).returning()
-
       return { success: true, data: newProper[0] }
     }
 
-    throw createError({ statusCode: 405, statusMessage: 'Method not allowed' })
+    throw createError({ statusCode: 405, statusMessage: 'Method tidak diizinkan' })
   } catch (err: any) {
     throw createError({ statusCode: 500, statusMessage: err?.message || 'Internal server error' })
   }
