@@ -3,6 +3,7 @@
 import { proper } from '../../database/schema/proper'
 import { pelatihan } from '../../database/schema/pelatihan'
 import { instansi } from '../../database/schema/instansi'
+import { abstract } from '../../database/schema/abstract'
 import { db } from '../../db'
 import { eq } from 'drizzle-orm'
 
@@ -28,10 +29,13 @@ export default defineEventHandler(async (event) => {
           createdAt: proper.createdAt,
           programNama: pelatihan.nama,
           namaInstansi: instansi.namaInstansi,
+          abstract: abstract.abstract,
+          kataKunci: abstract.kataKunci,
         })
         .from(proper)
         .leftJoin(pelatihan, eq(proper.programId, pelatihan.id))
         .leftJoin(instansi, eq(proper.instansiId, instansi.instansiId))
+        .leftJoin(abstract, eq(abstract.properId, proper.id))
         .limit(limit)
         .offset(offset)
 

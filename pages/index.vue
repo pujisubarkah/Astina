@@ -113,56 +113,17 @@
     <div class="py-20 bg-base-200">
       <div class="container mx-auto px-4">
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold mb-4">Statistik Platform</h2>
+          <h2 class="text-4xl font-bold mb-4">Statistik Proyek Perubahan</h2>
           <p class="text-lg opacity-70">
-            Dipercaya oleh berbagai instansi pemerintah di seluruh Indonesia
+            Berbagai Proyek Perubahan yang dilakukan peserta pelatihan dari tahun 2020 hingga kini
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div class="stat bg-base-100 rounded-lg shadow-lg">
-            <div class="stat-figure text-blue-600">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-7l2 2-2 2m2-2l2 2-2 2" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z" />
-              </svg>
-            </div>
-            <div class="stat-title">Proyek Perubahan</div>
-            <div class="stat-value text-blue-600">1,250</div>
-            <div class="stat-desc">Proyek terdokumentasi</div>
-          </div>
-
-          <div class="stat bg-base-100 rounded-lg shadow-lg">
-            <div class="stat-figure text-green-600">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div class="stat-title">Inovasi Berhasil</div>
-            <div class="stat-value text-green-600">25,420</div>
-            <div class="stat-desc">Best practice tersimpan</div>
-          </div>
-
-          <div class="stat bg-base-100 rounded-lg shadow-lg">
-            <div class="stat-figure text-purple-600">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
-            <div class="stat-title">Aparatur Aktif</div>
-            <div class="stat-value text-purple-600">890</div>
-            <div class="stat-desc">Peserta berkolaborasi</div>
-          </div>
-
-          <div class="stat bg-base-100 rounded-lg shadow-lg">
-            <div class="stat-figure text-orange-600">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-            </div>
-            <div class="stat-title">Instansi</div>
-            <div class="stat-value text-orange-600">45</div>
-            <div class="stat-desc">Organisasi terdaftar</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div v-for="program in summaryProgram" :key="program.programId" class="stat bg-base-100 rounded-lg shadow-lg">
+            <div class="stat-title">{{ program.programNama }}</div>
+            <div class="stat-value text-blue-600">{{ program.count.toLocaleString() }}</div>
+            <div class="stat-desc">Jumlah proyek</div>
           </div>
         </div>
       </div>
@@ -187,7 +148,24 @@
   </div>
 </template>
 
+// ...existing code...
 <script setup>
+import { ref, onMounted } from 'vue'
+
+const summaryProgram = ref([])
+
+onMounted(async () => {
+  try {
+    const res = await fetch('/api/proper/summary_program')
+    const data = await res.json()
+    if (data.success && Array.isArray(data.summary)) {
+      summaryProgram.value = data.summary
+    }
+  } catch (e) {
+    summaryProgram.value = []
+  }
+})
+
 // Set page metadata
 useHead({
   title: 'Selamat Datang - Astina Platform',
