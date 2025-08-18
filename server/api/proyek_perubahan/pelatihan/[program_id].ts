@@ -31,13 +31,13 @@ export default defineEventHandler(async (event) => {
         proyekPerubahan: proper.proyekPerubahan,
         createdAt: proper.createdAt,
         programNama: pelatihan.nama,
-        namaInstansi: instansi.namaInstansi,
+        namaInstansi: instansi.nama_instansi,
         abstract: abstract.abstract,
         kataKunci: abstract.kata_kunci,
       })
       .from(proper)
       .leftJoin(pelatihan, eq(proper.programId, pelatihan.id))
-      .leftJoin(instansi, eq(proper.instansiId, instansi.instansiId))
+      .leftJoin(instansi, eq(proper.instansiId, instansi.instansi_id))
       .leftJoin(abstract, eq(abstract.proper_id, proper.id))
       .where(eq(proper.programId, programId))
 

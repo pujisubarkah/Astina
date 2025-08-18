@@ -140,20 +140,28 @@
               <!-- Legend -->
               <div class="mt-4 flex flex-wrap gap-4 text-sm">
                 <div class="flex items-center gap-2">
-                  <div class="w-4 h-4 bg-green-500 rounded"></div>
-                  <span>Tinggi (10+ proyek)</span>
+                  <div class="w-4 h-4" style="background:#0B2447"></div>
+                  <span>&gt; 1000 proyek (Sangat Tinggi)</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <div class="w-4 h-4 bg-blue-500 rounded"></div>
-                  <span>Sedang (5-9 proyek)</span>
+                  <div class="w-4 h-4" style="background:#205295"></div>
+                  <span>501 - 1000 proyek (Tinggi)</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <div class="w-4 h-4 bg-yellow-500 rounded"></div>
-                  <span>Rendah (1-4 proyek)</span>
+                  <div class="w-4 h-4" style="background:#2C74B3"></div>
+                  <span>301 - 500 proyek (Menengah)</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <div class="w-4 h-4 bg-gray-300 rounded"></div>
-                  <span>Belum ada proyek</span>
+                  <div class="w-4 h-4" style="background:#A5D7E8"></div>
+                  <span>101 - 300 proyek (Rendah)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-4 h-4" style="background:#F8F6F4; border:1px solid #ccc"></div>
+                  <span>1 - 100 proyek (Sangat Rendah)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-4 h-4 bg-gray-300 border"></div>
+                  <span>0 proyek</span>
                 </div>
               </div>
             </div>
@@ -317,6 +325,8 @@ const selectedStatus = ref('')
 const hoveredProvince = ref(null)
 const selectedProvinceData = ref(null)
 const selectedProject = ref(null)
+const kabupatenData = ref([])
+const loadingKabupaten = ref(false)
 
 // Stats data
 const stats = reactive({
@@ -326,19 +336,19 @@ const stats = reactive({
   completionRate: 73
 })
 
-// Province data from API
 const provinsiList = ref([])
 const provinceData = reactive({})
 
+// Fetch summary per provinsi and fill provinceData
 onMounted(async () => {
-  const res = await $fetch('/api/provinsi')
-  if (res.success && Array.isArray(res.data)) {
-    provinsiList.value = res.data.map((prov) => {
-      // Kode provinsi cukup dari nama, lowercase dan tanpa spasi
+  const resProv = await $fetch('/api/provinsi')
+  if (resProv.success && Array.isArray(resProv.data)) {
+    provinsiList.value = resProv.data.map((prov) => {
       const code = prov.nama.toLowerCase().replace(/\s+/g, '')
       provinceData[code] = {
         code,
         name: prov.nama,
+        svgPath: prov.svgPath,
         totalProjects: 0,
         completedProjects: 0,
         ongoingProjects: 0,
@@ -346,6 +356,19 @@ onMounted(async () => {
         projects: [],
       }
       return { ...prov, code }
+    })
+  }
+  // Fetch jumlah_proper per provinsi
+  const resSummary = await $fetch('/api/proper/provinsi')
+  if (resSummary.success && Array.isArray(resSummary.data)) {
+    resSummary.data.forEach((item) => {
+      // Find code by id_provinsi
+      const prov = provinsiList.value.find(p => p.idProvinsi === item.id_provinsi)
+      if (prov) {
+        provinceData[prov.code].totalProjects = Number(item.jumlah_proper)
+        provinceData[prov.code].svgPath = item.svg_path
+        provinceData[prov.code].name = item.nama_provinsi
+      }
     })
   }
   // Auto-select Jakarta jika ada
@@ -418,12 +441,23 @@ function getProvinceProjectCount(code) {
   return provinceData[code]?.totalProjects || 0
 }
 
+function getColor(jumlah, min, max) {
+  // Contoh: biru muda (#BDE0FE) ke biru tua (#023E8A)
+  const percent = (jumlah - min) / (max - min);
+  const r = Math.round(189 + (2 - 189) * percent);
+  const g = Math.round(224 + (62 - 224) * percent);
+  const b = Math.round(254 + (138 - 254) * percent);
+  return `rgb(${r},${g},${b})`;
+}
+
 function getProvinceColor(code) {
   const projectCount = getProvinceProjectCount(code)
-  if (projectCount >= 10) return '#10B981' // Green
-  if (projectCount >= 5) return '#3B82F6'  // Blue
-  if (projectCount >= 1) return '#F59E0B'  // Yellow
-  return '#D1D5DB' // Gray
+  if (projectCount > 1000) return '#0B2447' // Sangat tinggi
+  if (projectCount > 500) return '#205295'  // Tinggi
+  if (projectCount > 300) return '#2C74B3'  // Menengah
+  if (projectCount > 100) return '#A5D7E8'  // Rendah
+  if (projectCount > 0) return '#F8F6F4'    // Sangat rendah
+  return '#D1D5DB' // Tidak ada proyek
 }
 
 function getProvinceClass(code) {
@@ -437,8 +471,21 @@ function getProvinceClass(code) {
   return `${baseClass} stroke-white stroke-1`
 }
 
-function selectProvince(code) {
+async function selectProvince(code) {
   selectedProvinceData.value = provinceData[code]
+  kabupatenData.value = []
+  if (!selectedProvinceData.value) return
+  loadingKabupaten.value = true
+  try {
+    const idProvinsi = selectedProvinceData.value.idProvinsi || selectedProvinceData.value.id_provinsi
+    if (idProvinsi) {
+      const res = await $fetch(`/api/proper/kabupaten/${idProvinsi}`)
+      if (res.success && Array.isArray(res.data)) {
+        kabupatenData.value = res.data
+      }
+    }
+  } catch {}
+  loadingKabupaten.value = false
 }
 
 function getStatusBadgeClass(status) {

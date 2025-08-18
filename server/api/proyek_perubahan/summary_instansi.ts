@@ -11,15 +11,15 @@ export default defineEventHandler(async (event) => {
     if (event.method === 'GET') {
       const summaryData = await db
         .select({
-          instansi_id: instansi.instansiId,
-          nama_instansi: instansi.namaInstansi,
+          instansi_id: instansi.instansi_id,
+          nama_instansi: instansi.nama_instansi,
           total_proyek: sql<number>`count(${proper.id})`,
           proyek_per_instansi: sql<number>`count(${proper.id})`
         })
         .from(proper)
-        .leftJoin(instansi, eq(proper.instansiId, instansi.instansiId))
-        .groupBy(instansi.instansiId, instansi.namaInstansi)
-        .orderBy(instansi.namaInstansi)
+        .leftJoin(instansi, eq(proper.instansiId, instansi.instansi_id))
+        .groupBy(instansi.instansi_id, instansi.nama_instansi)
+        .orderBy(instansi.nama_instansi)
 
       return {
         success: true,

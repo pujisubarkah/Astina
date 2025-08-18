@@ -16,12 +16,12 @@ export default defineEventHandler(async (event) => {
       const perInstansi = await db
         .select({
           instansiId: proper.instansiId,
-          namaInstansi: instansi.namaInstansi,
+          namaInstansi: instansi.nama_instansi,
           count: count()
         })
         .from(proper)
-        .leftJoin(instansi, eq(proper.instansiId, instansi.instansiId))
-        .groupBy(proper.instansiId, instansi.namaInstansi)
+        .leftJoin(instansi, eq(proper.instansiId, instansi.instansi_id))
+        .groupBy(proper.instansiId, instansi.nama_instansi)
         .orderBy(desc(count()))
 
       return {
