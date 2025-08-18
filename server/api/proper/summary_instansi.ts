@@ -4,7 +4,7 @@ import { proper } from '../../database/schema/proper'
 import { pelatihan } from '../../database/schema/pelatihan'
 import { instansi } from '../../database/schema/instansi'
 import { db } from '../../db'
-import { count } from 'drizzle-orm/sql/functions/aggregate'
+import { count } from 'drizzle-orm'
 import { desc } from 'drizzle-orm/sql/expressions/select'
 import { eq, sql } from 'drizzle-orm'
 

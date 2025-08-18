@@ -50,6 +50,19 @@
 
                 <div class="form-control">
                   <label class="label">
+                    <span class="label-text font-semibold">NIP *</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Masukkan NIP Anda"
+                    class="input input-bordered w-full"
+                    v-model="form.nip"
+                    required
+                  />
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
                     <span class="label-text font-semibold">Email *</span>
                   </label>
                   <input 
@@ -67,47 +80,47 @@
                   </label>
                   <select class="select select-bordered w-full" v-model="form.institution" required>
                     <option value="">Pilih K/L</option>
-                    <option value="Kemendagri">Kementerian Dalam Negeri</option>
-                    <option value="Kemenkes">Kementerian Kesehatan</option>
-                    <option value="Kemendikbudristek">Kemendikbudristek</option>
-                    <option value="Kementerian PUPR">Kementerian PUPR</option>
-                    <option value="Kemensos">Kementerian Sosial</option>
-                    <option value="Kemenkumham">Kementerian Hukum dan HAM</option>
-                    <option value="Kemenag">Kementerian Agama</option>
-                    <option value="BPS">Badan Pusat Statistik</option>
-                    <option value="BPKP">BPKP</option>
-                    <option value="Lainnya">Lainnya</option>
+                    <option v-for="instansi in instansiOptions" :key="instansi.instansiId" :value="instansi.namaInstansi">
+                      {{ instansi.namaInstansi }}
+                    </option>
                   </select>
                 </div>
 
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Jabatan</span>
-                  </label>
-                  <input 
-                    type="text" 
-                    placeholder="Misal: Kepala Bagian, Staf Ahli, dll"
-                    class="input input-bordered w-full"
-                    v-model="form.position"
-                  />
-                </div>
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text font-semibold">Lembaga Diklat *</span>
+                    </label>
+                    <select class="select select-bordered w-full" v-model="form.lembagaDiklat" required>
+                      <option value="">Pilih Lembaga Diklat</option>
+                      <option v-for="lemdik in lemdikOptions" :key="lemdik.id" :value="lemdik.namalemdik">
+                        {{ lemdik.namalemdik }}
+                      </option>
+                    </select>
+                  </div>
 
-                <div class="form-control md:col-span-2">
-                  <label class="label">
-                    <span class="label-text font-semibold">Program Pelatihan *</span>
-                  </label>
-                  <select class="select select-bordered w-full" v-model="form.training" required>
-                    <option value="">Pilih Program Pelatihan</option>
-                    <option value="sakip">SAKIP & Reformasi Birokrasi</option>
-                    <option value="digital">Digitalisasi Pelayanan Publik</option>
-                    <option value="manajemen">Manajemen Perubahan</option>
-                    <option value="inovasi">Inovasi Pelayanan</option>
-                    <option value="leadership">Leadership Excellence</option>
-                    <option value="analytics">Data Analytics</option>
-                    <option value="smart-gov">Smart Government</option>
-                    <option value="customer-service">Customer Service Excellence</option>
-                  </select>
-                </div>
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text font-semibold">Nomor KRA</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Isi jika ada Nomor KRA"
+                      class="input input-bordered w-full"
+                      v-model="form.nomorKra"
+                    />
+                  </div>
+
+                  <div class="form-control md:col-span-2">
+                    <label class="label">
+                      <span class="label-text font-semibold">Program Pelatihan *</span>
+                    </label>
+                    <select class="select select-bordered w-full" v-model="form.training" required>
+                      <option value="">Pilih Program Pelatihan</option>
+                      <option v-for="pelatihan in pelatihanOptions" :key="pelatihan.id" :value="pelatihan.nama">
+                        {{ pelatihan.nama }}
+                      </option>
+                    </select>
+                  </div>
               </div>
             </div>
 
@@ -135,53 +148,32 @@
                 <label class="label">
                   <span class="label-text font-semibold">Deskripsi Proyek *</span>
                 </label>
-                <textarea 
-                  class="textarea textarea-bordered h-32"
+                <textarea
+                  class="textarea textarea-bordered w-full h-32"
                   placeholder="Jelaskan latar belakang, tujuan, dan ringkasan proyek perubahan Anda..."
                   v-model="form.description"
+                  :maxlength="500"
                   required
+                  @input="form.description = form.description.slice(0, 500)"
                 ></textarea>
                 <label class="label">
-                  <span class="label-text-alt">{{ form.description.length }}/500 karakter</span>
+                  <span class="label-text-alt text-xs text-gray-500">{{ form.description.length }}/500 karakter</span>
                 </label>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-control">
                   <label class="label">
-                    <span class="label-text font-semibold">Status Proyek *</span>
+                    <span class="label-text font-semibold whitespace-normal break-words">Berapa perkiraan nilai ekonomi yang dihasilkan dari proyek perubahan atau dari penerapan hasil pelatihan yang Anda ikuti? *</span>
                   </label>
-                  <select class="select select-bordered w-full" v-model="form.status" required>
-                    <option value="">Pilih Status</option>
-                    <option value="planning">Perencanaan</option>
-                    <option value="ongoing">Sedang Berjalan</option>
-                    <option value="completed">Selesai</option>
-                    <option value="paused">Ditunda</option>
+                  <select class="select select-bordered w-full" v-model="form.nilaiEkonomi" required>
+                    <option value="">Pilih Nilai Ekonomi</option>
+                    <option v-for="option in nilaiEkonomiOptions" :key="option" :value="option">
+                      {{ option }}
+                    </option>
                   </select>
                 </div>
 
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Progress (%)</span>
-                  </label>
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max="100" 
-                    class="range range-primary"
-                    v-model="form.progress"
-                  />
-                  <div class="w-full flex justify-between text-xs px-2">
-                    <span>0%</span>
-                    <span>25%</span>
-                    <span>50%</span>
-                    <span>75%</span>
-                    <span>100%</span>
-                  </div>
-                  <div class="text-center mt-2">
-                    <span class="badge badge-primary">{{ form.progress }}%</span>
-                  </div>
-                </div>
               </div>
 
               <div class="form-control">
@@ -250,43 +242,7 @@
                 <label class="label">
                   <span class="label-text font-semibold">Dokumen Utama *</span>
                 </label>
-                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors">
-                  <input 
-                    type="file" 
-                    class="hidden" 
-                    ref="mainFileInput"
-                    @change="handleMainFile"
-                    accept=".pdf,.doc,.docx,.ppt,.pptx"
-                  />
-                  <div v-if="!form.mainFile">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                    <p class="text-gray-600 mb-2">Klik untuk upload atau drag & drop file</p>
-                    <p class="text-sm text-gray-500">PDF, DOC, DOCX, PPT, PPTX (Max 10MB)</p>
-                    <button 
-                      type="button" 
-                      class="btn btn-outline btn-sm mt-4"
-                      @click="$refs.mainFileInput.click()"
-                    >
-                      Pilih File
-                    </button>
-                  </div>
-                  <div v-else class="text-green-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p class="font-semibold">{{ form.mainFile.name }}</p>
-                    <p class="text-sm">{{ formatFileSize(form.mainFile.size) }}</p>
-                    <button 
-                      type="button" 
-                      class="btn btn-outline btn-sm mt-2"
-                      @click="removeMainFile"
-                    >
-                      Ganti File
-                    </button>
-                  </div>
-                </div>
+                <UploadFile />
               </div>
 
               <!-- Supporting Documents -->
@@ -395,14 +351,6 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <p class="font-semibold text-gray-700">Status:</p>
-                    <span class="badge badge-outline">{{ form.status }}</span>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-gray-700">Progress:</p>
-                    <span class="badge badge-primary">{{ form.progress }}%</span>
-                  </div>
-                  <div>
                     <p class="font-semibold text-gray-700">Total File:</p>
                     <span class="badge badge-secondary">{{ 1 + form.supportFiles.length }} file</span>
                   </div>
@@ -486,6 +434,7 @@
 </template>
 
 <script setup>
+import UploadFile from "~/components/UploadFile.vue"
 // Page metadata
 useHead({
   title: 'Upload Proyek Perubahan - Astina',
@@ -497,19 +446,24 @@ useHead({
 // Reactive data
 const currentStep = ref(1)
 const isSubmitting = ref(false)
+const instansiOptions = ref([])
+const pelatihanOptions = ref([])
+const lemdikOptions = ref([])
 
 const form = reactive({
   // Step 1
   authorName: '',
   email: '',
   institution: '',
-  position: '',
+  lembagaDiklat: '',
   training: '',
+  nip: '',
+  nomorKra: '',
   
   // Step 2
   title: '',
   description: '',
-  status: '',
+  nilaiEkonomi: '',
   progress: 0,
   tagsInput: '',
   tags: [],
@@ -525,13 +479,35 @@ const form = reactive({
   agreeAccuracy: false
 })
 
+const nilaiEkonomiOptions = computed(() => {
+  // Cari pelatihan yang dipilih
+  const selected = pelatihanOptions.value.find(p => p.nama === form.training)
+  const id = selected?.id
+  if (id === 1 || id === 2) {
+    return [
+      'Kurang dari Rp.100.000.000,- (seratus juta rupiah)',
+      'Rp100.000.000,- s.d. Rp1.000.000.000,-',
+      'Rp1.000.000.001,- s.d. Rp10.000.000.000,-',
+      'Lebih dari Rp10.000.000.000,- (sepuluh miliar rupiah)'
+    ]
+  } else if (id === 3 || id === 4) {
+    return [
+      'Kurang dari Rp 50.000.000 (lima puluh juta rupiah)',
+      'Rp 50.000.000,- s.d Rp 100.000.000,-',
+      'Rp 100.000.001,- s.d Rp 500.000.000,-',
+      'Lebih dari Rp 500.000.000,- (lima ratus juta rupiah)'
+    ]
+  }
+  return []
+})
+
 // Computed properties
 const canProceed = computed(() => {
   switch (currentStep.value) {
     case 1:
       return form.authorName && form.email && form.institution && form.training
     case 2:
-      return form.title && form.description && form.status
+      return form.title && form.description && form.nilaiEkonomi
     case 3:
       return form.mainFile
     case 4:
@@ -626,15 +602,29 @@ const getTrainingName = (value) => {
 
 const submitProject = async () => {
   isSubmitting.value = true
-  
   try {
-    // Simulate upload process
-    await new Promise(resolve => setTimeout(resolve, 3000))
-    
-    // Show success message
+    // POST informasi dasar ke /api/proper dengan mapping sesuai permintaan
+    const basicInfo = {
+      nama: form.authorName,
+      no_identitas: form.nip,
+      email: form.email,
+      instansi_id: form.institution,
+      lemdik_id: form.lembagaDiklat,
+      nomor_kra: form.nomorKra,
+      program_id: form.training
+    }
+    const res = await fetch('/api/proper', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(basicInfo)
+    })
+    const result = await res.json()
+    if (!result.success) {
+      throw new Error(result.message || 'Gagal menyimpan informasi dasar')
+    }
+    // Simulate upload process (lanjutkan proses lain jika perlu)
+    await new Promise(resolve => setTimeout(resolve, 1000))
     alert('Proyek berhasil diupload! Terima kasih atas kontribusi Anda.')
-    
-    // Redirect to project list
     await navigateTo('/daftar-proyek')
   } catch (error) {
     alert('Terjadi kesalahan saat mengupload. Silakan coba lagi.')
@@ -654,14 +644,44 @@ watchEffect(() => {
   }
 })
 
-// Load draft on mount
-onMounted(() => {
+// Load draft and fetch instansi & pelatihan on mount
+onMounted(async () => {
   if (typeof window !== 'undefined') {
     const draft = localStorage.getItem('project-draft')
     if (draft) {
       const parsed = JSON.parse(draft)
       Object.assign(form, parsed)
     }
+  }
+  // Fetch instansi options from API
+  try {
+    const res = await fetch('/api/instansi')
+    const data = await res.json()
+    if (data.success && Array.isArray(data.data)) {
+      instansiOptions.value = data.data
+    }
+  } catch (err) {
+    console.error('Gagal fetch instansi:', err)
+  }
+  // Fetch lemdik options from API
+  try {
+    const res = await fetch('/api/lemdik')
+    const data = await res.json()
+    if (data.success && Array.isArray(data.data)) {
+      lemdikOptions.value = data.data
+    }
+  } catch (err) {
+    console.error('Gagal fetch lemdik:', err)
+  }
+  // Fetch pelatihan options from API
+  try {
+    const res = await fetch('/api/pelatihan')
+    const data = await res.json()
+    if (data.success && Array.isArray(data.data)) {
+      pelatihanOptions.value = data.data
+    }
+  } catch (err) {
+    console.error('Gagal fetch pelatihan:', err)
   }
 })
 </script>
