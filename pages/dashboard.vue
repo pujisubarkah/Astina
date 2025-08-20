@@ -8,7 +8,28 @@
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div v-for="i in 4" :key="i" class="card bg-white shadow-lg animate-pulse">
+          <div class="card-body">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="h-4 bg-gray-200 rounded w-20 mb-2"></div>
+                <div class="h-8 bg-gray-200 rounded w-16"></div>
+              </div>
+              <div class="w-12 h-12 bg-gray-200 rounded-lg"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else-if="error" class="alert alert-error mb-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ error }}</span>
+      </div>
+
+      <div v-else class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="card bg-white shadow-lg">
           <div class="card-body">
             <div class="flex items-center justify-between">
@@ -45,7 +66,7 @@
           <div class="card-body">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-600">K/L Terlibat</p>
+                <p class="text-sm text-gray-600">K/L dan Pemerintah Daerah Terlibat</p>
                 <p class="text-2xl font-bold text-purple-600">{{ totalInstitutions }}</p>
               </div>
               <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -125,10 +146,17 @@ useHead({
 })
 
 // Reactive data
-const totalProjects = ref(156)
-const activeTrainings = ref(12)
-const totalInstitutions = ref(23)
+const totalProjects = ref(0)
+const activeTrainings = ref(0)
+const totalInstitutions = ref(0)
 const averageProgress = ref(67)
+const isLoading = ref(true)
+const error = ref(null)
+
+// Data from APIs
+const institutionSummary = ref([])
+const trainingSummary = ref([])
+const keywordsSummary = ref([])
 
 // Chart refs
 const trainingChart = ref(null)
@@ -136,7 +164,7 @@ const institutionChart = ref(null)
 const keywordsChart = ref(null)
 const timelineChart = ref(null)
 
-// Sample data
+// Sample data untuk chart yang belum menggunakan API real
 const trainingData = [
   { name: 'SAKIP & Reformasi Birokrasi', value: 32 },
   { name: 'Digitalisasi Pelayanan Publik', value: 28 },
@@ -148,35 +176,46 @@ const trainingData = [
   { name: 'Customer Service', value: 6 }
 ]
 
-const institutionData = [
-  { name: 'Kemendagri', value: 25 },
-  { name: 'Kemenkes', value: 22 },
-  { name: 'Kemendikbudristek', value: 20 },
-  { name: 'Kementerian PUPR', value: 18 },
-  { name: 'Kemensos', value: 15 },
-  { name: 'Kemenkumham', value: 12 },
-  { name: 'Kemenag', value: 10 },
-  { name: 'BPS', value: 8 },
-  { name: 'BPKP', value: 7 },
-  { name: 'Lainnya', value: 19 }
-]
+// Data untuk fetch API
+async function fetchDashboardData() {
+  try {
+    isLoading.value = true
+    error.value = null
 
-const keywordsData = [
-  { name: 'Digitalisasi', value: 85 },
-  { name: 'Pelayanan Publik', value: 72 },
-  { name: 'Sistem Informasi', value: 68 },
-  { name: 'Inovasi', value: 54 },
-  { name: 'Reformasi', value: 48 },
-  { name: 'Smart City', value: 42 },
-  { name: 'E-Government', value: 38 },
-  { name: 'Transparansi', value: 35 },
-  { name: 'Efisiensi', value: 32 },
-  { name: 'Akuntabilitas', value: 28 },
-  { name: 'Transformasi', value: 25 },
-  { name: 'Online', value: 22 },
-  { name: 'Monitoring', value: 20 },
-  { name: 'Otomasi', value: 18 }
-]
+    // Fetch institution summary
+    const institutionRes = await fetch('/api/proper/summary_instansi')
+    const institutionData = await institutionRes.json()
+
+    if (institutionData.success && Array.isArray(institutionData.summary)) {
+      institutionSummary.value = institutionData.summary
+      totalInstitutions.value = institutionSummary.value.length
+      totalProjects.value = institutionSummary.value.reduce((total, item) => total + item.count, 0)
+    }
+
+    // Fetch training summary
+    const trainingRes = await fetch('/api/proper/summary_program')
+    const trainingDataResp = await trainingRes.json()
+
+    if (trainingDataResp.success && Array.isArray(trainingDataResp.summary)) {
+      trainingSummary.value = trainingDataResp.summary
+      activeTrainings.value = trainingSummary.value.length
+    }
+
+    // Fetch keywords summary
+    const keywordsRes = await fetch('/api/abstract/summary_kata_kunci')
+    const keywordsDataResp = await keywordsRes.json()
+    if (keywordsDataResp.success && Array.isArray(keywordsDataResp.summary)) {
+      keywordsSummary.value = keywordsDataResp.summary
+    }
+  } catch (err) {
+    console.error('Error fetching dashboard data:', err)
+    error.value = 'Gagal memuat data dashboard'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// keywordsData diambil dari API
 
 const timelineData = {
   months: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
@@ -185,17 +224,35 @@ const timelineData = {
   planned: [5, 8, 12, 15, 18, 22, 25, 28, 32, 35, 38, 42]
 }
 
-onMounted(() => {
-  initCharts()
+onMounted(async () => {
+  await fetchDashboardData()
+  // Pastikan charts di-init setelah data ter-load
+  if (!isLoading.value && !error.value) {
+    initCharts()
+  }
+})
+
+// Watch untuk update chart ketika data berubah
+watch([institutionSummary, trainingSummary], () => {
+  if (!isLoading.value && !error.value && trainingChart.value && institutionChart.value) {
+    initCharts()
+  }
 })
 
 const initCharts = () => {
-  // Training Chart (Doughnut)
+  if (isLoading.value || error.value) return
+  
+  // Training Chart (Doughnut) - menggunakan data dari API
   const trainingChartInstance = echarts.init(trainingChart.value)
+  const trainingChartData = trainingSummary.value.map(item => ({
+    name: item.programNama,
+    value: item.count
+  }))
+  
   trainingChartInstance.setOption({
     tooltip: {
       trigger: 'item',
-      formatter: '{a} <br/>{b}: {c} ({d}%)'
+      formatter: '{a} <br/>{b}: {c} proyek ({d}%)'
     },
     legend: {
       orient: 'vertical',
@@ -204,11 +261,11 @@ const initCharts = () => {
     },
     series: [
       {
-        name: 'Proyek per Pelatihan',
+        name: 'Proyek per Program',
         type: 'pie',
         radius: ['40%', '70%'],
         center: ['60%', '50%'],
-        data: trainingData,
+        data: trainingChartData,
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
@@ -225,12 +282,32 @@ const initCharts = () => {
     color: ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#EF4444', '#06B6D4', '#84CC16', '#EC4899']
   })
 
-  // Institution Chart (Bar)
+  // Institution Chart (Bar) - menggunakan data dari API
   const institutionChartInstance = echarts.init(institutionChart.value)
+  // Ambil top 10 instansi dengan proyek terbanyak
+  const topInstitutions = institutionSummary.value
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10)
+    .map(item => ({
+      name: item.namaInstansi && item.namaInstansi.length > 25 ? 
+        item.namaInstansi.substring(0, 25) + '...' : 
+        item.namaInstansi || 'Unknown',
+      value: item.count,
+      fullName: item.namaInstansi || 'Unknown'
+    }))
+  
   institutionChartInstance.setOption({
     tooltip: {
       trigger: 'axis',
-      axisPointer: { type: 'shadow' }
+      axisPointer: { type: 'shadow' },
+      formatter: function(params) {
+        const data = params[0]
+        const originalData = institutionSummary.value.find(item => 
+          item.namaInstansi === topInstitutions[data.dataIndex].fullName
+        )
+        return `<strong>${originalData?.namaInstansi || 'Unknown'}</strong><br/>
+                Jumlah Proyek: ${originalData?.count || 0}`
+      }
     },
     grid: {
       left: '3%',
@@ -244,14 +321,14 @@ const initCharts = () => {
     },
     yAxis: {
       type: 'category',
-      data: institutionData.map(item => item.name),
+      data: topInstitutions.map(item => item.name),
       axisLabel: { fontSize: 10 }
     },
     series: [
       {
         name: 'Jumlah Proyek',
         type: 'bar',
-        data: institutionData.map(item => item.value),
+        data: topInstitutions.map(item => item.value),
         itemStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
             { offset: 0, color: '#3B82F6' },
@@ -264,90 +341,83 @@ const initCharts = () => {
 
   // Keywords Chart (Bubble Chart instead of Word Cloud)
   const keywordsChartInstance = echarts.init(keywordsChart.value)
+  // Ambil top 20 keywords dan bersihkan nama
+  const topKeywords = keywordsSummary.value
+    .map(item => ({
+      ...item,
+      cleanKeyword: item.keyword
+        .replace(/['\[\]\"]+/g, '') // hapus tanda kutip, kurung, dan double quote
+        .replace(/^,+|,+$/g, '') // hapus koma di awal/akhir
+        .replace(/\s+/g, ' ') // normalisasi spasi
+        .trim()
+    }))
+  .filter(item => item.cleanKeyword.length > 1)
+  .slice(0, 100)
+
+  // Layout bubble agar tidak tumpang tindih dan label di tengah
+  const bubbleData = topKeywords.map((item, idx) => ({
+    value: item.count,
+    name: item.cleanKeyword,
+    symbolSize: Math.max(40, Math.sqrt(item.count) * 10),
+    itemStyle: {
+      color: [
+        '#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444',
+        '#06B6D4', '#84CC16', '#EC4899', '#6366F1', '#14B8A6', '#F97316', '#8B5CF6'
+      ][idx % 12],
+      opacity: 0.85,
+      borderWidth: 2,
+      borderColor: '#fff',
+      shadowBlur: 10,
+      shadowColor: 'rgba(0,0,0,0.15)'
+    },
+    label: {
+      show: true,
+      position: 'inside',
+      formatter: item.cleanKeyword,
+      fontSize: Math.max(12, Math.min(22, item.count / 3)),
+      fontWeight: item.count > 50 ? 'bold' : 'normal',
+      color: '#fff',
+      textShadowBlur: 2,
+      textShadowColor: 'rgba(0,0,0,0.5)'
+    }
+  }))
+
   keywordsChartInstance.setOption({
     title: {
       text: 'Kata Kunci Populer',
       left: 'center',
       textStyle: {
-        fontSize: 16,
-        fontWeight: 'normal',
+        fontSize: 18,
+        fontWeight: 'bold',
         color: '#374151'
       }
     },
     tooltip: {
       trigger: 'item',
+      backgroundColor: '#fff',
+      borderColor: '#3B82F6',
+      borderWidth: 1,
+      textStyle: { color: '#374151', fontSize: 14 },
       formatter: function(params) {
-        return `<strong>${params.name}</strong><br/>Frekuensi: ${params.value[1]} kali muncul`
+        return `<strong>${params.data.name}</strong><br/>Frekuensi: ${params.data.value} kali muncul`;
       }
     },
-    grid: {
-      left: '10%',
-      right: '10%',
-      top: '15%',
-      bottom: '10%',
-      containLabel: true
-    },
-    xAxis: {
-      type: 'value',
-      show: false,
-      min: 0,
-      max: 10
-    },
-    yAxis: {
-      type: 'value',
-      show: false,
-      min: 0,
-      max: 10
-    },
-    series: [
-      {
-        name: 'Keywords',
-        type: 'scatter',
-        symbolSize: function(data) {
-          return Math.sqrt(data[1]) * 8 // Size based on frequency
-        },
-        data: keywordsData.map((item, index) => [
-          Math.random() * 8 + 1, // Random X position
-          Math.random() * 8 + 1, // Random Y position
-          item.value,
-          item.name
-        ]),
+    grid: { left: '5%', right: '5%', top: '10%', bottom: '10%', containLabel: true },
+    xAxis: { show: false },
+    yAxis: { show: false },
+    series: [{
+      type: 'scatter',
+      data: bubbleData,
+      symbol: 'circle',
+      emphasis: {
+        focus: 'self',
+        scale: 1.3,
         itemStyle: {
-          color: function(params) {
-            const colors = [
-              '#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', 
-              '#EF4444', '#06B6D4', '#84CC16', '#EC4899',
-              '#6366F1', '#14B8A6', '#F97316', '#8B5CF6'
-            ]
-            return colors[params.dataIndex % colors.length]
-          },
-          opacity: 0.8
-        },
-        label: {
-          show: true,
-          formatter: function(params) {
-            return params.data[3] // Show keyword name
-          },
-          fontSize: function(params) {
-            return Math.max(10, Math.min(20, params.data[2] / 4)) // Font size based on frequency
-          },
-          fontWeight: function(params) {
-            return params.data[2] > 50 ? 'bold' : 'normal'
-          },
-          color: '#fff',
-          textShadowBlur: 2,
-          textShadowColor: 'rgba(0, 0, 0, 0.5)'
-        },
-        emphasis: {
-          focus: 'self',
-          scale: 1.2,
-          itemStyle: {
-            shadowBlur: 10,
-            shadowColor: 'rgba(0, 0, 0, 0.3)'
-          }
+          shadowBlur: 20,
+          shadowColor: 'rgba(0,0,0,0.3)'
         }
       }
-    ]
+    }]
   })
 
   // Timeline Chart (Line)
