@@ -58,10 +58,10 @@
             <div class="bg-white/10 backdrop-blur rounded-lg p-4">
               <h3 class="text-lg font-semibold mb-2">Program Yang Terhimpun</h3>
               <div class="grid grid-cols-2 gap-2 text-sm">
-                <div class="bg-white/20 rounded px-3 py-2">PKN Tk I</div>
-                <div class="bg-white/20 rounded px-3 py-2">PKN Tk II</div>
-                <div class="bg-white/20 rounded px-3 py-2">PKA</div>
-                <div class="bg-white/20 rounded px-3 py-2">PKP</div>
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded px-3 py-2 font-medium shadow-sm">PKN Tk I</div>
+                <div class="bg-gradient-to-r from-green-500 to-green-600 text-white rounded px-3 py-2 font-medium shadow-sm">PKN Tk II</div>
+                <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded px-3 py-2 font-medium shadow-sm">PKA</div>
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded px-3 py-2 font-medium shadow-sm">PKP</div>
               </div>
             </div>
           </div>
