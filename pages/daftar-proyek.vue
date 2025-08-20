@@ -538,8 +538,13 @@ async function fetchFilterOptions() {
     console.log('Institution Summary:', institutionSummaryData);
 
     if (institutionData.success && Array.isArray(institutionData.data)) {
-      institutionOptions.value = institutionData.data
+      // Map the data to use consistent field names
+      institutionOptions.value = institutionData.data.map(item => ({
+        instansiId: item.instansi_id,
+        namaInstansi: item.nama_instansi
+      }))
       console.log('Institution Options set:', institutionOptions.value);
+      console.log('First institution:', institutionOptions.value[0]);
     }
 
     if (institutionSummaryData.success) {
@@ -778,14 +783,15 @@ watch([searchQuery, selectedTraining, selectedInstitution, sortBy],
     
     // Fetch filtered data if either institution or training changes
     if (newInstitution !== oldInstitution || newTraining !== oldTraining) {
+      // If both filters are empty, fetch all projects
+      if (!newInstitution && !newTraining) {
+        await fetchProjects()
+      }
       // Give priority to institution filter if both are selected
-      if (newInstitution) {
+      else if (newInstitution) {
         await fetchProjects(newInstitution, null)
       } else if (newTraining) {
         await fetchProjects(null, newTraining)
-      } else {
-        // If neither filter is selected, fetch all projects
-        await fetchProjects()
       }
     }
 })
