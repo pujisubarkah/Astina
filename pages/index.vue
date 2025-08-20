@@ -9,12 +9,13 @@
             <span class="text-yellow-300">Astina</span>
           </h1>
           <p class="text-xl mb-8 opacity-90">
-            Aplikasi Sentral Transformasi Inovasi dan Nilai Aparatur
+            Hub Proyek Perubahan Program Pelatihan Kepemimpinan Nasional
           </p>
           <p class="text-lg mb-10 max-w-2xl mx-auto opacity-80">
-            Astina adalah pusat dokumentasi dan kolaborasi untuk Proyek Perubahan peserta PKP, PKA, PKN Tk I, dan PKN Tk II. 
-    Menghimpun berbagai ide strategis, menyatukan kekuatan lintas instansi, 
-    dan menggerakkan transformasi menuju aparatur negara yang unggul
+            Astina adalah platform terpusat yang menghimpun seluruh Proyek Perubahan dari peserta 
+            <strong class="text-yellow-300">PKN Tk I, PKN Tk II, PKA, dan PKP</strong>. 
+            Menjadi jembatan kolaborasi lintas instansi untuk berbagi best practice, 
+            pembelajaran, dan inovasi transformasi birokrasi di seluruh Indonesia.
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <button class="btn btn-warning btn-lg text-blue-900">
@@ -38,9 +39,11 @@
     <div class="py-20 bg-base-100">
       <div class="container mx-auto px-4">
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold mb-4">Fitur Unggulan</h2>
-          <p class="text-lg opacity-70 max-w-2xl mx-auto">
-            Astina menyediakan platform repositori yang lengkap untuk mengelola dan melacak semua perubahan proyek pemerintah
+          <h2 class="text-4xl font-bold mb-4">Mengapa Astina?</h2>
+          <p class="text-lg opacity-70 max-w-3xl mx-auto">
+            Sebagai <strong>Hub Proyek Perubahan</strong> terbesar di Indonesia, Astina mengintegrasikan 
+            seluruh hasil karya peserta program pelatihan kepemimpinan dalam satu platform yang mudah diakses, 
+            dipelajari, dan diadaptasi oleh instansi lain.
           </p>
         </div>
 
@@ -54,9 +57,9 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z" />
                 </svg>
               </div>
-              <h3 class="card-title justify-center text-lg">Repositori Proyek</h3>
+              <h3 class="card-title justify-center text-lg">Hub Repositori</h3>
               <p class="text-sm opacity-70">
-                Ruang penyimpanan ide dan hasil karya perubahan, tersusun rapi untuk memudahkan kolaborasi lintas generasi.
+                Pusat penyimpanan digital untuk semua Proyek Perubahan dari PKN Tk I, PKN Tk II, PKA, dan PKP yang terorganisir dengan baik.
               </p>
             </div>
           </div>
@@ -84,9 +87,9 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <h3 class="card-title justify-center text-lg">Kolaborasi Tim</h3>
+              <h3 class="card-title justify-center text-lg">Knowledge Sharing</h3>
               <p class="text-sm opacity-70">
-                Menghubungkan aparatur lintas instansi untuk berbagi best practice dan saling memberikan masukan konstruktif
+                Berbagi pengalaman dan pembelajaran antar peserta program pelatihan kepemimpinan untuk replikasi best practice di instansi masing-masing.
               </p>
             </div>
           </div>
@@ -99,10 +102,47 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <h3 class="card-title justify-center text-lg">Dokumentasi</h3>
+              <h3 class="card-title justify-center text-lg">Learning Hub</h3>
               <p class="text-sm opacity-70">
-                Platform terpusat untuk menyimpan laporan, panduan, dan knowledge sharing setiap proyek perubahan
+                Platform pembelajaran terpusat untuk mengakses panduan, studi kasus, dan dokumentasi lengkap dari setiap Proyek Perubahan.
               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-4xl font-bold text-blue-900 mb-6">Apa itu Astina?</h2>
+          <div class="text-lg text-blue-800 leading-relaxed space-y-4">
+            <p>
+              <strong class="text-blue-900">Astina (Aplikasi Sentral Transformasi Inovasi dan Nilai Aparatur)</strong> 
+              adalah platform digital yang didedikasikan untuk mengumpulkan, mengelola, dan membagikan 
+              seluruh Proyek Perubahan yang dihasilkan oleh peserta program pelatihan kepemimpinan di Indonesia.
+            </p>
+            <p>
+              Melalui Astina, ribuan Proyek Perubahan dari alumni <strong>PKN Tk I, PKN Tk II, PKA, dan PKP</strong> 
+              dapat diakses dengan mudah, dipelajari, dan diadaptasi oleh instansi lain untuk menciptakan 
+              dampak transformasi yang lebih luas di seluruh birokrasi Indonesia.
+            </p>
+            <div class="grid md:grid-cols-2 gap-6 mt-8 text-left">
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="font-bold text-blue-900 mb-3">🎯 Visi</h3>
+                <p class="text-blue-700">
+                  Menjadi hub utama transformasi birokrasi Indonesia melalui kolaborasi dan sharing best practice 
+                  antar aparatur sipil negara.
+                </p>
+              </div>
+              <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="font-bold text-blue-900 mb-3">🚀 Misi</h3>
+                <p class="text-blue-700">
+                  Memfasilitasi replikasi dan adaptasi Proyek Perubahan terbaik untuk mempercepat 
+                  inovasi dan peningkatan kinerja di seluruh instansi pemerintah.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -132,16 +172,19 @@
     <!-- CTA Section -->
     <div class="py-20 bg-blue-700 text-white">
       <div class="container mx-auto px-4 text-center">
-        <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-          Bergabunglah dengan ribuan aparatur dan instansi yang telah menggunakan Astina untuk berkolaborasi dalam proyek transformasi pemerintahan
+        <h2 class="text-3xl font-bold mb-4 text-white">Bergabunglah dengan Komunitas Inovator</h2>
+        <p class="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
+          Ribuan aparatur sipil negara telah menggunakan Astina sebagai hub untuk berkolaborasi, 
+          berbagi best practice, dan mengakselerasi transformasi birokrasi. 
+          <strong>Proyek Perubahan Anda bisa menginspirasi instansi lain!</strong>
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <button class="btn btn-warning btn-lg text-blue-900">
-            Mulai Gratis Sekarang
-          </button>
-          <button class="btn btn-outline btn-lg text-white border-white hover:bg-white hover:text-blue-700">
-            Hubungi Tim Kami
-          </button>
+          <a href="/daftar-proyek" class="btn btn-warning btn-lg text-blue-900">
+            Jelajahi Proyek Perubahan
+          </a>
+          <a href="/upload-proyek" class="btn btn-outline btn-lg text-white border-white hover:bg-white hover:text-blue-700">
+            Kontribusi Proyek Anda
+          </a>
         </div>
       </div>
     </div>

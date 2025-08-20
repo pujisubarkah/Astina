@@ -5,8 +5,17 @@
       <div class="mb-8">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 class="text-4xl font-bold text-blue-900 mb-2">Daftar Proyek Perubahan</h1>
-            <p class="text-blue-700">Repository laporan proyek perubahan dari peserta pelatihan</p>
+            <h1 class="text-4xl font-bold text-blue-900 mb-2">Hub Proyek Perubahan</h1>
+            <p class="text-blue-700 mb-4">
+              Pusat repositori digital untuk seluruh Proyek Perubahan dari program pelatihan kepemimpinan nasional
+            </p>
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+              <p class="text-blue-800 text-sm">
+                <strong>💡 Tentang Hub ini:</strong> Astina mengumpulkan ribuan Proyek Perubahan dari peserta 
+                <strong>PKN Tk I, PKN Tk II, PKA, dan PKP</strong> yang dapat Anda jelajahi, pelajari, 
+                dan adaptasi untuk transformasi di instansi Anda.
+              </p>
+            </div>
           </div>
         <div class="flex gap-2">
           <button class="btn btn-outline">
@@ -22,6 +31,40 @@
             Upload Proyek
           </a>
         </div>
+        </div>
+      </div>
+
+      <!-- Info Hub Section -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg p-6 mb-6">
+        <div class="grid md:grid-cols-2 gap-6 items-center">
+          <div>
+            <h2 class="text-2xl font-bold mb-3">🌟 Mengapa Jelajahi Hub Ini?</h2>
+            <ul class="space-y-2 text-blue-100">
+              <li class="flex items-start gap-2">
+                <span class="text-yellow-300 mt-1">✓</span>
+                <span>Temukan inspirasi dari <strong>ribuan Proyek Perubahan</strong> terbaik</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-yellow-300 mt-1">✓</span>
+                <span>Pelajari <strong>best practice</strong> dari berbagai instansi</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-yellow-300 mt-1">✓</span>
+                <span>Adaptasi solusi inovatif untuk <strong>transformasi birokrasi</strong></span>
+              </li>
+            </ul>
+          </div>
+          <div class="text-center">
+            <div class="bg-white/10 backdrop-blur rounded-lg p-4">
+              <h3 class="text-lg font-semibold mb-2">Program Yang Terhimpun</h3>
+              <div class="grid grid-cols-2 gap-2 text-sm">
+                <div class="bg-white/20 rounded px-3 py-2">PKN Tk I</div>
+                <div class="bg-white/20 rounded px-3 py-2">PKN Tk II</div>
+                <div class="bg-white/20 rounded px-3 py-2">PKA</div>
+                <div class="bg-white/20 rounded px-3 py-2">PKP</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -425,9 +468,9 @@ import { useHead } from '#imports'
 
 // Page metadata
 useHead({
-  title: 'Daftar Proyek Perubahan - Astina',
+  title: 'Hub Proyek Perubahan - Astina',
   meta: [
-    { name: 'description', content: 'Repository laporan proyek perubahan dari peserta pelatihan' }
+    { name: 'description', content: 'Hub terpusat untuk ribuan Proyek Perubahan dari program pelatihan kepemimpinan PKN Tk I, PKN Tk II, PKA, dan PKP. Jelajahi, pelajari, dan adaptasi best practice transformasi birokrasi.' }
   ]
 })
 
