@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
         .select({
           id_kabupaten: kabupaten.id,
           id_provinsi: kabupaten.id_provinsi,
+          nama_kabupaten: kabupaten.nama,
           svg_path: kabupaten.svg_path,
           jumlah: sql`count(${proper.id})`
         })
@@ -29,7 +30,7 @@ export default defineEventHandler(async (event) => {
         .leftJoin(instansi, sql`${kabupaten.id} = ${instansi.id_kabupaten}`)
         .leftJoin(proper, sql`${instansi.instansi_id} = ${proper.instansiId}`)
         .where(sql`${kabupaten.id_provinsi} = ${idProvinsi}`)
-        .groupBy(kabupaten.id, kabupaten.id_provinsi, kabupaten.svg_path)
+        .groupBy(kabupaten.id, kabupaten.id_provinsi, kabupaten.nama, kabupaten.svg_path)
 
       return { success: true, data: summaryData }
     }
