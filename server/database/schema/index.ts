@@ -1,0 +1,7 @@
+export { users } from './users'
+export { project } from './project'
+export { instansi } from './instansi'
+export { lemdik } from './lemdik'
+export { pelatihan } from './pelatihan'
+export { proper } from './proper'
+export { provinsi } from './provinsi'

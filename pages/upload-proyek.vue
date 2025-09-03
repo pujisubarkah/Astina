@@ -80,8 +80,8 @@
                   </label>
                   <select class="select select-bordered w-full" v-model="form.institution" required>
                     <option value="">Pilih K/L</option>
-                    <option v-for="instansi in instansiOptions" :key="instansi.instansiId" :value="instansi.namaInstansi">
-                      {{ instansi.namaInstansi }}
+                    <option v-for="instansi in instansiOptions" :key="instansi.instansi_id" :value="instansi.instansi_id">
+                      {{ instansi.nama_instansi }}
                     </option>
                   </select>
                 </div>
@@ -92,7 +92,7 @@
                     </label>
                     <select class="select select-bordered w-full" v-model="form.lembagaDiklat" required>
                       <option value="">Pilih Lembaga Diklat</option>
-                      <option v-for="lemdik in lemdikOptions" :key="lemdik.id" :value="lemdik.namalemdik">
+                      <option v-for="lemdik in lemdikOptions" :key="lemdik.id" :value="lemdik.id">
                         {{ lemdik.namalemdik }}
                       </option>
                     </select>
@@ -116,7 +116,7 @@
                     </label>
                     <select class="select select-bordered w-full" v-model="form.training" required>
                       <option value="">Pilih Program Pelatihan</option>
-                      <option v-for="pelatihan in pelatihanOptions" :key="pelatihan.id" :value="pelatihan.nama">
+                      <option v-for="pelatihan in pelatihanOptions" :key="pelatihan.id" :value="pelatihan.id">
                         {{ pelatihan.nama }}
                       </option>
                     </select>
@@ -242,7 +242,7 @@
                 <label class="label">
                   <span class="label-text font-semibold">Dokumen Utama *</span>
                 </label>
-                <UploadFile />
+                <UploadFile @fileUploaded="handleMainFileUploaded" @uploadError="handleUploadError" />
               </div>
 
               <!-- Supporting Documents -->
@@ -283,17 +283,26 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                       <div>
-                        <p class="font-medium">{{ file.name }}</p>
-                        <p class="text-sm text-gray-500">{{ formatFileSize(file.size) }}</p>
+                        <p class="font-medium">{{ file.filename }}</p>
+                        <p class="text-sm text-gray-500">{{ formatFileSize(file.size) }} • Google Drive</p>
                       </div>
                     </div>
-                    <button 
-                      type="button" 
-                      class="btn btn-ghost btn-xs text-red-500"
-                      @click="removeSupportFile(index)"
-                    >
-                      Hapus
-                    </button>
+                    <div class="flex items-center gap-2">
+                      <a 
+                        :href="file.shareUrl" 
+                        target="_blank"
+                        class="btn btn-ghost btn-xs text-blue-500"
+                      >
+                        Lihat
+                      </a>
+                      <button 
+                        type="button" 
+                        class="btn btn-ghost btn-xs text-red-500"
+                        @click="removeSupportFile(index)"
+                      >
+                        Hapus
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -331,7 +340,7 @@
                   </div>
                   <div>
                     <p class="font-semibold text-gray-700">Kementerian/Lembaga:</p>
-                    <p>{{ form.institution }}</p>
+                    <p>{{ getInstansiName(form.institution) }}</p>
                   </div>
                   <div>
                     <p class="font-semibold text-gray-700">Program Pelatihan:</p>
@@ -352,7 +361,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <p class="font-semibold text-gray-700">Total File:</p>
-                    <span class="badge badge-secondary">{{ 1 + form.supportFiles.length }} file</span>
+                    <span class="badge badge-secondary">{{ getTotalFiles() }} file</span>
+                  </div>
+                  <div v-if="form.mainFileData">
+                    <p class="font-semibold text-gray-700">Dokumen Utama:</p>
+                    <span class="badge badge-primary">{{ form.mainFileData.filename }}</span>
+                  </div>
+                  <div v-if="form.supportFiles.length > 0">
+                    <p class="font-semibold text-gray-700">File Pendukung:</p>
+                    <span class="badge badge-outline">{{ form.supportFiles.length }} file</span>
                   </div>
                 </div>
                 
@@ -472,6 +489,7 @@ const form = reactive({
   
   // Step 3
   mainFile: null,
+  mainFileData: null, // Store uploaded file data from Dropbox
   supportFiles: [],
   
   // Step 4
@@ -480,8 +498,8 @@ const form = reactive({
 })
 
 const nilaiEkonomiOptions = computed(() => {
-  // Cari pelatihan yang dipilih
-  const selected = pelatihanOptions.value.find(p => p.nama === form.training)
+  // Cari pelatihan yang dipilih berdasarkan ID
+  const selected = pelatihanOptions.value.find(p => p.id === form.training)
   const id = selected?.id
   if (id === 1 || id === 2) {
     return [
@@ -509,7 +527,7 @@ const canProceed = computed(() => {
     case 2:
       return form.title && form.description && form.nilaiEkonomi
     case 3:
-      return form.mainFile
+      return form.mainFileData // Check for uploaded file data instead of file object
     case 4:
       return form.agreeTerms && form.agreeAccuracy
     default:
@@ -563,17 +581,6 @@ const removeMainFile = () => {
   form.mainFile = null
 }
 
-const handleSupportFiles = (event) => {
-  const files = Array.from(event.target.files)
-  files.forEach(file => {
-    if (file.size <= 5 * 1024 * 1024) { // 5MB limit per file
-      form.supportFiles.push(file)
-    } else {
-      alert(`File ${file.name} terlalu besar. Maksimal 5MB per file.`)
-    }
-  })
-}
-
 const removeSupportFile = (index) => {
   form.supportFiles.splice(index, 1)
 }
@@ -586,48 +593,152 @@ const formatFileSize = (bytes) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-const getTrainingName = (value) => {
-  const trainings = {
-    'sakip': 'SAKIP & Reformasi Birokrasi',
-    'digital': 'Digitalisasi Pelayanan Publik',
-    'manajemen': 'Manajemen Perubahan',
-    'inovasi': 'Inovasi Pelayanan',
-    'leadership': 'Leadership Excellence',
-    'analytics': 'Data Analytics',
-    'smart-gov': 'Smart Government',
-    'customer-service': 'Customer Service Excellence'
+const getTrainingName = (id) => {
+  const training = pelatihanOptions.value.find(p => p.id === id)
+  return training ? training.nama : ''
+}
+
+const getInstansiName = (id) => {
+  const instansi = instansiOptions.value.find(i => i.instansi_id === id)
+  return instansi ? instansi.nama_instansi : ''
+}
+
+const getLemdikName = (id) => {
+  const lemdik = lemdikOptions.value.find(l => l.id === id)
+  return lemdik ? lemdik.namalemdik : ''
+}
+
+// File upload handlers
+const handleMainFileUploaded = (fileData) => {
+  form.mainFileData = fileData
+  form.mainFile = null // Clear the file object since we have the uploaded data
+}
+
+const handleUploadError = (error) => {
+  alert(`Error uploading file: ${error}`)
+}
+
+// Support file upload with Google Drive
+const { uploadToGoogleDrive } = useFileUpload()
+
+const handleSupportFiles = async (event) => {
+  const files = Array.from(event.target.files)
+  
+  for (const file of files) {
+    if (file.size <= 5 * 1024 * 1024) { // 5MB limit per file
+      try {
+        const result = await uploadToGoogleDrive(file)
+        if (result.success && result.data) {
+          form.supportFiles.push({
+            ...result.data,
+            originalFile: file
+          })
+        } else {
+          alert(`Failed to upload ${file.name}: ${result.error}`)
+        }
+      } catch (error) {
+        alert(`Error uploading ${file.name}: ${error.message}`)
+      }
+    } else {
+      alert(`File ${file.name} terlalu besar. Maksimal 5MB per file.`)
+    }
   }
-  return trainings[value] || value
+}
+
+const getTotalFiles = () => {
+  return (form.mainFileData ? 1 : 0) + form.supportFiles.length
 }
 
 const submitProject = async () => {
   isSubmitting.value = true
   try {
-    // POST informasi dasar ke /api/proper dengan mapping sesuai permintaan
-    const basicInfo = {
-      nama: form.authorName,
-      no_identitas: form.nip,
-      email: form.email,
-      instansi_id: form.institution,
-      lemdik_id: form.lembagaDiklat,
-      nomor_kra: form.nomorKra,
-      program_id: form.training
+    // Step 1: Get file URL from uploaded data
+    const mainFileUrl = form.mainFileData?.url || null
+    
+    if (!mainFileUrl) {
+      throw new Error('File utama belum diupload')
     }
-    const res = await fetch('/api/proper', {
+
+    // Step 2: Get institution, lemdik, and training IDs from selected values
+    const selectedInstansi = instansiOptions.value.find(inst => inst.instansi_id === form.institution)
+    const selectedLemdik = lemdikOptions.value.find(lem => lem.id === form.lembagaDiklat)
+    const selectedPelatihan = pelatihanOptions.value.find(pel => pel.id === form.training)
+
+    if (!selectedInstansi || !selectedLemdik || !selectedPelatihan) {
+      throw new Error('Data instansi, lemdik, atau pelatihan tidak valid')
+    }
+
+    // Step 3: Create project using the new API
+    const projectData = {
+      userId: 1, // TODO: Get from authentication/session
+      instansiId: selectedInstansi.instansi_id,
+      lemdikId: selectedLemdik.id,
+      pelatihanId: selectedPelatihan.id,
+      title: form.title,
+      description: form.description,
+      nilaiEkonomi: form.nilaiEkonomi,
+      mainFileUrl: mainFileUrl,
+      status: 'submitted' // Change from draft to submitted when user submits
+    }
+
+    const projectResponse = await $fetch('/api/project', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(basicInfo)
+      body: projectData
     })
-    const result = await res.json()
-    if (!result.success) {
-      throw new Error(result.message || 'Gagal menyimpan informasi dasar')
+
+    if (!projectResponse.success) {
+      throw new Error(projectResponse.message || 'Gagal menyimpan proyek')
     }
-    // Simulate upload process (lanjutkan proses lain jika perlu)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    alert('Proyek berhasil diupload! Terima kasih atas kontribusi Anda.')
+
+    const projectId = projectResponse.data.id
+
+    // Step 4: Upload support files if any
+    if (form.supportFiles.length > 0) {
+      for (const file of form.supportFiles) {
+        try {
+          await $fetch('/api/project/support', {
+            method: 'POST',
+            body: {
+              projectId: projectId,
+              fileUrl: file.url,
+              fileName: file.filename,
+              fileType: file.originalFile?.type || 'document'
+            }
+          })
+        } catch (err) {
+          console.warn('Failed to save support file:', file.filename, err)
+        }
+      }
+    }
+
+    // Step 5: Save user info to proper table for tracking
+    try {
+      await $fetch('/api/proper', {
+        method: 'POST',
+        body: {
+          nama: form.authorName,
+          no_identitas: form.nip,
+          email: form.email,
+          instansi_id: selectedInstansi.instansi_id,
+          lemdik_id: selectedLemdik.id,
+          nomor_kra: form.nomorKra,
+          program_id: selectedPelatihan.id
+        }
+      })
+    } catch (err) {
+      console.warn('Failed to save proper info:', err)
+    }
+
+    // Clear draft from localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('project-draft')
+    }
+
+    alert('Proyek berhasil diupload ke Google Drive dan disimpan! Terima kasih atas kontribusi Anda.')
     await navigateTo('/daftar-proyek')
   } catch (error) {
-    alert('Terjadi kesalahan saat mengupload. Silakan coba lagi.')
+    console.error('Submit error:', error)
+    alert(`Terjadi kesalahan saat mengupload: ${error.message}`)
   } finally {
     isSubmitting.value = false
   }

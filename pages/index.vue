@@ -130,17 +130,17 @@
             </p>
             <div class="grid md:grid-cols-2 gap-6 mt-8 text-left">
               <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="font-bold text-blue-900 mb-3">🎯 Visi</h3>
+                <h3 class="font-bold text-blue-900 mb-3">📚 Yang Tersedia</h3>
                 <p class="text-blue-700">
-                  Menjadi hub utama transformasi birokrasi Indonesia melalui kolaborasi dan sharing best practice 
-                  antar aparatur sipil negara.
+                  Akses mudah ke ribuan Proyek Perubahan yang telah terbukti berhasil, lengkap dengan 
+                  dokumentasi, pembelajaran, dan panduan implementasi untuk diadaptasi di instansi Anda.
                 </p>
               </div>
               <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="font-bold text-blue-900 mb-3">🚀 Misi</h3>
+                <h3 class="font-bold text-blue-900 mb-3">🤝 Kolaborasi Lintas Instansi</h3>
                 <p class="text-blue-700">
-                  Memfasilitasi replikasi dan adaptasi Proyek Perubahan terbaik untuk mempercepat 
-                  inovasi dan peningkatan kinerja di seluruh instansi pemerintah.
+                  Platform berbagi pengalaman dan best practice antar alumni PKN untuk mempercepat 
+                  replikasi inovasi dan menghindari duplikasi effort dalam transformasi birokrasi.
                 </p>
               </div>
             </div>

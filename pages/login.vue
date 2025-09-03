@@ -6,15 +6,23 @@
           Login ASTINA
         </h2>
         
+        <!-- Error message -->
+        <div v-if="errorMessage" class="alert alert-error mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ errorMessage }}</span>
+        </div>
+        
         <form @submit.prevent="handleLogin">
           <div class="form-control">
             <label class="label">
-              <span class="label-text">Email</span>
+              <span class="label-text">Username</span>
             </label>
             <input 
-              v-model="email"
-              type="email" 
-              placeholder="Enter your email" 
+              v-model="username"
+              type="text" 
+              placeholder="Enter your username" 
               class="input input-bordered" 
               required 
             />
@@ -57,32 +65,39 @@
 </template>
 
 <script setup>
-const email = ref('')
+const username = ref('')
 const password = ref('')
 const loading = ref(false)
+const errorMessage = ref('')
 
-// Demo login function
+const { login } = useAuth()
+
+// Login function using composable
 const handleLogin = async () => {
   loading.value = true
+  errorMessage.value = ''
   
   try {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await login({
+      username: username.value,
+      password: password.value
+    })
     
-    // Demo validation - in real app, call authentication API
-    if (email.value && password.value) {
-      // Store user session (demo)
-      console.log('Login successful:', { email: email.value })
-      
-      // Redirect to dashboard
-      await navigateTo('/')
-    } else {
-      throw new Error('Please fill in all fields')
-    }
+    console.log('Login successful')
+    
+    // Redirect to dashboard
+    await navigateTo('/dashboard')
+    
   } catch (error) {
     console.error('Login error:', error)
-    // In real app, show error message to user
-    alert('Login failed. Please try again.')
+    
+    if (error.statusCode === 401) {
+      errorMessage.value = 'Invalid username or password'
+    } else if (error.statusCode === 400) {
+      errorMessage.value = 'Please fill in all fields'
+    } else {
+      errorMessage.value = 'Login failed. Please try again.'
+    }
   } finally {
     loading.value = false
   }

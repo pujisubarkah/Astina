@@ -1,15 +1,27 @@
+import { dbx } from '~/lib/dropbox'
 import formidable from 'formidable'
 import { readFileSync } from 'fs'
 
-export const config = {
-  api: {
-    bodyParser: false, // wajib matiin default body parser
-  },
-}
-
 export default defineEventHandler(async (event) => {
-  console.log('=== UPLOAD REQUEST START ===')
-  console.log('Method:', getMethod(event))
+  // Add CORS headers
+  setResponseHeaders(event, {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type'
+  })
+
+  if (getMethod(event) === 'OPTIONS') {
+    return ''
+  }
+
+  if (getMethod(event) !== 'POST') {
+    throw createError({
+      statusCode: 405,
+      statusMessage: 'Method Not Allowed'
+    })
+  }
+
+  console.log('Dropbox upload request received')
 
   try {
     // Check if Dropbox token exists
@@ -21,13 +33,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    console.log('Dropbox token found, length:', process.env.DROPBOX_ACCESS_TOKEN.length)
-    
-    // Import Dropbox client early to catch import issues
-    console.log('Importing Dropbox client...')
-    const { dbx } = await import('~/lib/dropbox')
-    console.log('Dropbox client imported successfully')
-    
     console.log('Parsing form data...')
     
     // Parse form data
@@ -37,9 +42,7 @@ export default defineEventHandler(async (event) => {
     })
 
     const [fields, files] = await form.parse(event.node.req)
-    console.log('Form parsed successfully')
-    console.log('Fields:', Object.keys(fields))
-    console.log('Files:', Object.keys(files))
+    console.log('Form parsed successfully, files:', Object.keys(files))
     
     const uploadedFile = Array.isArray(files.file) ? files.file[0] : files.file
     
@@ -54,13 +57,12 @@ export default defineEventHandler(async (event) => {
     console.log('File info:', {
       name: uploadedFile.originalFilename,
       size: uploadedFile.size,
-      type: uploadedFile.mimetype,
-      path: uploadedFile.filepath
+      type: uploadedFile.mimetype
     })
 
     // Read file content
     const fileContent = readFileSync(uploadedFile.filepath)
-    console.log('File content read, actual size:', fileContent.length)
+    console.log('File content read, size:', fileContent.length)
     
     // Generate unique filename
     const timestamp = Date.now()
@@ -68,10 +70,8 @@ export default defineEventHandler(async (event) => {
     const dropboxPath = `/astina/uploads/${filename}`
 
     console.log('Uploading to Dropbox path:', dropboxPath)
-    console.log('File size to upload:', fileContent.length)
 
     // Upload to Dropbox
-    console.log('Starting Dropbox upload...')
     const uploadResponse = await dbx.filesUpload({
       path: dropboxPath,
       contents: fileContent,
@@ -97,36 +97,28 @@ export default defineEventHandler(async (event) => {
     const directUrl = shareUrl.replace('dropbox.com', 'dl.dropboxusercontent.com').replace('?dl=0', '')
 
     const result = {
-      id: timestamp.toString(),
-      name: uploadedFile.originalFilename,
-      webViewLink: shareUrl,
-      webContentLink: directUrl,
-      url: directUrl,
-      size: uploadedFile.size,
-      mimeType: uploadedFile.mimetype,
+      success: true,
+      data: {
+        filename: uploadResponse.result.name,
+        path: uploadResponse.result.path_display,
+        size: uploadResponse.result.size,
+        url: directUrl,
+        shareUrl: shareUrl,
+        uploadedAt: new Date().toISOString()
+      },
       message: 'File uploaded successfully to Dropbox'
     }
 
-    console.log('=== UPLOAD SUCCESS ===')
+    console.log('Upload complete, returning result')
     return result
 
   } catch (error: any) {
-    console.error('=== UPLOAD ERROR ===')
-    console.error('Error type:', typeof error)
-    console.error('Error message:', error.message)
-    console.error('Error status:', error.status)
-    console.error('Error code:', error.code)
-    console.error('Full error object keys:', Object.keys(error))
-    
-    if (error.error) {
-      console.error('Dropbox error details:', JSON.stringify(error.error, null, 2))
-    }
+    console.error('Dropbox upload error:', error)
+    console.error('Error details:', error.error)
     
     // Handle specific Dropbox errors
     if (error.error && error.error['.tag']) {
       const errorTag = error.error['.tag']
-      console.error('Dropbox error tag:', errorTag)
-      
       if (errorTag === 'path_write_error') {
         throw createError({
           statusCode: 400,
