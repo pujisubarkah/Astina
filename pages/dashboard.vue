@@ -351,8 +351,8 @@ const initCharts = () => {
         .replace(/\s+/g, ' ') // normalisasi spasi
         .trim()
     }))
-  .filter(item => item.cleanKeyword.length > 1)
-  .slice(0, 100)
+    .filter(item => item.cleanKeyword.length > 1)
+    .slice(0, 20)
 
   // Layout bubble agar tidak tumpang tindih dan label di tengah
   const bubbleData = topKeywords.map((item, idx) => ({
