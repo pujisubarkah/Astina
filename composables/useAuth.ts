@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken'
-
 interface User {
   id: number
   name: string
@@ -12,6 +10,33 @@ interface LoginResponse {
   message: string
   user: User
   token: string
+}
+
+// Helper function to decode JWT payload without verification (client-side safe)
+const decodeJWTPayload = (token: string) => {
+  try {
+    const parts = token.split('.')
+    if (parts.length !== 3) {
+      throw new Error('Invalid JWT format')
+    }
+    
+    const base64Url = parts[1]
+    if (!base64Url) {
+      throw new Error('Invalid JWT payload')
+    }
+    
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    )
+    return JSON.parse(jsonPayload)
+  } catch (error) {
+    console.error('Error decoding JWT:', error)
+    return null
+  }
 }
 
 export const useAuth = () => {
@@ -31,8 +56,8 @@ export const useAuth = () => {
       
       if (storedToken && storedUser) {
         try {
-          // Verify token is not expired
-          const decoded = jwt.decode(storedToken) as any
+          // Verify token is not expired using custom decoder
+          const decoded = decodeJWTPayload(storedToken)
           if (decoded && decoded.exp * 1000 > Date.now()) {
             token.value = storedToken
             user.value = JSON.parse(storedUser)

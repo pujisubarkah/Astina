@@ -70,7 +70,8 @@ const password = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
 
-const { login } = useAuth()
+import { useAuth } from '@/composables/useAuth'
+const { login, user } = useAuth()
 
 // Login function using composable
 const handleLogin = async () => {
@@ -82,11 +83,13 @@ const handleLogin = async () => {
       username: username.value,
       password: password.value
     })
-    
     console.log('Login successful')
-    
-    // Redirect to dashboard
-    await navigateTo('/dashboard')
+    // Redirect by role
+    if (user.value?.roleId === 1) {
+      await navigateTo('/admin/dashboard')
+    } else {
+      await navigateTo(`/${user.value?.username}/dashboard`)
+    }
     
   } catch (error) {
     console.error('Login error:', error)

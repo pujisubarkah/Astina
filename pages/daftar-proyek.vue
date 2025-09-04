@@ -18,12 +18,38 @@
             </div>
           </div>
         <div class="flex gap-2">
-          <button class="btn btn-outline">
+          <button v-if="isLoggedIn" class="btn btn-outline" @click="showImportModal = true">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
             Import Data
           </button>
+    <!-- Modal Import CSV -->
+    <Teleport to="body">
+      <Transition name="fade">
+  <div v-if="showImportModal && isLoggedIn" class="fixed inset-0 z-50 flex items-center justify-center">
+          <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="showImportModal = false"></div>
+          <div class="bg-white rounded-xl shadow-lg max-w-md w-full p-6 z-10 relative">
+            <h2 class="text-xl font-bold mb-4">Import Data Proyek (CSV)</h2>
+            <form @submit.prevent="handleImportCSV">
+              <input type="file" accept=".csv" @change="onCSVChange" class="file-input file-input-bordered w-full mb-4" />
+              <div v-if="importError" class="alert alert-error mb-2">{{ importError }}</div>
+              <div v-if="importSuccess" class="alert alert-success mb-2">{{ importSuccess }}</div>
+              <div class="flex gap-2 justify-end">
+                <button type="button" class="btn" @click="showImportModal = false">Batal</button>
+                <button type="submit" class="btn btn-primary" :disabled="importLoading">
+                  <span v-if="importLoading" class="loading loading-spinner loading-sm"></span>
+                  {{ importLoading ? 'Mengupload...' : 'Upload CSV' }}
+                </button>
+              </div>
+            </form>
+            <div class="mt-4 text-xs text-gray-500">
+              <a href="/template-proyek.csv" download class="link link-primary">Download Template CSV</a>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
           <a href="/upload-proyek" class="btn btn-primary">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -463,8 +489,56 @@
   </template>
 
 <script setup>
+// Import CSV modal state
+const showImportModal = ref(false)
+const importLoading = ref(false)
+const importError = ref('')
+const importSuccess = ref('')
+const importFile = ref(null)
+
+function onCSVChange(e) {
+  importFile.value = e.target.files[0]
+  importError.value = ''
+  importSuccess.value = ''
+}
+
+async function handleImportCSV() {
+  importError.value = ''
+  importSuccess.value = ''
+  if (!importFile.value) {
+    importError.value = 'Pilih file CSV terlebih dahulu.'
+    return
+  }
+  importLoading.value = true
+  try {
+    const formData = new FormData()
+    formData.append('file', importFile.value)
+    const res = await fetch('/api/proyek_perubahan/import', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        ...getAuthHeaders()
+      }
+    })
+    const data = await res.json()
+    if (data.success) {
+      importSuccess.value = `Berhasil mengimport ${data.count} data proyek.`
+      showImportModal.value = false
+      // Refresh project list
+      await fetchProjects()
+    } else {
+      importError.value = data.message || 'Gagal mengimport data.'
+    }
+  } catch (err) {
+    importError.value = 'Terjadi kesalahan saat upload.'
+  } finally {
+    importLoading.value = false
+  }
+}
 import { ref, computed, onMounted, watch } from 'vue'
 import { useHead } from '#imports'
+import { useAuth } from '@/composables/useAuth'
+const { isLoggedIn, getAuthHeaders } = useAuth()
 
 // Page metadata
 useHead({

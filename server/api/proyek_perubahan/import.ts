@@ -1,0 +1,70 @@
+import jwt from 'jsonwebtoken';
+const { verify } = jwt;
+import { db } from '~/server/db'
+import { project } from '~/server/database/schema/project'
+import { parse } from 'csv-parse/sync'
+import formidable from 'formidable'
+import fs from 'fs'
+
+export const config = {
+  bodyParser: false
+}
+
+export default defineEventHandler(async (event) => {
+  // JWT auth check
+  let authHeader = event.req.headers['authorization'] || event.req.headers['Authorization']
+  if (Array.isArray(authHeader)) authHeader = authHeader[0]
+  if (!authHeader || typeof authHeader !== 'string' || !authHeader.startsWith('Bearer ')) {
+    return { success: false, message: 'Unauthorized: No token provided.' }
+  }
+  const token = authHeader.split(' ')[1]
+  try {
+    const user = verify(token, process.env.JWT_SECRET || 'secret-key')
+    if (!user) {
+      return { success: false, message: 'Unauthorized: Invalid token.' }
+    }
+  } catch (err) {
+    return { success: false, message: 'Unauthorized: Invalid token.' }
+  }
+  try {
+    const form = formidable({ multiples: false })
+    const [fields, files] = await form.parse(event.node.req)
+    const file = Array.isArray(files.file) ? files.file[0] : files.file
+    if (!file) {
+      return { success: false, message: 'File CSV tidak ditemukan.' }
+    }
+    const csvBuffer = await fs.promises.readFile(file.filepath)
+    const csvText = csvBuffer.toString('utf-8')
+    const records: any[] = parse(csvText, {
+      columns: true,
+      skip_empty_lines: true
+    })
+    let imported = 0
+    for (const row of records) {
+      // Validasi minimal kolom
+      if (!row.proyekPerubahan) continue
+      try {
+        await db.insert(project).values({
+          title: row.proyekPerubahan,
+          description: row.abstract || '',
+          instansiId: Number(row.idInstansi) || 1,
+          pelatihanId: Number(row.pelatihan_id) || 1,
+          userId: 1, // default user
+          lemdikId: 1, // default lemdik
+          nilaiEkonomi: '',
+          mainFileUrl: '',
+          status: 'draft',
+          createdAt: row.createdAt ? new Date(row.createdAt) : new Date(),
+          updatedAt: new Date(),
+          isApproved: false
+        })
+        imported++
+      } catch (e) {
+        // skip error
+      }
+    }
+    return { success: true, count: imported }
+  } catch (err) {
+    return { success: false, message: 'Gagal import CSV.' }
+  }
+})

@@ -2,12 +2,10 @@
   <div class="min-h-screen bg-base-100 flex flex-col font-poppins">
     <!-- Navigation Bar -->
     <Navbar />
-    
     <!-- Main Content Area -->
     <main class="flex-1">
       <slot />
     </main>
-    
     <!-- Footer -->
     <Footer />
   </div>
