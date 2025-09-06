@@ -79,7 +79,9 @@ function formatFileSize(bytes: number) {
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <span class="text-sm text-gray-600">Mengupload ke Google Drive...</span>
+          <span class="text-sm text-gray-600">
+            {{ uploadProgress < 50 ? 'Mengupload ke Cloud Storage...' : 'Memfinalisasi upload...' }}
+          </span>
         </div>
         
         <div class="w-full bg-gray-200 rounded-full h-2">
@@ -114,13 +116,16 @@ function formatFileSize(bytes: number) {
           </div>
           <div>
             <p class="font-medium text-green-800">{{ uploadedFileData.filename }}</p>
-            <p class="text-sm text-green-600">{{ formatFileSize(uploadedFileData.size) }} • Tersimpan di Google Drive</p>
+            <p class="text-sm text-green-600">
+              {{ formatFileSize(uploadedFileData.size) }} • 
+              {{ uploadedFileData.shareUrl && uploadedFileData.shareUrl.includes('dropbox') ? 'Dropbox' : 'Local Storage' }}
+            </p>
           </div>
         </div>
         
         <div class="flex items-center gap-2">
           <a 
-            :href="uploadedFileData.shareUrl" 
+            :href="uploadedFileData.shareUrl || uploadedFileData.url" 
             target="_blank"
             class="btn btn-ghost btn-xs text-green-600 hover:text-green-700"
           >

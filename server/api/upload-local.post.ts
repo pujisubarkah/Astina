@@ -2,30 +2,41 @@ import formidable from "formidable"
 import fs from "fs"
 import path from "path"
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
-
 export default defineEventHandler(async (event) => {
-  try {
-    const form = formidable({ multiples: false })
+  if (getMethod(event) !== 'POST') {
+    throw createError({
+      statusCode: 405,
+      statusMessage: 'Method Not Allowed'
+    })
+  }
 
-    // Parse file dari request
-    const { fields, files } = await new Promise<{ fields: formidable.Fields; files: formidable.Files }>((resolve, reject) => {
-      form.parse(event.node.req, (err: any, fields: formidable.Fields, files: formidable.Files) => {
-        if (err) reject(err)
-        else resolve({ fields, files })
-      })
+  try {
+    console.log('Local upload request received')
+    
+    const form = formidable({ 
+      multiples: false,
+      maxFileSize: 10 * 1024 * 1024, // 10MB limit
+      keepExtensions: true
     })
 
+    // Parse file dari request
+    const [fields, files] = await form.parse(event.node.req)
+    
     const fileField = files.file
     const file: formidable.File | undefined = Array.isArray(fileField) ? fileField[0] : fileField
 
     if (!file) {
-      throw new Error("No file uploaded")
+      throw createError({
+        statusCode: 400,
+        statusMessage: "No file uploaded"
+      })
     }
+
+    console.log('File info:', {
+      name: file.originalFilename,
+      size: file.size,
+      type: file.mimetype
+    })
 
     // Create uploads directory if it doesn't exist
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
@@ -45,23 +56,27 @@ export default defineEventHandler(async (event) => {
     fs.copyFileSync(file.filepath, newPath)
     fs.unlinkSync(file.filepath) // Clean up temp file
 
-    // Return file info
+    console.log('File saved to:', newPath)
+
+    // Return file info in expected format
     const fileUrl = `/uploads/${newFileName}`
     
     return {
-      id: timestamp.toString(),
-      name: originalName,
-      url: fileUrl,
+      success: true,
+      filename: originalName,
+      path: `/uploads/${newFileName}`,
       size: file.size,
+      url: fileUrl,
       type: file.mimetype,
+      uploadedAt: new Date().toISOString(),
       message: "File uploaded successfully to local storage"
     }
 
   } catch (error: any) {
-    console.error('Upload error:', error)
+    console.error('Local upload error:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: error.message || 'Upload failed'
+      statusMessage: error.message || 'Local upload failed'
     })
   }
 })

@@ -49,37 +49,71 @@ export const useFileUpload = () => {
       const formData = new FormData()
       formData.append('file', file)
 
-      uploadProgress.value = 50 // Simulate progress
+      uploadProgress.value = 30 // Initial progress
 
-      // Upload to Dropbox (using working dropbox endpoint)
-      const response = await $fetch<any>('/api/upload/dropbox', {
-        method: 'POST',
-        body: formData
-      })
+      try {
+        // Try Dropbox upload first
+        console.log('Attempting Dropbox upload...')
+        const response = await $fetch<any>('/api/upload/dropbox', {
+          method: 'POST',
+          body: formData
+        })
 
-      if (response && (response.id || response.name)) {
         uploadProgress.value = 100
         
-        // Format response to match expected structure
-        return {
-          success: true,
-          data: {
-            filename: response.name || file.name,
-            path: `/dropbox/${response.id || 'upload'}`,
-            size: response.size || file.size,
-            url: response.webContentLink || response.url,
-            shareUrl: response.webViewLink || response.url,
-            uploadedAt: new Date().toISOString(),
-            id: response.id || `dropbox_${Date.now()}`
+        if (response && (response.data)) {
+          console.log('Dropbox upload successful')
+          return {
+            success: true,
+            data: {
+              filename: response.data.filename || file.name,
+              path: response.data.path || `/dropbox/${Date.now()}`,
+              size: response.data.size || file.size,
+              url: response.data.url,
+              shareUrl: response.data.shareUrl || response.data.url,
+              uploadedAt: response.data.uploadedAt || new Date().toISOString(),
+              id: response.data.id || `dropbox_${Date.now()}`
+            }
           }
+        } else {
+          throw new Error('No response data from Dropbox')
         }
-      } else {
-        throw new Error('Upload failed - no response data')
+
+      } catch (dropboxError: any) {
+        console.warn('Dropbox upload failed, trying local upload...', dropboxError.message)
+        
+        // If Dropbox fails, fallback to local upload
+        uploadProgress.value = 50
+        
+        const localResponse = await $fetch<any>('/api/upload-local', {
+          method: 'POST',
+          body: formData
+        })
+
+        uploadProgress.value = 100
+
+        if (localResponse && localResponse.success) {
+          console.log('Local upload successful as fallback')
+          return {
+            success: true,
+            data: {
+              filename: localResponse.filename || file.name,
+              path: localResponse.path || `/local/${Date.now()}`,
+              size: localResponse.size || file.size,
+              url: localResponse.url || `/uploads/${localResponse.filename}`,
+              shareUrl: localResponse.url || `/uploads/${localResponse.filename}`,
+              uploadedAt: new Date().toISOString(),
+              id: `local_${Date.now()}`
+            }
+          }
+        } else {
+          throw new Error('Both Dropbox and local upload failed')
+        }
       }
 
     } catch (error: any) {
-      console.error('Dropbox upload error:', error)
-      uploadError.value = error.message || 'Terjadi kesalahan saat upload ke Dropbox'
+      console.error('Upload error:', error)
+      uploadError.value = error.message || 'Terjadi kesalahan saat upload'
       return {
         success: false,
         error: uploadError.value || undefined

@@ -76,7 +76,7 @@ export const useAuth = () => {
   // Login function
   const login = async (credentials: { username: string; password: string }) => {
     try {
-      const response: LoginResponse = await $fetch('/api/login', {
+      const response = await $fetch<LoginResponse>('/api/login', {
         method: 'POST',
         body: credentials
       })

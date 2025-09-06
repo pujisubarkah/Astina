@@ -3,12 +3,12 @@
     <div class="max-w-7xl mx-auto">
       <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-4xl font-bold text-blue-900 mb-2">Dashboard Proyek Perubahan</h1>
-        <p class="text-blue-700">Monitoring dan analisis data proyek perubahan real-time</p>
+        <h1 class="text-4xl font-bold text-blue-900 mb-2">Dashboard Monitoring Proyek Perubahan</h1>
+        <p class="text-blue-700">Statistik dan visualisasi proyek perubahan secara real-time</p>
       </div>
 
-      <!-- Stats Cards -->
-      <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <!-- Stat Cards -->
+      <div v-if="pending" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
         <div v-for="i in 4" :key="i" class="card bg-white shadow-lg animate-pulse">
           <div class="card-body">
             <div class="flex items-center justify-between">
@@ -21,21 +21,18 @@
           </div>
         </div>
       </div>
-
+      
       <div v-else-if="error" class="alert alert-error mb-8">
-        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span>{{ error }}</span>
+        <span>Error loading data: {{ error }}</span>
       </div>
-
-      <div v-else class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
         <div class="card bg-white shadow-lg">
           <div class="card-body">
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm text-gray-600">Total Proyek</p>
-                <p class="text-2xl font-bold text-blue-600">{{ totalProjects }}</p>
+                <p class="text-2xl font-bold text-blue-600">{{ totalProyek }}</p>
               </div>
               <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,29 +42,12 @@
             </div>
           </div>
         </div>
-
         <div class="card bg-white shadow-lg">
           <div class="card-body">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-600">Pelatihan Aktif</p>
-                <p class="text-2xl font-bold text-green-600">{{ activeTrainings }}</p>
-              </div>
-              <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card bg-white shadow-lg">
-          <div class="card-body">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-gray-600">K/L dan Pemerintah Daerah Terlibat</p>
-                <p class="text-2xl font-bold text-purple-600">{{ totalInstitutions }}</p>
+                <p class="text-sm text-gray-600">Total Program</p>
+                <p class="text-2xl font-bold text-purple-600">{{ totalProgram }}</p>
               </div>
               <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                 <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,17 +57,32 @@
             </div>
           </div>
         </div>
-
         <div class="card bg-white shadow-lg">
           <div class="card-body">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-gray-600">Progress Rata-rata</p>
-                <p class="text-2xl font-bold text-orange-600">{{ averageProgress }}%</p>
+                <p class="text-sm text-gray-600">Program Terbesar</p>
+                <p class="text-2xl font-bold text-green-600">{{ programTerbesar?.count || 0 }}</p>
+                <p class="text-xs text-gray-500">{{ programTerbesar?.programNama || '-' }}</p>
               </div>
-              <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 00-2 2z"></path>
+              <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card bg-white shadow-lg">
+          <div class="card-body">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">Rata-rata per Program</p>
+                <p class="text-2xl font-bold text-yellow-600">{{ rataRataProgram }}</p>
+              </div>
+              <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01"></path>
                 </svg>
               </div>
             </div>
@@ -95,31 +90,133 @@
         </div>
       </div>
 
-      <!-- Charts Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <!-- Chart 1: Proyek per Pelatihan -->
+      <!-- Chart Section: 2 chart sejajar dengan ApexCharts -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="card bg-white shadow-lg">
           <div class="card-body">
-            <h2 class="card-title text-lg font-semibold text-gray-800 mb-4">Distribusi Proyek per Pelatihan</h2>
-            <div ref="trainingChart" class="w-full h-80"></div>
+            <h2 class="card-title text-lg font-semibold text-gray-800 mb-4">Distribusi Proyek per Program</h2>
+            <client-only>
+              <apexchart type="bar" height="350" :options="chartOptions" :series="series" />
+            </client-only>
           </div>
         </div>
-
-        <!-- Chart 2: Proyek per Kementerian/Lembaga -->
         <div class="card bg-white shadow-lg">
           <div class="card-body">
-            <h2 class="card-title text-lg font-semibold text-gray-800 mb-4">Proyek per Kementerian/Lembaga</h2>
-            <div ref="institutionChart" class="w-full h-80"></div>
+            <h2 class="card-title text-lg font-semibold text-gray-800 mb-4">Distribusi Proyek per Kategori Instansi</h2>
+            <client-only>
+              <apexchart type="donut" height="350" :options="chartOptions2" :series="series2" />
+            </client-only>
           </div>
         </div>
       </div>
 
-      <!-- Chart 3: Top Keywords/Tags -->
+      <!-- Modal Detail Instansi -->
+      <div v-if="showDetail" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-6xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">Detail {{ selectedKategori?.kategori_name }}</h3>
+            <button @click="closeDetail" class="text-gray-500 hover:text-gray-700">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="mb-6">
+            <p class="text-sm text-gray-600">Total Proyek: <strong>{{ selectedKategori?.total_proyek }}</strong></p>
+            <p class="text-sm text-gray-600">Total Instansi: <strong>{{ selectedKategori?.total_instansi }}</strong></p>
+          </div>
+
+          <!-- Chart dalam Modal -->
+          <div class="bg-gray-50 rounded-lg p-4">
+            <h4 class="text-lg font-semibold mb-4">Top 10 Instansi dengan Proyek Terbanyak</h4>
+            <client-only>
+              <apexchart 
+                type="bar" 
+                height="400" 
+                :options="detailChartOptions" 
+                :series="detailChartSeries" 
+              />
+            </client-only>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart 3: Kata Kunci dengan Filter Instansi -->
       <div class="card bg-white shadow-lg mb-8">
         <div class="card-body">
-          <h2 class="card-title text-lg font-semibold text-gray-800 mb-4">Kata Kunci Terpopuler</h2>
-          <p class="text-sm text-gray-600 mb-4">Visualisasi kata kunci yang paling sering muncul dalam proyek perubahan</p>
-          <div ref="keywordsChart" class="w-full h-96"></div>
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h2 class="card-title text-lg font-semibold text-gray-800">Kata Kunci Terpopuler per Instansi</h2>
+              <p class="text-sm text-gray-600">Pilih instansi untuk melihat kata kunci yang sering digunakan</p>
+              <p class="text-xs text-blue-500" v-if="keywordData?.total_instansi">
+                Total {{ keywordData.total_instansi }} instansi tersedia
+              </p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <select 
+                v-model="selectedKategoriId" 
+                @change="onKategoriChange"
+                class="select select-bordered w-48"
+                :disabled="keywordDataPending"
+              >
+                <option value="">Pilih Kategori...</option>
+                <option 
+                  v-for="kategori in keywordData?.summary || []" 
+                  :key="kategori.kategori_id"
+                  :value="kategori.kategori_id"
+                >
+                  {{ kategori.kategori_name }} ({{ kategori.total_instansi }} instansi)
+                </option>
+              </select>
+              
+              <select 
+                v-model="selectedInstansiId" 
+                @change="onInstansiChange"
+                class="select select-bordered w-64"
+                :disabled="!selectedKategoriId || keywordDataPending"
+              >
+                <option value="">Pilih Instansi...</option>
+                <option 
+                  v-for="instansi in availableInstansi" 
+                  :key="instansi.instansi_id"
+                  :value="instansi.instansi_id"
+                >
+                  {{ instansi.nama_instansi }} ({{ instansi.total_keywords }} keywords)
+                </option>
+              </select>
+            </div>
+          </div>
+          
+          <div v-if="selectedKeywords.length > 0" class="bg-gray-50 rounded-lg p-4">
+           
+          
+            <client-only>
+              <apexchart 
+                type="bar" 
+                height="400" 
+                :options="keywordChartOptions" 
+                :series="keywordChartSeries" 
+              />
+            </client-only>
+          </div>
+          
+          <div v-else-if="keywordDataPending" class="text-center py-8">
+            <div class="loading loading-spinner loading-lg"></div>
+            <p class="text-gray-500 mt-2">Memuat data kata kunci...</p>
+          </div>
+          
+          <div v-else class="text-center py-8 text-gray-500">
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <p v-if="!selectedKategoriId">Pilih kategori terlebih dahulu</p>
+            <p v-else-if="!selectedInstansiId">Pilih instansi untuk melihat analisis kata kunci</p>
+            <p v-else>Tidak ada data kata kunci untuk instansi ini</p>
+            <div class="text-xs text-gray-400 mt-2">
+              Debug: {{ keywordDataPending ? 'Loading...' : `${keywordData?.total_kategori || 0} kategori, ${keywordData?.total_instansi || 0} instansi available` }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -127,15 +224,513 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-// ...existing code...
+import { computed, watch, onMounted } from 'vue'
+
+// Fetch data dari API untuk chart pertama
+const { data: programData, pending, error } = await useAsyncData('program-summary', async () => {
+  try {
+    const res = await fetch('/api/proper/summary_program')
+    const json = await res.json()
+    console.log('API Response:', json) // Debug log
+    if (json.success && Array.isArray(json.summary)) {
+      return json.summary
+    }
+    return []
+  } catch (e) {
+    console.error('Error fetching program data:', e)
+    return []
+  }
+})
+
+// Fetch data dari API untuk chart kata kunci
+const { data: keywordData, pending: keywordDataPending } = await useAsyncData('keyword-summary', async () => {
+  try {
+    const res = await fetch('/api/abstract/summary_kata_kunci')
+    const json = await res.json()
+    console.log('Keyword API Response:', json) // Debug log
+    if (json.success && Array.isArray(json.summary)) {
+      return json
+    }
+    return { summary: [] }
+  } catch (e) {
+    console.error('Error fetching keyword data:', e)
+    return { summary: [] }
+  }
+})
+
+// Fetch data dari API untuk chart kedua (instansi)
+const { data: instansiData } = await useAsyncData('instansi-summary', async () => {
+  try {
+    const res = await fetch('/api/proper/summary_instansi')
+    const json = await res.json()
+    console.log('Instansi API Response:', json) // Debug log
+    if (json.success && Array.isArray(json.summary)) {
+      return json.summary
+    }
+    return []
+  } catch (e) {
+    console.error('Error fetching instansi data:', e)
+    return []
+  }
+})
+
+// State untuk filtering kata kunci - dua tingkat filter
+const selectedKategoriId = ref('')
+const selectedKategoriName = ref('')
+const selectedInstansiId = ref('')
+const selectedInstansiName = ref('')
+const selectedKeywords = ref([])
+
+// Computed untuk daftar instansi berdasarkan kategori yang dipilih
+const availableInstansi = computed(() => {
+  if (!selectedKategoriId.value || !keywordData?.value?.summary) return []
+  
+  const kategori = keywordData.value.summary.find(k => 
+    k.kategori_id.toString() === selectedKategoriId.value.toString()
+  )
+  
+  return kategori?.instansi || []
+})
+
+// Function untuk handle perubahan kategori
+function onKategoriChange() {
+  console.log('onKategoriChange called, selectedKategoriId:', selectedKategoriId.value)
+  
+  // Reset instansi dan keywords saat kategori berubah
+  selectedInstansiId.value = ''
+  selectedInstansiName.value = ''
+  selectedKeywords.value = []
+  
+  if (!selectedKategoriId.value || !keywordData?.value?.summary) {
+    selectedKategoriName.value = ''
+    return
+  }
+  
+  const kategori = keywordData.value.summary.find(k => 
+    k.kategori_id.toString() === selectedKategoriId.value.toString()
+  )
+  
+  if (kategori) {
+    selectedKategoriName.value = kategori.kategori_name
+    console.log('Selected kategori:', kategori.kategori_name, 'with', kategori.total_instansi, 'instansi')
+  }
+}
+
+// Function untuk handle perubahan instansi
+function onInstansiChange() {
+  console.log('onInstansiChange called, selectedInstansiId:', selectedInstansiId.value)
+  
+  if (!selectedInstansiId.value || !availableInstansi.value.length) {
+    selectedKeywords.value = []
+    selectedInstansiName.value = ''
+    console.log('No instansi selected or no data')
+    return
+  }
+  
+  const instansi = availableInstansi.value.find(item => 
+    item.instansi_id.toString() === selectedInstansiId.value.toString()
+  )
+  
+  console.log('Found instansi:', instansi)
+  
+  if (instansi) {
+    selectedKeywords.value = instansi.top_keywords || []
+    selectedInstansiName.value = instansi.nama_instansi
+    console.log('Selected keywords:', selectedKeywords.value)
+    console.log('Selected instansi name:', selectedInstansiName.value)
+  } else {
+    console.log('Instansi not found')
+    selectedKeywords.value = []
+    selectedInstansiName.value = ''
+  }
+}
+
+// Computed properties untuk stat cards berdasarkan data API
+const totalProyek = computed(() => {
+  if (!programData?.value) return 0
+  return programData.value.reduce((sum, item) => sum + item.count, 0)
+})
+
+const totalProgram = computed(() => {
+  if (!programData?.value) return 0
+  return programData.value.length
+})
+
+const programTerbesar = computed(() => {
+  if (!programData?.value || programData.value.length === 0) return null
+  return programData.value.reduce((max, item) => item.count > max.count ? item : max)
+})
+
+const rataRataProgram = computed(() => {
+  if (!programData?.value || programData.value.length === 0) return 0
+  const total = programData.value.reduce((sum, item) => sum + item.count, 0)
+  return Math.round(total / programData.value.length)
+})
+
+const chartOptions = computed(() => ({
+  chart: { id: 'program-bar' },
+  xaxis: { 
+    categories: programData.value?.map(item => item.programNama) || ['Program A', 'Program B', 'Program C', 'Program D']
+  },
+  colors: ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#84cc16'],
+  dataLabels: { enabled: true },
+  plotOptions: {
+    bar: {
+      distributed: true,
+      borderRadius: 8
+    }
+  },
+  legend: {
+    show: false
+  }
+}))
+const series = computed(() => [{ 
+  name: 'Jumlah Proyek', 
+  data: programData.value?.map(item => item.count) || [32, 45, 21, 30]
+}])
+
+const chartOptions2 = computed(() => ({
+  chart: { 
+    id: 'instansi-donut',
+    events: {
+      dataPointSelection: function(event, chartContext, config) {
+        showInstansiDetail(config.dataPointIndex)
+      }
+    }
+  },
+  labels: instansiData.value?.map(item => item.kategori_name) || ['Kategori A', 'Kategori B', 'Kategori C', 'Kategori D'],
+  colors: ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316'],
+  dataLabels: { 
+    enabled: true,
+    style: {
+      fontSize: '12px',
+      fontWeight: 'bold'
+    }
+  },
+  plotOptions: {
+    pie: {
+      donut: {
+        size: '60%',
+        labels: {
+          show: true,
+          total: {
+            show: true,
+            label: 'Total Proyek',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            color: '#333',
+            formatter: function(w) {
+              const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0)
+              return total.toString()
+            }
+          }
+        }
+      }
+    }
+  },
+  legend: {
+    position: 'bottom',
+    fontSize: '12px',
+    markers: {
+      width: 12,
+      height: 12
+    }
+  },
+  tooltip: {
+    custom: function({ series, seriesIndex, dataPointIndex, w }) {
+      const kategori = instansiData.value?.[seriesIndex]
+      const value = series[seriesIndex]
+      const total = series.reduce((a, b) => a + b, 0)
+      const percentage = ((value / total) * 100).toFixed(1)
+      return `<div class="bg-white p-3 shadow-lg rounded border">
+        <strong>${kategori?.kategori_name || 'N/A'}</strong><br/>
+        Total Proyek: <strong>${value}</strong><br/>
+        Persentase: <strong>${percentage}%</strong><br/>
+        Total Instansi: <strong>${kategori?.total_instansi || 0}</strong><br/>
+        <small class="text-gray-500">Klik untuk melihat detail instansi</small>
+      </div>`
+    }
+  },
+  responsive: [{
+    breakpoint: 480,
+    options: {
+      chart: {
+        width: 200
+      },
+      legend: {
+        position: 'bottom'
+      }
+    }
+  }]
+}))
+const series2 = computed(() => 
+  instansiData.value?.map(item => item.total_proyek) || [12, 28, 19, 24]
+)
+
+const bubbleChartOptions = {
+  chart: { id: 'kata-kunci-bubble' },
+  xaxis: { 
+    tickAmount: 10,
+    labels: { rotate: -45 }
+  },
+  yaxis: { max: 50 },
+  colors: ['#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#f97316', '#ec4899', '#84cc16'],
+  dataLabels: {
+    enabled: true,
+    formatter: function(val, opts) {
+      return opts.w.globals.labels[opts.seriesIndex]
+    }
+  },
+  title: {
+    text: 'Kata Kunci dalam Proyek Perubahan'
+  }
+}
+const bubbleSeries = [
+  {
+    name: 'Digitalisasi',
+    data: [[15, 35, 50]]
+  },
+  {
+    name: 'Inovasi',
+    data: [[25, 30, 45]]
+  },
+  {
+    name: 'Efisiensi',
+    data: [[35, 25, 40]]
+  },
+  {
+    name: 'Pelayanan',
+    data: [[20, 40, 35]]
+  },
+  {
+    name: 'Transparansi',
+    data: [[30, 20, 30]]
+  },
+  {
+    name: 'Modernisasi',
+    data: [[40, 35, 25]]
+  },
+  {
+    name: 'Reformasi',
+    data: [[10, 45, 20]]
+  },
+  {
+    name: 'Transformasi',
+    data: [[45, 15, 55]]
+  }
+]
+
+// Computed untuk chart kata kunci
+const keywordChartOptions = computed(() => ({
+  chart: { 
+    id: 'keyword-bar',
+    toolbar: {
+      show: true,
+      tools: {
+        download: true,
+        selection: false,
+        zoom: false,
+        zoomin: false,
+        zoomout: false,
+        pan: false,
+        reset: false
+      }
+    }
+  },
+  xaxis: { 
+    categories: selectedKeywords.value.map(item => item.keyword),
+    labels: {
+      rotate: -45,
+      style: {
+        fontSize: '11px'
+      }
+    }
+  },
+  colors: [
+    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', 
+    '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+    '#F8C471', '#82E0AA', '#F1948A', '#AED6F1', '#F9E79F',
+    '#D7BDE2', '#A9DFBF', '#FAD7A0', '#E8DAEF', '#D5DBDB'
+  ],
+  dataLabels: { 
+    enabled: true,
+    style: {
+      fontSize: '10px',
+      fontWeight: 'bold',
+      colors: ['#FFFFFF']
+    }
+  },
+  plotOptions: {
+    bar: {
+      borderRadius: 8,
+      distributed: true, // Setiap bar warna berbeda
+      columnWidth: '70%'
+    }
+  },
+  tooltip: {
+    custom: function({ series, seriesIndex, dataPointIndex, w }) {
+      const keyword = selectedKeywords.value[dataPointIndex]
+      return `<div class="bg-white p-3 shadow-lg rounded border">
+        <strong>${keyword?.keyword || 'N/A'}</strong><br/>
+        Frekuensi: <strong>${keyword?.count || 0}</strong><br/>
+        <small class="text-gray-500">dalam proyek ${selectedInstansiName.value}</small>
+      </div>`
+    }
+  },
+  title: {
+    text: `Top Keywords - ${selectedInstansiName.value} (${selectedKategoriName.value})`,
+    style: {
+      fontSize: '14px',
+      fontWeight: 'bold'
+    }
+  },
+  legend: {
+    show: false // Hide legend karena setiap bar beda warna
+  },
+  grid: {
+    borderColor: '#e7e7e7',
+    strokeDashArray: 3
+  }
+}))
+
+const keywordChartSeries = computed(() => [{ 
+  name: 'Frekuensi', 
+  data: selectedKeywords.value.map(item => item.count)
+}])
+
+// Watcher untuk debugging
+watch(keywordData, (newVal) => {
+  console.log('keywordData changed:', newVal)
+}, { deep: true })
+
+watch(selectedKeywords, (newVal) => {
+  console.log('selectedKeywords changed:', newVal)
+}, { deep: true })
+
+// Lifecycle untuk debugging
+onMounted(() => {
+  console.log('Dashboard mounted')
+  console.log('Initial keywordData:', keywordData.value)
+  console.log('Initial keywordDataPending:', keywordDataPending.value)
+})
+
+// State untuk detail instansi
+const selectedKategori = ref(null)
+const showDetail = ref(false)
+
+// Function untuk menampilkan detail instansi
+function showInstansiDetail(dataPointIndex) {
+  if (!instansiData.value?.[dataPointIndex]) return
+  selectedKategori.value = instansiData.value[dataPointIndex]
+  showDetail.value = true
+}
+
+function closeDetail() {
+  showDetail.value = false
+  selectedKategori.value = null
+}
+
+// Chart options untuk detail modal
+const detailChartOptions = computed(() => {
+  if (!selectedKategori.value?.detail_instansi) return {}
+  
+  // Ambil top 10 instansi
+  const topInstansi = selectedKategori.value.detail_instansi
+    .sort((a, b) => b.total_proyek - a.total_proyek)
+    .slice(0, 10)
+  
+  // Tentukan warna berdasarkan kategori yang sama dengan donut chart
+  const categoryColors = {
+    1: '#f59e0b', // Kementerian - Amber
+    2: '#10b981', // Lembaga - Emerald  
+    3: '#3b82f6', // Pemerintah Provinsi - Blue
+    4: '#ef4444', // Pemerintah Kabupaten - Red
+    5: '#8b5cf6', // Pemerintah Kota - Purple
+  }
+  
+  const categoryColor = categoryColors[selectedKategori.value.kategori_id] || '#06b6d4'
+  
+  return {
+    chart: { 
+      id: 'detail-instansi-bar',
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+          selection: false,
+          zoom: false,
+          zoomin: false,
+          zoomout: false,
+          pan: false,
+          reset: false
+        }
+      }
+    },
+    xaxis: { 
+      categories: topInstansi.map(item => item.nama_instansi.length > 30 
+        ? item.nama_instansi.substring(0, 30) + '...' 
+        : item.nama_instansi),
+      labels: {
+        rotate: -45,
+        style: {
+          fontSize: '10px'
+        }
+      }
+    },
+    colors: [categoryColor],
+    dataLabels: { 
+      enabled: true,
+      style: {
+        fontSize: '10px',
+        colors: ['#FFFFFF']
+      }
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 8
+      }
+    },
+    tooltip: {
+      custom: function({ series, seriesIndex, dataPointIndex, w }) {
+        const instansi = topInstansi[dataPointIndex]
+        const categoryNames = {
+          1: 'Kementerian',
+          2: 'Lembaga',  
+          3: 'Pemerintah Provinsi',
+          4: 'Pemerintah Kabupaten',
+          5: 'Pemerintah Kota'
+        }
+        const categoryName = categoryNames[selectedKategori.value.kategori_id] || 'Lainnya'
+        return `<div class="bg-white p-3 shadow-lg rounded border">
+          <strong>${instansi?.nama_instansi || 'N/A'}</strong><br/>
+          <span class="inline-block w-3 h-3 rounded-full mr-1" style="background-color: ${categoryColor}"></span>
+          <strong>${categoryName}</strong><br/>
+          Total Proyek: <strong>${instansi?.total_proyek || 0}</strong><br/>
+          <small class="text-gray-500">ID: ${instansi?.instansi_id || 'N/A'}</small>
+        </div>`
+      }
+    }
+  }
+})
+
+const detailChartSeries = computed(() => {
+  if (!selectedKategori.value?.detail_instansi) return []
+  
+  const topInstansi = selectedKategori.value.detail_instansi
+    .sort((a, b) => b.total_proyek - a.total_proyek)
+    .slice(0, 10)
+  
+  return [{ 
+    name: 'Jumlah Proyek', 
+    data: topInstansi.map(item => item.total_proyek)
+  }]
+})
 </script>
 
 <style scoped>
 .card {
   transition: all 0.3s ease;
 }
-
 .card:hover {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }

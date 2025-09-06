@@ -71,6 +71,23 @@ export default defineEventHandler(async (event) => {
 
     console.log('Uploading to Dropbox path:', dropboxPath)
 
+    // Test Dropbox connection first
+    try {
+      console.log('Testing Dropbox connection...')
+      await dbx.usersGetCurrentAccount()
+      console.log('Dropbox connection test successful')
+    } catch (authError: any) {
+      console.error('Dropbox auth test failed:', authError)
+      if (authError.status === 401) {
+        console.error('Token expired or invalid. Please regenerate your Dropbox access token.')
+        throw createError({
+          statusCode: 401,
+          statusMessage: 'Dropbox access token expired. Please regenerate your token at https://www.dropbox.com/developers/apps'
+        })
+      }
+      throw authError
+    }
+
     // Upload to Dropbox
     const uploadResponse = await dbx.filesUpload({
       path: dropboxPath,
@@ -136,7 +153,7 @@ export default defineEventHandler(async (event) => {
     if (error.status === 401) {
       throw createError({
         statusCode: 401,
-        statusMessage: 'Dropbox authentication failed. Please check access token.'
+        statusMessage: 'Dropbox access token expired or invalid. Please regenerate your token at https://www.dropbox.com/developers/apps and update your .env file'
       })
     }
 

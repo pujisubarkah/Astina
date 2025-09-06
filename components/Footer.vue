@@ -3,6 +3,12 @@
     <!-- Main Footer Content -->
     <div class="footer p-10 bg-base-200 text-base-content justify-center">
       <div class="flex_grp_center flex flex-col items-center">
+       <!-- Logo Instansi -->
+          <div class="flex flex-wrap gap-6 justify-center items-center mb-6">
+            <img src="/lanri_.png" alt="LAN RI" class="h-10 w-auto object-contain" />
+            <img src="/berakhlak.png" alt="BerAKHLAK" class="h-10 w-auto object-contain" />
+            <img src="/bangga.png" alt="Bangga Melayani Bangsa" class="h-10 w-auto object-contain" />
+          </div>
         <!-- Footer Logo -->
         <div class="footer_logo mb-6">
           <a href="#" class="footer_logo_click">
@@ -25,6 +31,7 @@
             </div>
           </a>
         </div>
+         
 
         <!-- Follow Us Section -->
         <h5 class="ioh_h5 mb-3 text-lg font-semibold">Follow Us</h5>
@@ -47,9 +54,10 @@
           </li>
           <li>
             <a href="#" class="btn btn-ghost btn-circle hover:bg-primary hover:text-primary-content transition-colors duration-200">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-              </svg>
+                <!-- X (Twitter) Logo SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.53 3H21.5L14.42 10.62L22.75 21H16.44L11.38 14.62L5.77 21H1.8L9.27 12.94L1.25 3H7.74L12.36 9L17.53 3ZM16.37 19H18.19L7.5 5H5.62L16.37 19Z"/>
+                </svg>
             </a>
           </li>
           <li>
