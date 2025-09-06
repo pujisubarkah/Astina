@@ -45,21 +45,29 @@ export default defineEventHandler(async (event) => {
       if (!row.proyekPerubahan) continue
       try {
         await db.insert(project).values({
-          title: row.proyekPerubahan,
-          description: row.abstract || '',
+          title: row.title || row.proyekPerubahan || 'Imported Project', // Add required title
+          description: row.description || row.proyekPerubahan || '', // Required description
+          userId: Number(row.userId) || 1, // default user
           instansiId: Number(row.idInstansi) || 1,
+          kategoriInstansiId: Number(row.kategoriInstansiId) || 1,
+          lemdikId: Number(row.lemdikId) || 1, // default lemdik
           pelatihanId: Number(row.pelatihan_id) || 1,
-          userId: 1, // default user
-          lemdikId: 1, // default lemdik
-          nilaiEkonomi: '',
-          mainFileUrl: '',
-          status: 'draft',
+          nilaiEkonomi: row.nilaiEkonomi || null,
+          detailNilaiEkonomi: row.detailNilaiEkonomi ? Number(row.detailNilaiEkonomi) : null,
+          publikasiMediaSosial: row.publikasiMediaSosial ? JSON.parse(row.publikasiMediaSosial) : null,
+          publikasiMediaMassa: row.publikasiMediaMassa ? JSON.parse(row.publikasiMediaMassa) : null,
+          tags: row.tags ? JSON.parse(row.tags) : null,
+          startDate: row.startDate ? new Date(row.startDate) : null,
+          endDate: row.endDate ? new Date(row.endDate) : null,
+          mainFileUrl: row.mainFileUrl || null,
+          status: row.status || 'draft',
           createdAt: row.createdAt ? new Date(row.createdAt) : new Date(),
           updatedAt: new Date(),
-          isApproved: false
+          isApproved: row.isApproved === 'true' || row.isApproved === true || false
         })
         imported++
       } catch (e) {
+        console.warn('Failed to import row:', e)
         // skip error
       }
     }

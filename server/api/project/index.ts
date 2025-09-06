@@ -124,37 +124,101 @@ async function handlePost(event: any) {
     const {
       userId,
       instansiId,
+      kategoriInstansiId,
       lemdikId,
       pelatihanId,
       title,
       description,
       nilaiEkonomi,
+      detailNilaiEkonomi,
+      publikasiMediaSosial,
+      publikasiMediaMassa,
+      tags,
+      startDate,
+      endDate,
       mainFileUrl,
       status = 'draft'
     } = body
 
     // Validation
-    if (!userId || !instansiId || !lemdikId || !pelatihanId || !title || !description) {
+    if (!userId || !instansiId || !kategoriInstansiId || !lemdikId || !pelatihanId || !title || !description) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Missing required fields'
+        statusMessage: 'Missing required fields: userId, instansiId, kategoriInstansiId, lemdikId, pelatihanId, title, description'
       })
+    }
+
+    // Parse and clean data
+    const projectData: any = {
+      userId: Number(userId),
+      instansiId: Number(instansiId),
+      kategoriInstansiId: Number(kategoriInstansiId),
+      lemdikId: Number(lemdikId),
+      pelatihanId: Number(pelatihanId),
+      title,
+      description,
+      status,
+      updatedAt: new Date()
+    }
+
+    // Optional fields
+    if (nilaiEkonomi) {
+      projectData.nilaiEkonomi = String(nilaiEkonomi)
+    }
+
+    if (detailNilaiEkonomi) {
+      // Remove formatting and convert to number
+      const cleanAmount = typeof detailNilaiEkonomi === 'string' 
+        ? parseInt(detailNilaiEkonomi.replace(/[^\d]/g, ''))
+        : Number(detailNilaiEkonomi)
+      projectData.detailNilaiEkonomi = cleanAmount
+    }
+
+    if (publikasiMediaSosial && Array.isArray(publikasiMediaSosial)) {
+      // Filter out empty entries
+      const validMediaSosial = publikasiMediaSosial.filter(item => 
+        item.platform && item.platform.trim() !== '' && 
+        item.linkMedia && item.linkMedia.trim() !== ''
+      )
+      if (validMediaSosial.length > 0) {
+        projectData.publikasiMediaSosial = validMediaSosial
+      }
+    }
+
+    if (publikasiMediaMassa && Array.isArray(publikasiMediaMassa)) {
+      // Filter out empty entries
+      const validMediaMassa = publikasiMediaMassa.filter(item => 
+        item.namaMedia && item.namaMedia.trim() !== '' && 
+        item.linkBerita && item.linkBerita.trim() !== ''
+      )
+      if (validMediaMassa.length > 0) {
+        projectData.publikasiMediaMassa = validMediaMassa
+      }
+    }
+
+    if (tags && Array.isArray(tags) && tags.length > 0) {
+      // Filter out empty tags
+      const validTags = tags.filter(tag => tag && tag.trim() !== '')
+      if (validTags.length > 0) {
+        projectData.tags = validTags
+      }
+    }
+
+    if (startDate) {
+      projectData.startDate = new Date(startDate)
+    }
+
+    if (endDate) {
+      projectData.endDate = new Date(endDate)
+    }
+
+    if (mainFileUrl) {
+      projectData.mainFileUrl = mainFileUrl
     }
 
     const newProject = await db
       .insert(project)
-      .values({
-        userId: Number(userId),
-        instansiId: Number(instansiId),
-        lemdikId: Number(lemdikId),
-        pelatihanId: Number(pelatihanId),
-        title,
-        description,
-        nilaiEkonomi: nilaiEkonomi ? String(nilaiEkonomi) : null,
-        mainFileUrl,
-        status,
-        updatedAt: new Date()
-      })
+      .values(projectData)
       .returning()
 
     return {
@@ -164,6 +228,15 @@ async function handlePost(event: any) {
     }
   } catch (error) {
     console.error('Error creating project:', error)
+    
+    // More specific error handling
+    if (error instanceof Error && error.message.includes('required')) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: error.message
+      })
+    }
+    
     throw createError({
       statusCode: 500,
       statusMessage: 'Failed to create project'

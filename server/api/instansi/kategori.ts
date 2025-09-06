@@ -5,10 +5,16 @@ import { sql } from 'drizzle-orm'
 export default defineEventHandler(async (event) => {
   if (event.method === 'GET') {
     const url = new URL(event.node.req.url!, `http://${event.node.req.headers.host}`)
-    const grouped = url.searchParams.get('grouped') === 'true'
+    const flat = url.searchParams.get('flat') === 'true'
     
-    if (grouped) {
-      // Kelompokkan per kategori
+    // Ambil semua data instansi
+    const allInstansi = await db.select().from(instansi)
+    
+    if (flat) {
+      // Return data flat jika diminta
+      return { success: true, data: allInstansi }
+    } else {
+      // Default: Kelompokkan per kategori
       const kategoris = [
         { id: 1, name: 'Kementerian' },
         { id: 2, name: 'Lembaga' },
@@ -16,9 +22,6 @@ export default defineEventHandler(async (event) => {
         { id: 4, name: 'Pemerintah Kabupaten' },
         { id: 5, name: 'Pemerintah Kota' }
       ]
-
-      // Ambil semua data instansi
-      const allInstansi = await db.select().from(instansi)
 
       // Kelompokkan berdasarkan kategori
       const groupedData = kategoris.map(kategori => {
@@ -47,10 +50,6 @@ export default defineEventHandler(async (event) => {
         total_instansi: allInstansi.length,
         data: groupedData 
       }
-    } else {
-      // Return data normal (flat)
-      const data = await db.select().from(instansi)
-      return { success: true, data }
     }
   }
 

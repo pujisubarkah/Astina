@@ -76,11 +76,28 @@
 
                 <div class="form-control">
                   <label class="label">
-                    <span class="label-text font-semibold">Kementerian/Lembaga *</span>
+                    <span class="label-text font-semibold">Kategori Instansi *</span>
                   </label>
-                  <select class="select select-bordered w-full" v-model="form.institution" required>
-                    <option value="">Pilih K/L</option>
-                    <option v-for="instansi in instansiOptions" :key="instansi.instansi_id" :value="instansi.instansi_id">
+                  <select class="select select-bordered w-full" v-model="form.kategoriInstansi" required @change="onKategoriChange">
+                    <option value="">Pilih Kategori Instansi</option>
+                    <option v-for="kategori in kategoriInstansiOptions" :key="kategori.kategori_id" :value="kategori.kategori_id">
+                      {{ kategori.kategori_name }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Kementerian/Lembaga/Pemerintah Daerah *</span>
+                  </label>
+                  <select 
+                    class="select select-bordered w-full" 
+                    v-model="form.institution" 
+                    required
+                    :disabled="!form.kategoriInstansi"
+                  >
+                    <option value="">{{ form.kategoriInstansi ? 'Pilih Instansi' : 'Pilih Kategori Instansi terlebih dahulu' }}</option>
+                    <option v-for="instansi in filteredInstansiOptions" :key="instansi.id" :value="instansi.instansi_id">
                       {{ instansi.nama_instansi }}
                     </option>
                   </select>
@@ -98,17 +115,7 @@
                     </select>
                   </div>
 
-                  <div class="form-control">
-                    <label class="label">
-                      <span class="label-text font-semibold">Nomor KRA</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Isi jika ada Nomor KRA"
-                      class="input input-bordered w-full"
-                      v-model="form.nomorKra"
-                    />
-                  </div>
+                 
 
                   <div class="form-control md:col-span-2">
                     <label class="label">
@@ -161,12 +168,125 @@
                 </label>
               </div>
 
+              <!-- Publikasi Media Section -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Publikasi Media</span>
+                  <span class="label-text-alt">Opsional</span>
+                </label>
+                <div class="space-y-4">
+                  <!-- Media Sosial -->
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 011 1v2a1 1 0 01-1 1h-1v12a2 2 0 01-2 2H6a2 2 0 01-2-2V8H3a1 1 0 01-1-1V5a1 1 0 011-1h4z" />
+                      </svg>
+                      Media Sosial
+                    </h4>
+                    
+                    <div class="space-y-3">
+                      <div v-for="(item, index) in form.publikasi.mediaSosial" :key="index" class="flex gap-2">
+                        <div class="form-control flex-1">
+                          <input 
+                            type="text" 
+                            placeholder="Platform (Instagram, Facebook, Twitter, LinkedIn, TikTok, dll)"
+                            class="input input-bordered input-sm"
+                            v-model="item.platform"
+                          />
+                        </div>
+                        <div class="form-control flex-1">
+                          <input 
+                            type="url" 
+                            placeholder="https://link-media-sosial.com"
+                            class="input input-bordered input-sm"
+                            v-model="item.linkMedia"
+                          />
+                        </div>
+                        <button 
+                          type="button" 
+                          class="btn btn-ghost btn-sm text-red-500"
+                          @click="removeMediaSosial(index)"
+                          v-if="form.publikasi.mediaSosial.length > 1"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      
+                      <button 
+                        type="button" 
+                        class="btn btn-outline btn-sm"
+                        @click="addMediaSosial"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Tambah Media Sosial
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Media Massa -->
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                      </svg>
+                      Media Massa & Portal Berita
+                    </h4>
+                    
+                    <div class="space-y-3">
+                      <div v-for="(item, index) in form.publikasi.mediaMassa" :key="index" class="flex gap-2">
+                        <div class="form-control flex-1">
+                          <input 
+                            type="text" 
+                            placeholder="Nama media (contoh: Kompas, Detik, CNN Indonesia)"
+                            class="input input-bordered input-sm"
+                            v-model="item.namaMedia"
+                          />
+                        </div>
+                        <div class="form-control flex-1">
+                          <input 
+                            type="url" 
+                            placeholder="https://link-berita.com"
+                            class="input input-bordered input-sm"
+                            v-model="item.linkBerita"
+                          />
+                        </div>
+                        <button 
+                          type="button" 
+                          class="btn btn-ghost btn-sm text-red-500"
+                          @click="removeMediaMassa(index)"
+                          v-if="form.publikasi.mediaMassa.length > 1"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      
+                      <button 
+                        type="button" 
+                        class="btn btn-outline btn-sm"
+                        @click="addMediaMassa"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Tambah Media Massa
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <label class="label">
+                  <span class="label-text-alt">Tambahkan link publikasi untuk meningkatkan visibilitas proyek Anda</span>
+                </label>
+              </div>
+
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-control">
                   <label class="label">
                     <span class="label-text font-semibold whitespace-normal break-words">Berapa perkiraan nilai ekonomi yang dihasilkan dari proyek perubahan atau dari penerapan hasil pelatihan yang Anda ikuti? *</span>
                   </label>
-                  <select class="select select-bordered w-full" v-model="form.nilaiEkonomi" required>
+                  <select class="select select-bordered w-full" v-model="form.nilaiEkonomi" required @change="onNilaiEkonomiChange">
                     <option value="">Pilih Nilai Ekonomi</option>
                     <option v-for="option in nilaiEkonomiOptions" :key="option" :value="option">
                       {{ option }}
@@ -174,6 +294,25 @@
                   </select>
                 </div>
 
+                <div class="form-control" v-if="form.nilaiEkonomi">
+                  <label class="label">
+                    <span class="label-text font-semibold">Detail Nilai Ekonomi *</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text">Rp</span>
+                    <input 
+                      type="text" 
+                      placeholder="Masukkan nilai ekonomi yang tepat"
+                      class="input input-bordered w-full"
+                      v-model="form.detailNilaiEkonomi"
+                      @input="formatCurrency"
+                      required
+                    />
+                  </div>
+                  <label class="label">
+                    <span class="label-text-alt">Masukkan nilai ekonomi dalam rupiah</span>
+                  </label>
+                </div>
               </div>
 
               <div class="form-control">
@@ -339,7 +478,11 @@
                     <p>{{ form.email }}</p>
                   </div>
                   <div>
-                    <p class="font-semibold text-gray-700">Kementerian/Lembaga:</p>
+                    <p class="font-semibold text-gray-700">Kategori Instansi:</p>
+                    <p>{{ getKategoriInstansiName(form.kategoriInstansi) }}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-gray-700">Kementerian/Lembaga/Pemerintah Daerah:</p>
                     <p>{{ getInstansiName(form.institution) }}</p>
                   </div>
                   <div>
@@ -356,6 +499,49 @@
                 <div>
                   <p class="font-semibold text-gray-700">Deskripsi:</p>
                   <p class="text-sm">{{ form.description }}</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p class="font-semibold text-gray-700">Range Nilai Ekonomi:</p>
+                    <p class="text-sm">{{ form.nilaiEkonomi }}</p>
+                  </div>
+                  <div v-if="form.detailNilaiEkonomi">
+                    <p class="font-semibold text-gray-700">Detail Nilai Ekonomi:</p>
+                    <p class="text-sm font-medium text-green-600">Rp {{ form.detailNilaiEkonomi }}</p>
+                  </div>
+                </div>
+
+                <!-- Review Publikasi -->
+                <div v-if="hasPublikasi" class="border-t pt-4">
+                  <p class="font-semibold text-gray-700 mb-3">Publikasi Media:</p>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <!-- Media Sosial -->
+                    <div v-if="getMediaSosialLinks().length > 0">
+                      <p class="font-medium text-gray-600 mb-2">Media Sosial:</p>
+                      <div class="space-y-1">
+                        <div v-for="link in getMediaSosialLinks()" :key="link.linkMedia" class="flex items-center gap-2">
+                          <span class="badge badge-outline badge-xs">{{ link.platform }}</span>
+                          <a :href="link.linkMedia" target="_blank" class="text-blue-500 hover:underline text-xs truncate">
+                            {{ link.linkMedia }}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Media Massa -->
+                    <div v-if="getMediaMassaLinks().length > 0">
+                      <p class="font-medium text-gray-600 mb-2">Media Massa:</p>
+                      <div class="space-y-1">
+                        <div v-for="media in getMediaMassaLinks()" :key="media.linkBerita" class="flex items-center gap-2">
+                          <span class="badge badge-outline badge-xs">{{ media.namaMedia }}</span>
+                          <a :href="media.linkBerita" target="_blank" class="text-blue-500 hover:underline text-xs truncate">
+                            {{ media.linkBerita }}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -464,6 +650,7 @@ useHead({
 const currentStep = ref(1)
 const isSubmitting = ref(false)
 const instansiOptions = ref([])
+const kategoriInstansiOptions = ref([])
 const pelatihanOptions = ref([])
 const lemdikOptions = ref([])
 
@@ -471,6 +658,7 @@ const form = reactive({
   // Step 1
   authorName: '',
   email: '',
+  kategoriInstansi: '',
   institution: '',
   lembagaDiklat: '',
   training: '',
@@ -480,7 +668,16 @@ const form = reactive({
   // Step 2
   title: '',
   description: '',
+  publikasi: {
+    mediaSosial: [
+      { platform: '', linkMedia: '' }
+    ],
+    mediaMassa: [
+      { namaMedia: '', linkBerita: '' }
+    ]
+  },
   nilaiEkonomi: '',
+  detailNilaiEkonomi: '',
   progress: 0,
   tagsInput: '',
   tags: [],
@@ -519,13 +716,21 @@ const nilaiEkonomiOptions = computed(() => {
   return []
 })
 
+// Computed untuk filter instansi berdasarkan kategori yang dipilih
+const filteredInstansiOptions = computed(() => {
+  if (!form.kategoriInstansi) return []
+  
+  const selectedKategori = kategoriInstansiOptions.value.find(k => k.kategori_id === form.kategoriInstansi)
+  return selectedKategori ? selectedKategori.instansi : []
+})
+
 // Computed properties
 const canProceed = computed(() => {
   switch (currentStep.value) {
     case 1:
-      return form.authorName && form.email && form.institution && form.training
+      return form.authorName && form.email && form.kategoriInstansi && form.institution && form.training
     case 2:
-      return form.title && form.description && form.nilaiEkonomi
+      return form.title && form.description && form.nilaiEkonomi && form.detailNilaiEkonomi
     case 3:
       return form.mainFileData // Check for uploaded file data instead of file object
     case 4:
@@ -539,7 +744,72 @@ const canSubmit = computed(() => {
   return canProceed.value && !isSubmitting.value
 })
 
+// Computed untuk publikasi
+const hasPublikasi = computed(() => {
+  const medsos = form.publikasi.mediaSosial.some(item => 
+    item.platform.trim() !== '' && item.linkMedia.trim() !== ''
+  )
+  const mediaMassa = form.publikasi.mediaMassa.some(item => 
+    item.namaMedia.trim() !== '' && item.linkBerita.trim() !== ''
+  )
+  return medsos || mediaMassa
+})
+
+const getMediaSosialLinks = () => {
+  return form.publikasi.mediaSosial.filter(item => 
+    item.platform.trim() !== '' && item.linkMedia.trim() !== ''
+  )
+}
+
+const getMediaMassaLinks = () => {
+  return form.publikasi.mediaMassa.filter(item => 
+    item.namaMedia.trim() !== '' && item.linkBerita.trim() !== ''
+  )
+}
+
 // Methods
+const onKategoriChange = () => {
+  // Reset pilihan instansi ketika kategori berubah
+  form.institution = ''
+}
+
+const onNilaiEkonomiChange = () => {
+  // Reset detail nilai ekonomi ketika range berubah
+  form.detailNilaiEkonomi = ''
+}
+
+const formatCurrency = (event) => {
+  let value = event.target.value.replace(/[^\d]/g, '') // Hanya angka
+  
+  if (value) {
+    // Format dengan pemisah ribuan
+    value = parseInt(value).toLocaleString('id-ID')
+  }
+  
+  form.detailNilaiEkonomi = value
+  event.target.value = value
+}
+
+const addMediaMassa = () => {
+  form.publikasi.mediaMassa.push({ namaMedia: '', linkBerita: '' })
+}
+
+const removeMediaMassa = (index) => {
+  if (form.publikasi.mediaMassa.length > 1) {
+    form.publikasi.mediaMassa.splice(index, 1)
+  }
+}
+
+const addMediaSosial = () => {
+  form.publikasi.mediaSosial.push({ platform: '', linkMedia: '' })
+}
+
+const removeMediaSosial = (index) => {
+  if (form.publikasi.mediaSosial.length > 1) {
+    form.publikasi.mediaSosial.splice(index, 1)
+  }
+}
+
 const nextStep = () => {
   if (canProceed.value && currentStep.value < 4) {
     currentStep.value++
@@ -599,8 +869,17 @@ const getTrainingName = (id) => {
 }
 
 const getInstansiName = (id) => {
-  const instansi = instansiOptions.value.find(i => i.instansi_id === id)
-  return instansi ? instansi.nama_instansi : ''
+  // Cari di semua kategori
+  for (const kategori of kategoriInstansiOptions.value) {
+    const instansi = kategori.instansi.find(i => i.instansi_id === id)
+    if (instansi) return instansi.nama_instansi
+  }
+  return ''
+}
+
+const getKategoriInstansiName = (id) => {
+  const kategori = kategoriInstansiOptions.value.find(k => k.kategori_id === id)
+  return kategori ? kategori.kategori_name : ''
 }
 
 const getLemdikName = (id) => {
@@ -677,6 +956,7 @@ const submitProject = async () => {
       title: form.title,
       description: form.description,
       nilaiEkonomi: form.nilaiEkonomi,
+      detailNilaiEkonomi: form.detailNilaiEkonomi.replace(/[^\d]/g, ''), // Simpan angka saja
       mainFileUrl: mainFileUrl,
       status: 'submitted' // Change from draft to submitted when user submits
     }
@@ -764,16 +1044,17 @@ onMounted(async () => {
       Object.assign(form, parsed)
     }
   }
-  // Fetch instansi options from API
+  // Fetch kategori instansi options from API
   try {
-    const res = await fetch('/api/instansi')
+    const res = await fetch('/api/instansi/kategori')
     const data = await res.json()
     if (data.success && Array.isArray(data.data)) {
-      instansiOptions.value = data.data
+      kategoriInstansiOptions.value = data.data
     }
   } catch (err) {
-    console.error('Gagal fetch instansi:', err)
+    console.error('Gagal fetch kategori instansi:', err)
   }
+  
   // Fetch lemdik options from API
   try {
     const res = await fetch('/api/lemdik')

@@ -7,6 +7,18 @@
         <p class="text-blue-700">Statistik dan visualisasi proyek perubahan secara real-time</p>
       </div>
 
+      <!-- Loading State untuk semua data -->
+      <div v-if="pending || keywordDataPending" class="mb-8">
+        <div class="alert alert-info">
+          <div class="loading loading-spinner loading-sm"></div>
+          <span>Memuat data dashboard...</span>
+          <div class="text-xs">
+            <span v-if="pending">Program: Loading... </span>
+            <span v-if="keywordDataPending">Keywords: Loading... </span>
+          </div>
+        </div>
+      </div>
+
       <!-- Stat Cards -->
       <div v-if="pending" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
         <div v-for="i in 4" :key="i" class="card bg-white shadow-lg animate-pulse">
@@ -96,7 +108,18 @@
           <div class="card-body">
             <h2 class="card-title text-lg font-semibold text-gray-800 mb-4">Distribusi Proyek per Program</h2>
             <client-only>
-              <apexchart type="bar" height="350" :options="chartOptions" :series="series" />
+              <div v-if="chartOptions && series && series.length > 0">
+                <apexchart 
+                  :key="`chart1-${chartKey}`"
+                  type="bar" 
+                  height="350" 
+                  :options="chartOptions" 
+                  :series="series" 
+                />
+              </div>
+              <div v-else class="flex items-center justify-center h-80">
+                <div class="loading loading-spinner loading-lg"></div>
+              </div>
             </client-only>
           </div>
         </div>
@@ -104,7 +127,18 @@
           <div class="card-body">
             <h2 class="card-title text-lg font-semibold text-gray-800 mb-4">Distribusi Proyek per Kategori Instansi</h2>
             <client-only>
-              <apexchart type="donut" height="350" :options="chartOptions2" :series="series2" />
+              <div v-if="chartOptions2 && series2 && series2.length > 0">
+                <apexchart 
+                  :key="`chart2-${chartKey}`"
+                  type="donut" 
+                  height="350" 
+                  :options="chartOptions2" 
+                  :series="series2" 
+                />
+              </div>
+              <div v-else class="flex items-center justify-center h-80">
+                <div class="loading loading-spinner loading-lg"></div>
+              </div>
             </client-only>
           </div>
         </div>
@@ -131,12 +165,17 @@
           <div class="bg-gray-50 rounded-lg p-4">
             <h4 class="text-lg font-semibold mb-4">Top 10 Instansi dengan Proyek Terbanyak</h4>
             <client-only>
-              <apexchart 
-                type="bar" 
-                height="400" 
-                :options="detailChartOptions" 
-                :series="detailChartSeries" 
-              />
+              <div v-if="detailChartOptions && detailChartSeries && detailChartSeries.length > 0">
+                <apexchart 
+                  type="bar" 
+                  height="400" 
+                  :options="detailChartOptions" 
+                  :series="detailChartSeries" 
+                />
+              </div>
+              <div v-else class="flex items-center justify-center h-96">
+                <div class="loading loading-spinner loading-lg"></div>
+              </div>
             </client-only>
           </div>
         </div>
@@ -151,6 +190,9 @@
               <p class="text-sm text-gray-600">Pilih instansi untuk melihat kata kunci yang sering digunakan</p>
               <p class="text-xs text-blue-500" v-if="keywordData?.total_instansi">
                 Total {{ keywordData.total_instansi }} instansi tersedia
+                <span v-if="selectedInstansiName && !keywordDataPending" class="text-green-600">
+                  • Default: {{ selectedKategoriName }} - {{ selectedInstansiName }}
+                </span>
               </p>
             </div>
             <div class="flex items-center space-x-4">
@@ -192,12 +234,18 @@
            
           
             <client-only>
-              <apexchart 
-                type="bar" 
-                height="400" 
-                :options="keywordChartOptions" 
-                :series="keywordChartSeries" 
-              />
+              <div v-if="keywordChartOptions && keywordChartSeries && keywordChartSeries.length > 0">
+                <apexchart 
+                  :key="`chart3-${chartKey}`"
+                  type="bar" 
+                  height="400" 
+                  :options="keywordChartOptions" 
+                  :series="keywordChartSeries" 
+                />
+              </div>
+              <div v-else class="flex items-center justify-center h-96">
+                <div class="loading loading-spinner loading-lg"></div>
+              </div>
             </client-only>
           </div>
           
@@ -224,10 +272,10 @@
 </template>
 
 <script setup>
-import { computed, watch, onMounted } from 'vue'
+import { computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 
-// Fetch data dari API untuk chart pertama
-const { data: programData, pending, error } = await useAsyncData('program-summary', async () => {
+// Fetch data dari API untuk chart pertama dengan caching
+const { data: programData, pending, error, refresh: refreshProgram } = await useAsyncData('program-summary', async () => {
   try {
     const res = await fetch('/api/proper/summary_program')
     const json = await res.json()
@@ -240,10 +288,14 @@ const { data: programData, pending, error } = await useAsyncData('program-summar
     console.error('Error fetching program data:', e)
     return []
   }
+}, {
+  default: () => [],
+  server: false, // Client-side only untuk chart
+  lazy: true
 })
 
-// Fetch data dari API untuk chart kata kunci
-const { data: keywordData, pending: keywordDataPending } = await useAsyncData('keyword-summary', async () => {
+// Fetch data dari API untuk chart kata kunci dengan optimasi
+const { data: keywordData, pending: keywordDataPending, refresh: refreshKeywords } = await useAsyncData('keyword-summary', async () => {
   try {
     const res = await fetch('/api/abstract/summary_kata_kunci')
     const json = await res.json()
@@ -256,10 +308,14 @@ const { data: keywordData, pending: keywordDataPending } = await useAsyncData('k
     console.error('Error fetching keyword data:', e)
     return { summary: [] }
   }
+}, {
+  default: () => ({ summary: [] }),
+  server: false, // Client-side only
+  lazy: true
 })
 
-// Fetch data dari API untuk chart kedua (instansi)
-const { data: instansiData } = await useAsyncData('instansi-summary', async () => {
+// Fetch data dari API untuk chart kedua (instansi) dengan optimasi
+const { data: instansiData, refresh: refreshInstansi } = await useAsyncData('instansi-summary', async () => {
   try {
     const res = await fetch('/api/proper/summary_instansi')
     const json = await res.json()
@@ -272,7 +328,20 @@ const { data: instansiData } = await useAsyncData('instansi-summary', async () =
     console.error('Error fetching instansi data:', e)
     return []
   }
+}, {
+  default: () => [],
+  server: false, // Client-side only
+  lazy: true
 })
+
+// State untuk chart re-rendering
+const chartKey = ref(0)
+
+// Function untuk force refresh charts
+function forceRefreshCharts() {
+  chartKey.value++
+  console.log('Force refresh charts, key:', chartKey.value)
+}
 
 // State untuk filtering kata kunci - dua tingkat filter
 const selectedKategoriId = ref('')
@@ -345,25 +414,25 @@ function onInstansiChange() {
   }
 }
 
-// Computed properties untuk stat cards berdasarkan data API
+// Computed properties untuk stat cards berdasarkan data API - dengan memoization
 const totalProyek = computed(() => {
-  if (!programData?.value) return 0
-  return programData.value.reduce((sum, item) => sum + item.count, 0)
+  if (!programData?.value || !Array.isArray(programData.value)) return 0
+  return programData.value.reduce((sum, item) => sum + (item.count || 0), 0)
 })
 
 const totalProgram = computed(() => {
-  if (!programData?.value) return 0
+  if (!programData?.value || !Array.isArray(programData.value)) return 0
   return programData.value.length
 })
 
 const programTerbesar = computed(() => {
-  if (!programData?.value || programData.value.length === 0) return null
-  return programData.value.reduce((max, item) => item.count > max.count ? item : max)
+  if (!programData?.value || !Array.isArray(programData.value) || programData.value.length === 0) return null
+  return programData.value.reduce((max, item) => (item.count || 0) > (max.count || 0) ? item : max, { count: 0 })
 })
 
 const rataRataProgram = computed(() => {
-  if (!programData?.value || programData.value.length === 0) return 0
-  const total = programData.value.reduce((sum, item) => sum + item.count, 0)
+  if (!programData?.value || !Array.isArray(programData.value) || programData.value.length === 0) return 0
+  const total = totalProyek.value
   return Math.round(total / programData.value.length)
 })
 
@@ -598,20 +667,103 @@ const keywordChartSeries = computed(() => [{
   data: selectedKeywords.value.map(item => item.count)
 }])
 
+// Optimized watchers dengan throttling
+const refreshTimeout = ref(null)
+
+function throttledRefresh() {
+  if (refreshTimeout.value) clearTimeout(refreshTimeout.value)
+  refreshTimeout.value = setTimeout(() => {
+    forceRefreshCharts()
+  }, 100)
+}
+
 // Watcher untuk debugging
 watch(keywordData, (newVal) => {
   console.log('keywordData changed:', newVal)
+  // Auto-select kategori dan instansi pertama saat data ready
+  if (newVal?.summary && newVal.summary.length > 0 && !selectedKategoriId.value) {
+    autoSelectDefault()
+  }
+  // Throttled refresh
+  throttledRefresh()
 }, { deep: true })
 
 watch(selectedKeywords, (newVal) => {
   console.log('selectedKeywords changed:', newVal)
+  // Refresh chart saat keywords berubah
+  if (newVal && newVal.length > 0) {
+    throttledRefresh()
+  }
 }, { deep: true })
 
-// Lifecycle untuk debugging
+// Watch program data untuk chart 1 - throttled
+watch(programData, (newVal) => {
+  if (newVal && newVal.length > 0) {
+    throttledRefresh()
+  }
+}, { deep: true })
+
+// Watch instansi data untuk chart 2 - throttled
+watch(instansiData, (newVal) => {
+  if (newVal && newVal.length > 0) {
+    throttledRefresh()
+  }
+}, { deep: true })
+
+// Function untuk auto-select default
+function autoSelectDefault() {
+  if (!keywordData?.value?.summary || keywordData.value.summary.length === 0) return
+  
+  // Pilih kategori pertama yang memiliki instansi
+  const firstKategori = keywordData.value.summary[0]
+  if (firstKategori && firstKategori.instansi && firstKategori.instansi.length > 0) {
+    selectedKategoriId.value = firstKategori.kategori_id.toString()
+    selectedKategoriName.value = firstKategori.kategori_name
+    
+    // Pilih instansi dengan total_keywords terbanyak dalam kategori ini
+    const topInstansi = firstKategori.instansi
+      .sort((a, b) => b.total_keywords - a.total_keywords)[0]
+    
+    if (topInstansi) {
+      selectedInstansiId.value = topInstansi.instansi_id.toString()
+      selectedInstansiName.value = topInstansi.nama_instansi
+      selectedKeywords.value = topInstansi.top_keywords || []
+      
+      console.log('Auto-selected:', {
+        kategori: selectedKategoriName.value,
+        instansi: selectedInstansiName.value,
+        keywords: selectedKeywords.value.length
+      })
+    }
+  }
+}
+
+// Lifecycle untuk debugging dan auto-selection
 onMounted(() => {
   console.log('Dashboard mounted')
   console.log('Initial keywordData:', keywordData.value)
   console.log('Initial keywordDataPending:', keywordDataPending.value)
+  
+  // Coba auto-select jika data sudah ada
+  if (keywordData.value?.summary && keywordData.value.summary.length > 0) {
+    autoSelectDefault()
+  }
+  
+  // Force re-render charts setelah DOM ready
+  nextTick(() => {
+    if (typeof window !== 'undefined' && window.ApexCharts) {
+      setTimeout(() => {
+        console.log('Force chart refresh after mount')
+      }, 100)
+    }
+  })
+})
+
+// Cleanup timeout saat component unmount
+onUnmounted(() => {
+  if (refreshTimeout.value) {
+    clearTimeout(refreshTimeout.value)
+  }
 })
 
 // State untuk detail instansi
