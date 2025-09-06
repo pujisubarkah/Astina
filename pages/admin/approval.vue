@@ -8,4 +8,7 @@
 
 <script setup>
 // Tambahkan logic approval proyek di sini
+definePageMeta({
+  layout: 'main'
+})
 </script>

@@ -8,4 +8,7 @@
 
 <script setup>
 // Tambahkan logic upload proyek di sini
+definePageMeta({
+  layout: 'main'
+})
 </script>

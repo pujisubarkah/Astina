@@ -8,4 +8,9 @@
 
 <script setup>
 // Tambahkan logic dashboard admin di sini
+
+// Set layout
+definePageMeta({
+  layout: 'main'
+})
 </script>

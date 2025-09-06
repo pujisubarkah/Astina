@@ -55,8 +55,8 @@
         <div class="divider">OR</div>
         
         <div class="text-center">
-          <p class="text-sm">Don't have an account? 
-            <NuxtLink to="/register" class="link link-primary">Register here</NuxtLink>
+          <p class="text-sm">Belum punya akun? 
+            <NuxtLink to="/register" class="link link-primary font-medium">Daftar diri Anda di sini</NuxtLink>
           </p>
         </div>
       </div>
