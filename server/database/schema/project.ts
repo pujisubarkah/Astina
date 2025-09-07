@@ -1,4 +1,4 @@
-import { pgTable, bigint, varchar, text, timestamp, boolean, json } from 'drizzle-orm/pg-core'
+import { pgTable, bigint, varchar, text, timestamp, boolean, jsonb } from 'drizzle-orm/pg-core'
 
 export const project = pgTable('projects', {
   id: bigint('id', { mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
@@ -11,9 +11,9 @@ export const project = pgTable('projects', {
   description: text('description').notNull(),
   nilaiEkonomi: text('nilai_ekonomi'), // Range nilai ekonomi
   detailNilaiEkonomi: bigint('detail_nilai_ekonomi', { mode: 'number' }), // Detail nilai rupiah
-  publikasiMediaSosial: json('publikasi_media_sosial'), // JSON array untuk media sosial
-  publikasiMediaMassa: json('publikasi_media_massa'), // JSON array untuk media massa
-  tags: json('tags'), // JSON array untuk tags/kata kunci
+  publikasiMediaSosial: jsonb('publikasi_media_sosial'), // JSON array untuk media sosial
+  publikasiMediaMassa: jsonb('publikasi_media_massa'), // JSON array untuk media massa
+  tags: jsonb('tags'), // JSON array untuk tags/kata kunci
   startDate: timestamp('start_date'), // Tanggal mulai proyek
   endDate: timestamp('end_date'), // Target selesai proyek
   mainFileUrl: text('main_file_url'),

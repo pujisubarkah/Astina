@@ -121,6 +121,8 @@ async function handleGet(event: any) {
 async function handlePost(event: any) {
   try {
     const body = await readBody(event)
+    console.log('Received body:', body)
+
     const {
       userId,
       instansiId,
@@ -137,10 +139,11 @@ async function handlePost(event: any) {
       startDate,
       endDate,
       mainFileUrl,
-      status = 'draft'
+      status = 'draft',
+      isApproved = false
     } = body
 
-    // Validation
+    // Wajib ada
     if (!userId || !instansiId || !kategoriInstansiId || !lemdikId || !pelatihanId || !title || !description) {
       throw createError({
         statusCode: 400,
@@ -148,74 +151,80 @@ async function handlePost(event: any) {
       })
     }
 
-    // Parse and clean data
     const projectData: any = {
       userId: Number(userId),
       instansiId: Number(instansiId),
       kategoriInstansiId: Number(kategoriInstansiId),
       lemdikId: Number(lemdikId),
       pelatihanId: Number(pelatihanId),
-      title,
-      description,
-      status,
+      title: String(title),
+      description: String(description),
+      status: String(status),
+      isApproved: Boolean(isApproved),
+      createdAt: new Date(),
       updatedAt: new Date()
     }
 
-    // Optional fields
+    // Nilai ekonomi
     if (nilaiEkonomi) {
       projectData.nilaiEkonomi = String(nilaiEkonomi)
     }
-
     if (detailNilaiEkonomi) {
-      // Remove formatting and convert to number
-      const cleanAmount = typeof detailNilaiEkonomi === 'string' 
-        ? parseInt(detailNilaiEkonomi.replace(/[^\d]/g, ''))
-        : Number(detailNilaiEkonomi)
-      projectData.detailNilaiEkonomi = cleanAmount
-    }
-
-    if (publikasiMediaSosial && Array.isArray(publikasiMediaSosial)) {
-      // Filter out empty entries
-      const validMediaSosial = publikasiMediaSosial.filter(item => 
-        item.platform && item.platform.trim() !== '' && 
-        item.linkMedia && item.linkMedia.trim() !== ''
-      )
-      if (validMediaSosial.length > 0) {
-        projectData.publikasiMediaSosial = validMediaSosial
+      const cleanAmount =
+        typeof detailNilaiEkonomi === 'string'
+          ? parseInt(detailNilaiEkonomi.replace(/[^\d]/g, ''), 10)
+          : Number(detailNilaiEkonomi)
+      if (!isNaN(cleanAmount)) {
+        projectData.detailNilaiEkonomi = cleanAmount
       }
     }
 
-    if (publikasiMediaMassa && Array.isArray(publikasiMediaMassa)) {
-      // Filter out empty entries
-      const validMediaMassa = publikasiMediaMassa.filter(item => 
-        item.namaMedia && item.namaMedia.trim() !== '' && 
-        item.linkBerita && item.linkBerita.trim() !== ''
-      )
-      if (validMediaMassa.length > 0) {
-        projectData.publikasiMediaMassa = validMediaMassa
+    // JSONB publikasi media sosial
+    if (publikasiMediaSosial) {
+      try {
+        const sosialArr = Array.isArray(publikasiMediaSosial)
+          ? publikasiMediaSosial
+          : JSON.parse(publikasiMediaSosial)
+        projectData.publikasiMediaSosial = Array.isArray(sosialArr) ? sosialArr : []
+      } catch (e) {
+        projectData.publikasiMediaSosial = []
       }
+    } else {
+      projectData.publikasiMediaSosial = []
     }
 
-    if (tags && Array.isArray(tags) && tags.length > 0) {
-      // Filter out empty tags
-      const validTags = tags.filter(tag => tag && tag.trim() !== '')
-      if (validTags.length > 0) {
-        projectData.tags = validTags
+    // JSONB publikasi media massa
+    if (publikasiMediaMassa) {
+      try {
+        const massaArr = Array.isArray(publikasiMediaMassa)
+          ? publikasiMediaMassa
+          : JSON.parse(publikasiMediaMassa)
+        projectData.publikasiMediaMassa = Array.isArray(massaArr) ? massaArr : []
+      } catch (e) {
+        projectData.publikasiMediaMassa = []
       }
+    } else {
+      projectData.publikasiMediaMassa = []
     }
 
-    if (startDate) {
-      projectData.startDate = new Date(startDate)
+    // JSONB tags
+    if (tags) {
+      try {
+        const tagsArr = Array.isArray(tags) ? tags : JSON.parse(tags)
+        projectData.tags = Array.isArray(tagsArr) ? tagsArr : []
+      } catch (e) {
+        projectData.tags = []
+      }
+    } else {
+      projectData.tags = []
     }
 
-    if (endDate) {
-      projectData.endDate = new Date(endDate)
-    }
+    // Date handling
+    if (startDate) projectData.startDate = new Date(startDate)
+    if (endDate) projectData.endDate = new Date(endDate)
+    if (mainFileUrl) projectData.mainFileUrl = String(mainFileUrl)
 
-    if (mainFileUrl) {
-      projectData.mainFileUrl = mainFileUrl
-    }
-
+    // Insert ke DB
     const newProject = await db
       .insert(project)
       .values(projectData)
@@ -228,18 +237,12 @@ async function handlePost(event: any) {
     }
   } catch (error) {
     console.error('Error creating project:', error)
-    
-    // More specific error handling
-    if (error instanceof Error && error.message.includes('required')) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: error.message
-      })
-    }
-    
+    console.log('Error object:', error)
+    console.dir(error, { depth: null })
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to create project'
+      statusMessage: 'Failed to create project',
+      message: error instanceof Error ? error.message : String(error)
     })
   }
 }

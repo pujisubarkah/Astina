@@ -79,9 +79,9 @@
                     <span class="label-text font-semibold">Kategori Instansi *</span>
                   </label>
                   <select class="select select-bordered w-full" v-model="form.kategoriInstansi" required @change="onKategoriChange">
-                    <option value="">Pilih Kategori Instansi</option>
-                    <option v-for="kategori in kategoriInstansiOptions" :key="kategori.kategori_id" :value="kategori.kategori_id">
-                      {{ kategori.kategori_name }}
+                    <option :value="''">Pilih Kategori Instansi</option>
+                    <option v-for="kategori in kategoriOptions" :key="kategori.id" :value="Number(kategori.id)">
+                      {{ kategori.nama }}
                     </option>
                   </select>
                 </div>
@@ -96,8 +96,8 @@
                     required
                     :disabled="!form.kategoriInstansi"
                   >
-                    <option value="">{{ form.kategoriInstansi ? 'Pilih Instansi' : 'Pilih Kategori Instansi terlebih dahulu' }}</option>
-                    <option v-for="instansi in filteredInstansiOptions" :key="instansi.id" :value="instansi.instansi_id">
+                    <option :value="''">{{ form.kategoriInstansi ? 'Pilih Instansi' : 'Pilih Kategori Instansi terlebih dahulu' }}</option>
+                    <option v-for="instansi in filteredInstansiOptions" :key="instansi.instansi_id" :value="Number(instansi.instansi_id)">
                       {{ instansi.nama_instansi }}
                     </option>
                   </select>
@@ -108,8 +108,8 @@
                       <span class="label-text font-semibold">Lembaga Diklat *</span>
                     </label>
                     <select class="select select-bordered w-full" v-model="form.lembagaDiklat" required>
-                      <option value="">Pilih Lembaga Diklat</option>
-                      <option v-for="lemdik in lemdikOptions" :key="lemdik.id" :value="lemdik.id">
+                      <option :value="''">Pilih Lembaga Diklat</option>
+                      <option v-for="lemdik in lemdikOptions" :key="lemdik.id" :value="Number(lemdik.id)">
                         {{ lemdik.namalemdik }}
                       </option>
                     </select>
@@ -122,8 +122,8 @@
                       <span class="label-text font-semibold">Program Pelatihan *</span>
                     </label>
                     <select class="select select-bordered w-full" v-model="form.training" required>
-                      <option value="">Pilih Program Pelatihan</option>
-                      <option v-for="pelatihan in pelatihanOptions" :key="pelatihan.id" :value="pelatihan.id">
+                      <option :value="''">Pilih Program Pelatihan</option>
+                      <option v-for="pelatihan in pelatihanOptions" :key="pelatihan.id" :value="Number(pelatihan.id)">
                         {{ pelatihan.nama }}
                       </option>
                     </select>
@@ -637,6 +637,7 @@
 </template>
 
 <script setup>
+import { toRaw } from 'vue'
 import UploadFile from "~/components/UploadFile.vue"
 // Page metadata
 useHead({
@@ -716,32 +717,76 @@ const nilaiEkonomiOptions = computed(() => {
   return []
 })
 
-// Computed untuk filter instansi berdasarkan kategori yang dipilih
+// Fetch kategori
+const kategoriOptions = ref([]);
+onMounted(async () => {
+  const res = await fetch('/api/kategori');
+  const json = await res.json();
+  if (json.success) kategoriOptions.value = json.data;
+});
+
+// Fetch instansi
+const instansiKategoriOptions = ref([]);
+onMounted(async () => {
+  const res = await fetch('/api/kategori/instansi');
+  const json = await res.json();
+  if (json.success) instansiKategoriOptions.value = json.data;
+});
+
+// Filter instansi sesuai kategori yang dipilih
 const filteredInstansiOptions = computed(() => {
-  if (!form.kategoriInstansi) return []
-  
-  const selectedKategori = kategoriInstansiOptions.value.find(k => k.kategori_id === form.kategoriInstansi)
-  return selectedKategori ? selectedKategori.instansi : []
-})
+  const kategori = instansiKategoriOptions.value.find(k => Number(k.id) === Number(form.kategoriInstansi));
+  return kategori ? kategori.instansi : [];
+});
 
 // Computed properties
 const canProceed = computed(() => {
-  switch (currentStep.value) {
-    case 1:
-      return form.authorName && form.email && form.kategoriInstansi && form.institution && form.training
-    case 2:
-      return form.title && form.description && form.nilaiEkonomi && form.detailNilaiEkonomi
-    case 3:
-      return form.mainFileData // Check for uploaded file data instead of file object
-    case 4:
-      return form.agreeTerms && form.agreeAccuracy
-    default:
-      return false
-  }
+  const result = (() => {
+    switch (currentStep.value) {
+      case 1:
+        return form.authorName && form.email && form.kategoriInstansi && form.institution && form.lembagaDiklat && form.training
+      case 2:
+        return form.title && form.description && form.nilaiEkonomi && form.detailNilaiEkonomi
+      case 3:
+        return form.mainFileData // Check for uploaded file data instead of file object
+      case 4:
+        return form.agreeTerms && form.agreeAccuracy
+      default:
+        return false
+    }
+  })()
+  
+  console.log('canProceed debug:', {
+    currentStep: currentStep.value,
+    result,
+    form: {
+      authorName: form.authorName,
+      email: form.email,
+      kategoriInstansi: form.kategoriInstansi,
+      institution: form.institution,
+      lembagaDiklat: form.lembagaDiklat,
+      training: form.training,
+      title: form.title,
+      description: form.description,
+      nilaiEkonomi: form.nilaiEkonomi,
+      detailNilaiEkonomi: form.detailNilaiEkonomi,
+      mainFileData: form.mainFileData,
+      agreeTerms: form.agreeTerms,
+      agreeAccuracy: form.agreeAccuracy
+    }
+  })
+  
+  return result
 })
 
 const canSubmit = computed(() => {
-  return canProceed.value && !isSubmitting.value
+  const result = canProceed.value && !isSubmitting.value
+  console.log('canSubmit debug:', {
+    canProceed: canProceed.value,
+    isSubmitting: isSubmitting.value,
+    result
+  })
+  return result
 })
 
 // Computed untuk publikasi
@@ -863,28 +908,28 @@ const formatFileSize = (bytes) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-const getTrainingName = (id) => {
-  const training = pelatihanOptions.value.find(p => p.id === id)
-  return training ? training.nama : ''
+const getKategoriInstansiName = (id) => {
+  const kategori = kategoriInstansiOptions.value.find(k => Number(k.kategori_id) === Number(id))
+  return kategori ? kategori.kategori_name : ''
 }
 
 const getInstansiName = (id) => {
   // Cari di semua kategori
   for (const kategori of kategoriInstansiOptions.value) {
-    const instansi = kategori.instansi.find(i => i.instansi_id === id)
+    const instansi = kategori.instansi.find(i => Number(i.instansi_id) === Number(id))
     if (instansi) return instansi.nama_instansi
   }
   return ''
 }
 
-const getKategoriInstansiName = (id) => {
-  const kategori = kategoriInstansiOptions.value.find(k => k.kategori_id === id)
-  return kategori ? kategori.kategori_name : ''
+const getLemdikName = (id) => {
+  const lemdik = lemdikOptions.value.find(l => Number(l.id) === Number(id))
+  return lemdik ? lemdik.namalemdik : ''
 }
 
-const getLemdikName = (id) => {
-  const lemdik = lemdikOptions.value.find(l => l.id === id)
-  return lemdik ? lemdik.namalemdik : ''
+const getTrainingName = (id) => {
+  const training = pelatihanOptions.value.find(p => Number(p.id) === Number(id))
+  return training ? training.nama : ''
 }
 
 // File upload handlers
@@ -928,94 +973,167 @@ const getTotalFiles = () => {
   return (form.mainFileData ? 1 : 0) + form.supportFiles.length
 }
 
+function validateProjectData(projectData) {
+  const requiredFields = [
+    'userId',
+    'instansiId',
+    'kategoriInstansiId',
+    'lemdikId',
+    'pelatihanId',
+    'title',
+    'description',
+    'status'
+  ]
+  for (const field of requiredFields) {
+    if (
+      projectData[field] === undefined ||
+      projectData[field] === null ||
+      (typeof projectData[field] === 'string' && projectData[field].trim() === '')
+    ) {
+      return `Field ${field} wajib diisi.`
+    }
+  }
+  return null
+}
+
 const submitProject = async () => {
   isSubmitting.value = true
   try {
     // Step 1: Get file URL from uploaded data
     const mainFileUrl = form.mainFileData?.url || null
-    
     if (!mainFileUrl) {
       throw new Error('File utama belum diupload')
     }
-
+    
     // Step 2: Get institution, lemdik, and training IDs from selected values
-    const selectedInstansi = instansiOptions.value.find(inst => inst.instansi_id === form.institution)
-    const selectedLemdik = lemdikOptions.value.find(lem => lem.id === form.lembagaDiklat)
-    const selectedPelatihan = pelatihanOptions.value.find(pel => pel.id === form.training)
-
-    if (!selectedInstansi || !selectedLemdik || !selectedPelatihan) {
-      throw new Error('Data instansi, lemdik, atau pelatihan tidak valid')
+    // Gunakan data mentah (toRaw) untuk pencarian dan validasi
+    const kategoriOptionsRaw = kategoriInstansiOptions.value.map(kat => toRaw(kat))
+    const lemdikOptionsRaw = lemdikOptions.value.map(lem => toRaw(lem))
+    const pelatihanOptionsRaw = pelatihanOptions.value.map(pel => toRaw(pel))
+    
+    // instansi sudah nested di kategori
+    const selectedKategori = kategoriOptionsRaw.find(kat => Number(kat.id ?? kat.kategori_id) === Number(form.kategoriInstansi))
+    const selectedInstansi = selectedKategori?.instansi?.map(inst => toRaw(inst)).find(inst => Number(inst.instansi_id) === Number(form.institution))
+    const selectedLemdik = lemdikOptionsRaw.find(lem => Number(lem.id) === Number(form.lembagaDiklat))
+    const selectedPelatihan = pelatihanOptionsRaw.find(pel => Number(pel.id) === Number(form.training))
+    
+    console.log('Selected:', {
+      selectedInstansi,
+      selectedKategori,
+      selectedLemdik,
+      selectedPelatihan
+    })
+    
+    if (!selectedInstansi || !selectedKategori || !selectedLemdik || !selectedPelatihan) {
+      console.log('ERROR DETAIL:', {
+        selectedInstansi,
+        selectedKategori,
+        selectedLemdik,
+        selectedPelatihan,
+        formValues: {
+          kategoriInstansi: form.kategoriInstansi,
+          institution: form.institution,
+          lembagaDiklat: form.lembagaDiklat,
+          training: form.training
+        }
+      })
+      throw new Error('Data instansi, kategori instansi, lemdik, atau pelatihan tidak valid')
     }
-
+    
     // Step 3: Create project using the new API
     const projectData = {
       userId: 1, // TODO: Get from authentication/session
-      instansiId: selectedInstansi.instansi_id,
-      lemdikId: selectedLemdik.id,
-      pelatihanId: selectedPelatihan.id,
+      instansiId: Number(selectedInstansi.instansi_id),
+      kategoriInstansiId: Number(selectedKategori.kategori_id),
+      lemdikId: Number(selectedLemdik.id),
+      pelatihanId: Number(selectedPelatihan.id),
       title: form.title,
       description: form.description,
       nilaiEkonomi: form.nilaiEkonomi,
-      detailNilaiEkonomi: form.detailNilaiEkonomi.replace(/[^\d]/g, ''), // Simpan angka saja
+      detailNilaiEkonomi: Number(form.detailNilaiEkonomi.replace(/[^\d]/g, '')),
+      publikasiMediaSosial: Array.isArray(form.publikasi.mediaSosial) ? form.publikasi.mediaSosial.filter(item => item.platform && item.linkMedia) : [],
+      publikasiMediaMassa: Array.isArray(form.publikasi.mediaMassa) ? form.publikasi.mediaMassa.filter(item => item.namaMedia && item.linkBerita) : [],
+      tags: Array.isArray(form.tags) ? form.tags : [],
+      startDate: form.startDate ? new Date(form.startDate).toISOString() : null,
+      endDate: form.endDate ? new Date(form.endDate).toISOString() : null,
       mainFileUrl: mainFileUrl,
-      status: 'submitted' // Change from draft to submitted when user submits
+      status: 'submitted',
+      isApproved: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
-
-    const projectResponse = await $fetch('/api/project', {
+    
+    console.log('Payload sebelum submit:', projectData)
+    
+    // Validasi data sebelum submit
+    const validationError = validateProjectData(projectData)
+    if (validationError) {
+      throw new Error(validationError)
+    }
+    
+    // Step 4: Submit project to API
+    const projectResponse = await fetch('/api/project', {
       method: 'POST',
-      body: projectData
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(projectData)
     })
-
-    if (!projectResponse.success) {
-      throw new Error(projectResponse.message || 'Gagal menyimpan proyek')
+    
+    const projectResult = await projectResponse.json()
+    
+    if (!projectResponse.ok || !projectResult.success) {
+      throw new Error(projectResult.message || 'Gagal membuat project')
     }
-
-    const projectId = projectResponse.data.id
-
-    // Step 4: Upload support files if any
+    
+    const newProject = projectResult.data
+    console.log('Project berhasil dibuat:', newProject)
+    
+    // Step 5: Upload support files if any
     if (form.supportFiles.length > 0) {
-      for (const file of form.supportFiles) {
+      console.log('Uploading support files...')
+      
+      for (const supportFile of form.supportFiles) {
         try {
-          await $fetch('/api/project/support', {
+          const supportFileData = {
+            projectId: newProject.id,
+            fileUrl: supportFile.url || supportFile.shareUrl,
+            fileName: supportFile.filename,
+            fileType: supportFile.mimeType || 'document'
+          }
+          
+          const supportResponse = await fetch('/api/project/support', {
             method: 'POST',
-            body: {
-              projectId: projectId,
-              fileUrl: file.url,
-              fileName: file.filename,
-              fileType: file.originalFile?.type || 'document'
-            }
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(supportFileData)
           })
-        } catch (err) {
-          console.warn('Failed to save support file:', file.filename, err)
+          
+          const supportResult = await supportResponse.json()
+          
+          if (!supportResponse.ok || !supportResult.success) {
+            console.error('Gagal upload support file:', supportFile.filename, supportResult.message)
+          } else {
+            console.log('Support file berhasil diupload:', supportFile.filename)
+          }
+        } catch (supportError) {
+          console.error('Error uploading support file:', supportFile.filename, supportError)
         }
       }
     }
-
-    // Step 5: Save user info to proper table for tracking
-    try {
-      await $fetch('/api/proper', {
-        method: 'POST',
-        body: {
-          nama: form.authorName,
-          no_identitas: form.nip,
-          email: form.email,
-          instansi_id: selectedInstansi.instansi_id,
-          lemdik_id: selectedLemdik.id,
-          nomor_kra: form.nomorKra,
-          program_id: selectedPelatihan.id
-        }
-      })
-    } catch (err) {
-      console.warn('Failed to save proper info:', err)
-    }
-
-    // Clear draft from localStorage
+    
+    // Step 6: Success
+    alert('Proyek berhasil disubmit!')
+    
+    // Clear form and redirect
     if (typeof window !== 'undefined') {
       localStorage.removeItem('project-draft')
     }
-
-    alert('Proyek berhasil diupload ke Google Drive dan disimpan! Terima kasih atas kontribusi Anda.')
+    
+    // Redirect to project list or detail page
     await navigateTo('/daftar-proyek')
+    
   } catch (error) {
     console.error('Submit error:', error)
     alert(`Terjadi kesalahan saat mengupload: ${error.message}`)
@@ -1076,6 +1194,47 @@ onMounted(async () => {
     console.error('Gagal fetch pelatihan:', err)
   }
 })
+  // Validasi ulang value form setelah semua data di-fetch
+  watch(
+    [kategoriInstansiOptions, lemdikOptions, pelatihanOptions],
+    () => {
+      // Kategori Instansi
+      if (
+        !form.kategoriInstansi ||
+        !kategoriInstansiOptions.value.some(k => Number(k.kategori_id) === Number(form.kategoriInstansi))
+      ) {
+        form.kategoriInstansi = Number(kategoriInstansiOptions.value[0]?.kategori_id) || ''
+      }
+      // Instansi
+      let allInstansi = []
+      kategoriInstansiOptions.value.forEach(k => {
+        if (Array.isArray(k.instansi)) allInstansi.push(...k.instansi)
+      })
+      if (
+        !form.institution ||
+        !allInstansi.some(i => Number(i.instansi_id) === Number(form.institution))
+      ) {
+        // Pilih instansi pertama dari kategori yang dipilih
+        const selectedKategori = kategoriInstansiOptions.value.find(k => Number(k.kategori_id) === Number(form.kategoriInstansi))
+        form.institution = Number(selectedKategori?.instansi?.[0]?.instansi_id) || ''
+      }
+      // Lemdik
+      if (
+        !form.lembagaDiklat ||
+        !lemdikOptions.value.some(l => Number(l.id) === Number(form.lembagaDiklat))
+      ) {
+        form.lembagaDiklat = Number(lemdikOptions.value[0]?.id) || ''
+      }
+      // Pelatihan
+      if (
+        !form.training ||
+        !pelatihanOptions.value.some(p => Number(p.id) === Number(form.training))
+      ) {
+        form.training = Number(pelatihanOptions.value[0]?.id) || ''
+      }
+    },
+    { immediate: true }
+  )
 </script>
 
 <style scoped>
