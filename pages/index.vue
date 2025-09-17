@@ -536,9 +536,9 @@ onMounted(async () => {
 
 // Set page metadata
 useHead({
-  title: 'Selamat Datang - Astina Platform',
+  title: 'ASTINA - Hub Proyek Perubahan Pelatihan Kepemimpinan',
   meta: [
-    { name: 'description', content: 'Platform Repositori Proyek Digital untuk Lembaga Administrasi Negara. Kelola repositori proyek, tracking perubahan, dan kolaborasi tim dengan mudah.' }
+    { name: 'description', content: 'Platform Repositori Proyek Perubahan Pelatihan Kepemimpinan Nasional. Kelola repositori proyek, tracking perubahan, dan kolaborasi tim dengan mudah.' }
   ]
 })
 </script>
