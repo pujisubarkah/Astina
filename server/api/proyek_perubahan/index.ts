@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     if (event.method === 'GET') {
       const query = getQuery(event)
       const page = parseInt(query.page as string) || 1
-      const limit = parseInt(query.limit as string) || 1000
+      const limit = parseInt(query.limit as string) || 100000
       const offset = (page - 1) * limit
 
       const data = await db

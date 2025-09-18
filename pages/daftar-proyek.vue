@@ -97,56 +97,82 @@
       <!-- Search and Filter Bar -->
       <div class="card bg-white shadow-lg mb-6">
         <div class="card-body">
-          <div class="flex flex-col lg:flex-row gap-4">
-            <!-- Search -->
-            <div class="flex-1">
+          <div class="grid grid-cols-12 gap-4 items-end">
+            <!-- Search Field (3/6) -->
+            <div class="col-span-5">
               <div class="form-control">
-                <div class="input-group">
-                  <input 
-                    type="text" 
-                    placeholder="Cari proyek, kata kunci, atau nama peserta..." 
-                    class="input input-bordered w-full"
-                    v-model="searchQuery"
-                  />
-                  <button class="btn btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </button>
-                </div>
+                <label class="label">
+                  <span class="label-text">Pencarian</span>
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="Cari proyek, kata kunci, atau nama peserta..." 
+                  class="input input-bordered w-full"
+                  v-model="searchQuery"
+                />
               </div>
             </div>
             
-            <!-- Filters -->
-            <div class="flex gap-2">
-              <select class="select select-bordered min-w-[200px]" v-model="selectedTraining">
-                <option value="">Semua Pelatihan</option>
-                <option 
-                  v-for="training in trainingOptions" 
-                  :key="training.id" 
-                  :value="training.id"
-                >
-                  {{ training.nama }}{{ trainingSummary[training.id] ? ` (${trainingSummary[training.id].total_proyek})` : '' }}
-                </option>
-              </select>
-              
-              <select class="select select-bordered min-w-[200px]" v-model="selectedInstitution">
-                <option value="">Semua K/L</option>
-                <option 
-                  v-for="institution in institutionOptions" 
-                  :key="institution.instansiId" 
-                  :value="institution.instansiId"
-                >
-                  {{ institution.namaInstansi }}{{ institutionSummary[institution.instansiId] ? ` (${institutionSummary[institution.instansiId].total_proyek})` : '' }}
-                </option>
-              </select>
-              
-              <select class="select select-bordered" v-model="sortBy">
-                <option value="latest">Terbaru</option>
-                <option value="popular">Terpopuler</option>
-                <option value="title">Nama A-Z</option>
-                <option value="progress">Progress</option>
-              </select>
+            <!-- Filter K/L (1/6) -->
+            <div class="col-span-2">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">K/L</span>
+                </label>
+                <select class="select select-bordered w-full" v-model="selectedInstitution">
+                  <option value="">Semua K/L</option>
+                  <option 
+                    v-for="institution in institutionOptions" 
+                    :key="institution.instansiId" 
+                    :value="institution.instansiId"
+                  >
+                    {{ institution.namaInstansi }}{{ institutionSummary[institution.instansiId] ? ` (${institutionSummary[institution.instansiId].total_proyek})` : '' }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Filter Pelatihan (1/6) -->
+            <div class="col-span-2">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Pelatihan</span>
+                </label>
+                <select class="select select-bordered w-full" v-model="selectedTraining">
+                  <option value="">Semua Pelatihan</option>
+                  <option 
+                    v-for="training in trainingOptions" 
+                    :key="training.id" 
+                    :value="training.id"
+                  >
+                    {{ training.nama }}{{ trainingSummary[training.id] ? ` (${trainingSummary[training.id].total_proyek})` : '' }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Sort (1/6) -->
+            <div class="col-span-2">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Urutkan</span>
+                </label>
+                <select class="select select-bordered w-full" v-model="sortBy">
+                  <option value="latest">Terbaru</option>
+                  <option value="popular">Terpopuler</option>
+                  <option value="title">Nama A-Z</option>
+                  <option value="progress">Progress</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Search Button -->
+            <div class="col-span-1">
+              <button class="btn btn-primary w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -161,7 +187,7 @@
             </svg>
           </div>
           <div class="stat-title">Total Proyek</div>
-          <div class="stat-value text-blue-600">{{ filteredProjects.length }}</div>
+          <div class="stat-value text-blue-600">{{ totalProjectCount.toLocaleString() }}</div>
         </div>
         
         <div class="stat bg-white rounded-lg shadow">
@@ -170,18 +196,19 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div class="stat-title">Selesai</div>
-          <div class="stat-value text-green-600">{{ completedProjects }}</div>
+          <div class="stat-title">Proyek Selesai</div>
+          <div class="stat-value text-green-600">{{ completedProjects.toLocaleString() }}</div>
         </div>
         
         <div class="stat bg-white rounded-lg shadow">
           <div class="stat-figure text-orange-600">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
           </div>
-          <div class="stat-title">Sedang Berjalan</div>
-          <div class="stat-value text-orange-600">{{ ongoingProjects }}</div>
+          <div class="stat-title">Ditampilkan</div>
+          <div class="stat-value text-orange-600">{{ filteredProjectsCount.toLocaleString() }}</div>
+          <div class="stat-desc">dari {{ pagination.total.toLocaleString() }} hasil</div>
         </div>
         
         <div class="stat bg-white rounded-lg shadow">
@@ -196,7 +223,22 @@
       </div>
 
       <!-- Projects Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div v-if="loading" class="flex justify-center items-center py-12">
+        <div class="loading loading-spinner loading-lg text-blue-600"></div>
+        <span class="ml-2 text-gray-600">Memuat proyek...</span>
+      </div>
+      
+      <div v-else-if="projects.length === 0" class="text-center py-12">
+        <div class="text-gray-500 text-lg mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Tidak ada proyek yang ditemukan
+        </div>
+        <p class="text-gray-400">Coba ubah filter atau kata kunci pencarian Anda</p>
+      </div>
+      
+      <div v-else class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         <div 
           v-for="project in paginatedProjects" 
           :key="project.id"
@@ -319,8 +361,8 @@
         <div class="join">
           <button 
             class="join-item btn" 
-            :class="{ 'btn-disabled': currentPage === 1 }"
-            @click="currentPage = Math.max(1, currentPage - 1)"
+            :class="{ 'btn-disabled': !pagination.hasPrevPage }"
+            @click="prevPage"
           >
             «
           </button>
@@ -328,15 +370,15 @@
             v-for="page in visiblePages" 
             :key="page"
             class="join-item btn"
-            :class="{ 'btn-active': page === currentPage }"
-            @click="currentPage = page"
+            :class="{ 'btn-active': page === pagination.page }"
+            @click="goToPage(page)"
           >
             {{ page }}
           </button>
           <button 
             class="join-item btn"
-            :class="{ 'btn-disabled': currentPage === totalPages }"
-            @click="currentPage = Math.min(totalPages, currentPage + 1)"
+            :class="{ 'btn-disabled': !pagination.hasNextPage }"
+            @click="nextPage"
           >
             »
           </button>
@@ -562,9 +604,108 @@ const institutionOptions = ref([])
 const trainingSummary = ref({})
 const institutionSummary = ref({})
 
+// Data and pagination state
+const projects = ref([])
+const loading = ref(false)
+const pagination = ref({
+  page: 1,
+  limit: 9,
+  total: 0,
+  totalPages: 0,
+  hasNextPage: false,
+  hasPrevPage: false
+})
+
+// Statistics
+const stats = ref({
+  filtered_total: 0,
+  filtered_contributors: 0,
+  global_total: 0,
+  global_completed: 0,
+  global_contributors: 0
+})
+
 // Modal state
 const showModal = ref(false)
 const selectedProject = ref({})
+
+// Function to fetch projects with pagination
+async function fetchProjects() {
+  loading.value = true
+  try {
+    const params = new URLSearchParams({
+      page: currentPage.value.toString(),
+      limit: itemsPerPage.toString(),
+      sort_by: sortBy.value
+    })
+
+    if (searchQuery.value) {
+      params.append('search', searchQuery.value)
+    }
+    if (selectedInstitution.value) {
+      params.append('instansi_id', selectedInstitution.value)
+    }
+    if (selectedTraining.value) {
+      params.append('pelatihan_id', selectedTraining.value)
+    }
+
+    const res = await fetch(`/api/proyek_perubahan/paginated?${params}`)
+    const data = await res.json()
+    
+    if (data.success) {
+      projects.value = data.data.map(item => ({
+        id: item.id,
+        title: item.proyekPerubahan,
+        description: item.abstract,
+        author: item.nama,
+        institution: item.namaInstansi,
+        instansiId: item.instansiId,
+        training: item.programNama,
+        programId: item.programId,
+        nomorKra: item.nomorKra,
+        nip: item.noIdentitas,
+        progress: 100,
+        status: 'completed',
+        tags: Array.isArray(item.kataKunci) ? item.kataKunci : (typeof item.kataKunci === 'string' ? JSON.parse(item.kataKunci.replace(/'/g, '"')) : []),
+        updatedAt: item.createdAt || '',
+        createdAt: item.createdAt || '',
+        stars: Math.floor(Math.random() * 50) + 1, // Random stars for demo
+        views: Math.floor(Math.random() * 1000) + 1 // Random views for demo
+      }))
+      pagination.value = data.pagination
+    }
+  } catch (error) {
+    console.error('Error fetching projects:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+// Function to fetch statistics
+async function fetchStats() {
+  try {
+    const params = new URLSearchParams()
+
+    if (searchQuery.value) {
+      params.append('search', searchQuery.value)
+    }
+    if (selectedInstitution.value) {
+      params.append('instansi_id', selectedInstitution.value)
+    }
+    if (selectedTraining.value) {
+      params.append('pelatihan_id', selectedTraining.value)
+    }
+
+    const res = await fetch(`/api/proyek_perubahan/stats?${params}`)
+    const data = await res.json()
+    
+    if (data.success) {
+      stats.value = data.data
+    }
+  } catch (error) {
+    console.error('Error fetching stats:', error)
+  }
+}
 
 // Fetch filter options and summaries
 async function fetchFilterOptions() {
@@ -633,45 +774,10 @@ async function fetchFilterOptions() {
   }
 }
 
-// Function to fetch projects
-async function fetchProjects(instansiId = null, programId = null) {
-  try {
-    let url = '/api/proyek_perubahan'
-    
-    if (instansiId) {
-      url = `/api/proyek_perubahan/instansi/${instansiId}`
-    } else if (programId) {
-      url = `/api/proyek_perubahan/pelatihan/${programId}`
-    }
-      
-    console.log('Fetching projects from:', url)
-    const res = await fetch(url)
-    const data = await res.json()
-    
-    if (data.success && Array.isArray(data.data)) {
-      console.log('Raw project data:', data.data[0])
-      projects.value = data.data.map(item => ({
-        id: item.id,
-        title: item.proyekPerubahan,
-        description: item.abstract,
-        author: item.nama,
-        institution: item.namaInstansi,
-        instansiId: item.instansiId,
-        training: item.programNama,
-        programId: item.programId,
-        nomorKra: item.nomorKra,
-        nip: item.noIdentitas,
-        progress: 100,
-        status: 'completed',
-        tags: Array.isArray(item.kataKunci) ? item.kataKunci : (typeof item.kataKunci === 'string' ? JSON.parse(item.kataKunci.replace(/'/g, '"')) : []),
-        updatedAt: item.createdAt || '',
-        createdAt: item.createdAt || ''
-      }))
-    }
-    console.log('Institution Summary processed:', institutionSummary.value);
-  } catch (error) {
-    console.error('Error fetching projects:', error)
-  }
+// Function to fetch projects with filter (deprecated - now using fetchProjects)
+async function fetchProjectsOld(instansiId = null, programId = null) {
+  // This function is now deprecated, use fetchProjects() instead
+  await fetchProjects()
 }
 
 function showDetail(project) {
@@ -681,111 +787,31 @@ function showDetail(project) {
   console.log('Modal state:', showModal.value)
 }
 
-const projects = ref([])
-
 onMounted(async () => {
   // Fetch filter options first
   await fetchFilterOptions()
   
-  try {
-    const res = await fetch('/api/proyek_perubahan')
-    const data = await res.json()
-    if (data.success && Array.isArray(data.data)) {
-      console.log('Raw project data:', data.data[0]); // Debug: lihat struktur data asli
-      projects.value = data.data.map(item => {
-        console.log('Processing item:', item);
-        return {
-          id: item.id,
-          title: item.proyekPerubahan,
-          description: item.abstract,
-          author: item.nama,
-          institution: item.namaInstansi,
-          instansiId: item.idInstansi,
-          training: item.nama_program, // Sesuaikan dengan nama field yang benar
-          programId: item.pelatihan_id, // Sesuaikan dengan nama field yang benar dari API
-          nomorKra: item.nomorKra,
-          nip: item.noIdentitas,
-          progress: 100,
-          status: 'completed',
-          tags: Array.isArray(item.kataKunci) ? item.kataKunci : (typeof item.kataKunci === 'string' ? JSON.parse(item.kataKunci.replace(/'/g, '"')) : []),
-          updatedAt: item.createdAt || '',
-          createdAt: item.createdAt || ''
-        }
-      })
-    }
-  } catch (e) {
-    console.error('Error fetching projects:', e)
-    projects.value = []
-  }
+  // Fetch initial data
+  await fetchStats()
+  await fetchProjects()
 })
 
-// Computed properties
-const filteredProjects = computed(() => {
-  let filtered = projects.value
-
-  // Search filter
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(project => 
-      project.title.toLowerCase().includes(query) ||
-      project.description.toLowerCase().includes(query) ||
-      project.author.toLowerCase().includes(query) ||
-      project.tags.some(tag => tag.toLowerCase().includes(query))
-    )
-  }
-
-  // Training filter
-  if (selectedTraining.value) {
-    console.log('Filtering by training:', selectedTraining.value)
-    filtered = filtered.filter(project => {
-      console.log('Project programId:', project.programId, 'Selected:', selectedTraining.value)
-      return String(project.programId) === String(selectedTraining.value)
-    })
-  }
-
-  // Institution filter
-  if (selectedInstitution.value) {
-    console.log('Filtering by institution:', selectedInstitution.value)
-    filtered = filtered.filter(project => {
-      console.log('Project instansiId:', project.instansiId, 'Selected:', selectedInstitution.value)
-      return String(project.instansiId) === String(selectedInstitution.value)
-    })
-  }
-
-  console.log('Filtered results:', filtered.length)
-
-  // Sort
-  switch (sortBy.value) {
-    case 'popular':
-      filtered.sort((a, b) => b.stars - a.stars)
-      break
-    case 'title':
-      filtered.sort((a, b) => a.title.localeCompare(b.title))
-      break
-    case 'progress':
-      filtered.sort((a, b) => b.progress - a.progress)
-      break
-    default: // latest
-      filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-  }
-
-  return filtered
-})
-
+// Computed properties for pagination and display
 const paginatedProjects = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage
-  const end = start + itemsPerPage
-  return filteredProjects.value.slice(start, end)
+  // Server-side pagination, so we just return the projects as-is
+  return projects.value
 })
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredProjects.value.length / itemsPerPage)
+  return pagination.value.totalPages || 1
 })
 
 const visiblePages = computed(() => {
   const pages = []
-  const start = Math.max(1, currentPage.value - 2)
-  const end = Math.min(totalPages.value, start + 4)
+  const current = pagination.value.page
+  const total = totalPages.value
+  const start = Math.max(1, current - 2)
+  const end = Math.min(total, start + 4)
   
   for (let i = start; i <= end; i++) {
     pages.push(i)
@@ -793,17 +819,11 @@ const visiblePages = computed(() => {
   return pages
 })
 
-const completedProjects = computed(() => {
-  return filteredProjects.value.filter(p => p.status === 'completed').length
-})
-
-const ongoingProjects = computed(() => {
-  return filteredProjects.value.filter(p => p.status === 'ongoing').length
-})
-
-const totalContributors = computed(() => {
-  return new Set(filteredProjects.value.map(p => p.author)).size
-})
+// Computed properties for statistics
+const totalProjectCount = computed(() => stats.value.global_total)
+const completedProjects = computed(() => stats.value.global_completed)
+const totalContributors = computed(() => stats.value.filtered_contributors)
+const filteredProjectsCount = computed(() => stats.value.filtered_total)
 
 // Utility functions
 const getProjectBorderColor = (status) => {
@@ -842,33 +862,43 @@ const formatDate = (dateString) => {
   return `${Math.floor(diffDays / 365)} tahun lalu`
 }
 
-// Watch for filter changes
+// Watch for filter changes and pagination
 watch([searchQuery, selectedTraining, selectedInstitution, sortBy], 
-  async ([newSearch, newTraining, newInstitution, newSort], [oldSearch, oldTraining, oldInstitution, oldSort]) => {
-    console.log('Filter changed:', {
-      training: { old: oldTraining, new: newTraining },
-      institution: { old: oldInstitution, new: newInstitution },
-      search: { old: oldSearch, new: newSearch },
-      sort: { old: oldSort, new: newSort }
-    })
-    
-    // Reset page
+  async () => {
+    // Reset to first page when filters change
     currentPage.value = 1
+    pagination.value.page = 1
     
-    // Fetch filtered data if either institution or training changes
-    if (newInstitution !== oldInstitution || newTraining !== oldTraining) {
-      // If both filters are empty, fetch all projects
-      if (!newInstitution && !newTraining) {
-        await fetchProjects()
-      }
-      // Give priority to institution filter if both are selected
-      else if (newInstitution) {
-        await fetchProjects(newInstitution, null)
-      } else if (newTraining) {
-        await fetchProjects(null, newTraining)
-      }
-    }
+    // Fetch new data
+    await fetchStats()
+    await fetchProjects()
+  }
+)
+
+// Watch for page changes
+watch(currentPage, async (newPage) => {
+  pagination.value.page = newPage
+  await fetchProjects()
 })
+
+// Function to handle pagination button clicks
+function goToPage(page) {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
+
+function nextPage() {
+  if (pagination.value.hasNextPage) {
+    currentPage.value += 1
+  }
+}
+
+function prevPage() {
+  if (pagination.value.hasPrevPage) {
+    currentPage.value -= 1
+  }
+}
 </script>
 
 <style scoped>
