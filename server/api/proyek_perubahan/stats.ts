@@ -48,9 +48,9 @@ export default defineEventHandler(async (event) => {
         .leftJoin(abstract, eq(abstract.proper_id, proper.id))
         .where(whereClause)
 
-      // Get unique contributors (yang sudah difilter)
+      // Get unique contributors by no_identitas (yang sudah difilter)
       const contributorsResult = await db
-        .select({ count: countDistinct(proper.nama) })
+        .select({ count: countDistinct(proper.noIdentitas) })
         .from(proper)
         .leftJoin(abstract, eq(abstract.proper_id, proper.id))
         .where(whereClause)
@@ -60,10 +60,16 @@ export default defineEventHandler(async (event) => {
         .select({ count: count() })
         .from(proper)
 
+      // Get unique contributors globally by no_identitas
+      const globalContributorsResult = await db
+        .select({ count: countDistinct(proper.noIdentitas) })
+        .from(proper)
+
       // Semua proyek dianggap selesai karena sudah di database
       const totalProjects = totalProjectsResult[0].count
       const totalContributors = contributorsResult[0].count
       const globalTotal = globalTotalResult[0].count
+      const globalContributors = globalContributorsResult[0].count
 
       return { 
         success: true, 
@@ -75,7 +81,7 @@ export default defineEventHandler(async (event) => {
           // Statistik global (untuk card utama)
           global_total: globalTotal,
           global_completed: globalTotal, // Semua proyek dianggap selesai
-          global_contributors: globalTotal // Estimasi, bisa diupdate kalau perlu query terpisah
+          global_contributors: globalContributors // Hitung unique no_identitas
         }
       }
     }

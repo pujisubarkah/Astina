@@ -250,8 +250,19 @@
             <div class="flex items-start justify-between mb-3">
               <div class="flex items-center gap-2">
                 <div class="avatar placeholder">
-                  <div class="bg-blue-500 text-white rounded-full w-8">
-                    <span class="text-xs">{{ project.author.substring(0, 2).toUpperCase() }}</span>
+                  <div class="text-white rounded-full w-8 h-8 flex items-center justify-center" :class="getAvatarColor(project.noIdentitas)">
+                    <!-- Male Icon -->
+                    <svg v-if="getAvatarIcon(project.noIdentitas) === 'male'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <!-- Female Icon -->
+                    <svg v-else-if="getAvatarIcon(project.noIdentitas) === 'female'" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <!-- Neutral/Default Icon -->
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
                   </div>
                 </div>
                 <div>
@@ -664,6 +675,7 @@ async function fetchProjects() {
         programId: item.programId,
         nomorKra: item.nomorKra,
         nip: item.noIdentitas,
+        noIdentitas: item.noIdentitas, // Keep the original field for gender detection
         progress: 100,
         status: 'completed',
         tags: Array.isArray(item.kataKunci) ? item.kataKunci : (typeof item.kataKunci === 'string' ? JSON.parse(item.kataKunci.replace(/'/g, '"')) : []),
@@ -831,6 +843,42 @@ const getProjectBorderColor = (status) => {
     case 'completed': return 'border-green-500'
     case 'ongoing': return 'border-blue-500'
     default: return 'border-gray-300'
+  }
+}
+
+const getAvatarColor = (noIdentitas) => {
+  // Check if noIdentitas has 18 characters
+  if (!noIdentitas || noIdentitas.length !== 18) {
+    return 'bg-gray-500' // Gender neutral for invalid/incomplete NIK
+  }
+  
+  // Get the 15th digit (index 14)
+  const genderDigit = noIdentitas.charAt(14)
+  
+  if (genderDigit === '1') {
+    return 'bg-blue-500' // Male (laki-laki)
+  } else if (genderDigit === '2') {
+    return 'bg-pink-500' // Female (perempuan)
+  } else {
+    return 'bg-gray-500' // Gender neutral for other cases
+  }
+}
+
+const getAvatarIcon = (noIdentitas) => {
+  // Check if noIdentitas has 18 characters
+  if (!noIdentitas || noIdentitas.length !== 18) {
+    return 'neutral' // Gender neutral for invalid/incomplete NIK
+  }
+  
+  // Get the 15th digit (index 14)
+  const genderDigit = noIdentitas.charAt(14)
+  
+  if (genderDigit === '1') {
+    return 'male' // Male (laki-laki)
+  } else if (genderDigit === '2') {
+    return 'female' // Female (perempuan)
+  } else {
+    return 'neutral' // Gender neutral for other cases
   }
 }
 

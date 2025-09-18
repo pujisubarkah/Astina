@@ -194,6 +194,17 @@
                 <p class="text-gray-500 mt-2">Memuat data kabupaten...</p>
               </div>
               
+              <!-- No kabupaten data message -->
+              <div v-else-if="!loadingKabupaten && kabupatenData.length === 0 && selectedProvinceData" class="text-center py-8">
+                <div class="text-gray-400 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
+                </div>
+                <p class="text-gray-500 text-sm">Belum ada data kabupaten untuk {{ selectedProvinceData?.name }}</p>
+                <p class="text-gray-400 text-xs mt-1">Debug: provinsi_id = {{ selectedProvinceData?.id }}, kabupaten count = {{ kabupatenData.length }}</p>
+              </div>
+              
               <!-- Province Summary -->
               <div v-else-if="selectedProvinceData" class="space-y-4">
                 <!-- Quick Stats -->
@@ -538,6 +549,21 @@ const stats = reactive({
   completionRate: 73
 })
 
+// Fetch project statistics
+async function fetchProjectStats() {
+  try {
+    const res = await $fetch('/api/proyek_perubahan/stats')
+    if (res.success) {
+      stats.totalProjects = res.data.global_total
+      stats.totalParticipants = res.data.global_contributors
+      // Keep completion rate calculation or set it based on your business logic
+      // stats.completionRate = Math.round((res.data.global_completed / res.data.global_total) * 100)
+    }
+  } catch (error) {
+    console.error('Error fetching project stats:', error)
+  }
+}
+
 const provinsiList = ref([])
 const provinceData = reactive({})
 
@@ -564,6 +590,9 @@ function parseSvgPath(path) {
 // Fetch summary per provinsi and fill provinceData
 onMounted(async () => {
   try {
+    // Fetch project statistics first
+    await fetchProjectStats()
+    
     // Fetch data provinsi dari endpoint /api/proper/provinsi
     const resSummary = await $fetch('/api/proper/provinsi')
     if (resSummary.success && Array.isArray(resSummary.data)) {
@@ -592,9 +621,8 @@ onMounted(async () => {
         }
       })
       
-      // Update stats
+      // Update stats (provinsi count - don't override API stats)
       stats.totalProvinces = provinsiList.value.length
-      stats.totalProjects = provinsiList.value.reduce((sum, p) => sum + (p.jumlah || 0), 0)
       
       console.log('Provinsi data loaded:', provinsiList.value.length, 'provinces')
     }
@@ -785,13 +813,21 @@ async function selectProvince(code) {
       idProvinsi = provData?.id || provData?.id_provinsi
     }
     
+    console.log('Fetching kabupaten for provinsi:', idProvinsi, 'code:', code)
+    console.log('Selected province data:', selectedProvinceData.value)
+    
     if (idProvinsi) {
-      console.log('Fetching kabupaten for provinsi:', idProvinsi)
       const res = await $fetch(`/api/proper/kabupaten/${idProvinsi}`)
+      console.log('Kabupaten API response:', res)
       if (res.success && Array.isArray(res.data)) {
         kabupatenData.value = res.data
         console.log('Kabupaten data loaded:', res.data.length, 'items')
+        console.log('Sample kabupaten:', res.data[0])
+      } else {
+        console.log('No kabupaten data or invalid response:', res)
       }
+    } else {
+      console.log('No idProvinsi found for code:', code)
     }
   } catch (error) {
     console.error('Error fetching kabupaten:', error)

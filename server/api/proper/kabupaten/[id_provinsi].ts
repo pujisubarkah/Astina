@@ -2,7 +2,7 @@
 
 import { proper } from '@/server/database/schema/proper'
 import { db } from '@/server/db'
-import { sql } from 'drizzle-orm'
+import { sql, eq, count } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -18,19 +18,24 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, statusMessage: 'id_provinsi wajib diisi' })
       }
 
+      console.log('Fetching kabupaten for provinsi_id:', idProvinsi)
+
       const summaryData = await db
         .select({
           id_kabupaten: kabupaten.id,
           id_provinsi: kabupaten.id_provinsi,
           nama_kabupaten: kabupaten.nama,
           svg_path: kabupaten.svg_path,
-          jumlah: sql`count(${proper.id})`
+          jumlah: count(proper.id)
         })
         .from(kabupaten)
-        .leftJoin(instansi, sql`${kabupaten.id} = ${instansi.id_kabupaten}`)
-        .leftJoin(proper, sql`${instansi.instansi_id} = ${proper.instansiId}`)
-        .where(sql`${kabupaten.id_provinsi} = ${idProvinsi}`)
+        .leftJoin(instansi, eq(kabupaten.id, instansi.id_kabupaten))
+        .leftJoin(proper, eq(instansi.instansi_id, proper.instansiId))
+        .where(eq(kabupaten.id_provinsi, idProvinsi))
         .groupBy(kabupaten.id, kabupaten.id_provinsi, kabupaten.nama, kabupaten.svg_path)
+
+      console.log('Kabupaten query result:', summaryData.length, 'kabupaten found')
+      console.log('Sample data:', summaryData[0])
 
       return { success: true, data: summaryData }
     }
