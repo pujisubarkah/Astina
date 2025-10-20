@@ -6,7 +6,7 @@
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 class="text-4xl font-bold text-blue-900 mb-2">Statistik & Analisis</h1>
-            <p class="text-blue-700">Analisis mendalam dan tren historis proyek perubahan berbasis data</p>
+            <p class="text-blue-700">Analisis mendalam dan tren historis produk pembelajaran berbasis data</p>
           </div>
           <div class="flex gap-2">
             <select class="select select-bordered" v-model="selectedPeriod">
@@ -601,7 +601,7 @@ import * as echarts from 'echarts'
 useHead({
   title: 'Statistik & Analisis - Astina',
   meta: [
-    { name: 'description', content: 'Analisis mendalam dan statistik proyek perubahan berbasis data' }
+  { name: 'description', content: 'Analisis mendalam dan statistik produk pembelajaran berbasis data' }
   ]
 })
 

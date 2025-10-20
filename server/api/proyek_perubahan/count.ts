@@ -4,7 +4,7 @@ import { proper } from '../../database/schema/proper'
 import { db } from '../../db'
 import { count } from 'drizzle-orm'
 
-// GET: Ambil total count proyek perubahan
+// GET: Ambil total count produk pembelajaran
 export default defineEventHandler(async (event) => {
   try {
     if (event.method === 'GET') {
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
       return { 
         success: true, 
         data: {
-          total_proyek: result[0].count
+          total_produk: result[0].count
         }
       }
     }

@@ -3,8 +3,8 @@
     <div class="max-w-7xl mx-auto">
       <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-4xl font-bold text-blue-900 mb-2">Dashboard Monitoring Proyek Perubahan</h1>
-        <p class="text-blue-700">Statistik dan visualisasi proyek perubahan secara real-time</p>
+  <h1 class="text-4xl font-bold text-blue-900 mb-2">Dashboard Monitoring Produk Pembelajaran</h1>
+  <p class="text-blue-700">Statistik dan visualisasi produk pembelajaran secara real-time</p>
       </div>
 
       <!-- Loading State untuk semua data -->
@@ -551,7 +551,7 @@ const bubbleChartOptions = {
     }
   },
   title: {
-    text: 'Kata Kunci dalam Proyek Perubahan'
+    text: 'Kata Kunci dalam Produk Pembelajaran'
   }
 }
 const bubbleSeries = [

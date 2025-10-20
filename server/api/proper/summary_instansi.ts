@@ -7,7 +7,7 @@ import { count } from 'drizzle-orm'
 import { desc } from 'drizzle-orm/sql/expressions/select'
 import { eq, sql } from 'drizzle-orm'
 
-// GET: Summary proyek perubahan per kategori instansi
+// GET: Summary produk pembelajaran per kategori instansi
 export default defineEventHandler(async (event) => {
   try {
     if (event.method === 'GET') {

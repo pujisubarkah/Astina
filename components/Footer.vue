@@ -26,7 +26,7 @@
               </svg>
               <div class="ml-3">
                 <p class="font-bold text-2xl text-primary">Astina</p>
-                <p class="text-sm opacity-70">Hub Proyek Perubahan</p>
+                <p class="text-sm opacity-70">Hub Produk Pembelajaran</p>
               </div>
             </div>
           </a>

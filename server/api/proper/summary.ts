@@ -5,18 +5,18 @@ import { sql } from 'drizzle-orm'
 export default defineEventHandler(async (event) => {
   try {
     if (event.method === 'GET') {
-      // Total jumlah proyek perubahan (distinct judul)
+  // Total jumlah produk pembelajaran (distinct judul)
       const perProyek = await db
         .select({ proyekPerubahan: proper.proyekPerubahan })
         .from(proper)
         .where(sql`${proper.proyekPerubahan} IS NOT NULL AND ${proper.proyekPerubahan} <> ''`)
         .groupBy(proper.proyekPerubahan)
 
-      const totalProyekPerubahan = perProyek.length
+  const totalProdukPembelajaran = perProyek.length
 
       return {
         success: true,
-        totalProyekPerubahan
+        totalProdukPembelajaran
       }
     }
 
