@@ -5,13 +5,13 @@
       <div class="mb-8">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 class="text-4xl font-bold text-blue-900 mb-2">Hub Proyek Perubahan</h1>
+            <h1 class="text-4xl font-bold text-blue-900 mb-2">Hub Produk Pembelajaran</h1>
             <p class="text-blue-700 mb-4">
-              Pusat repositori digital untuk seluruh Proyek Perubahan dari program pelatihan kepemimpinan nasional
+              Pusat repositori digital untuk seluruh Produk Pembelajaran dari program pelatihan kepemimpinan nasional
             </p>
             <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
               <p class="text-blue-800 text-sm">
-                <strong>💡 Tentang Hub ini:</strong> Astina mengumpulkan ribuan Proyek Perubahan dari peserta 
+                <strong>💡 Tentang Hub ini:</strong> Astina mengumpulkan ribuan Produk Pembelajaran dari peserta 
                 <strong>PKN Tk I, PKN Tk II, PKA, dan PKP</strong> yang dapat Anda jelajahi, pelajari, 
                 dan adaptasi untuk transformasi di instansi Anda.
               </p>
@@ -68,7 +68,7 @@
             <ul class="space-y-2 text-blue-100">
               <li class="flex items-start gap-2">
                 <span class="text-yellow-300 mt-1">✓</span>
-                <span>Temukan inspirasi dari <strong>ribuan Proyek Perubahan</strong> terbaik</span>
+                <span>Temukan inspirasi dari <strong>ribuan Produk Pembelajaran</strong> terbaik</span>
               </li>
               <li class="flex items-start gap-2">
                 <span class="text-yellow-300 mt-1">✓</span>
@@ -438,7 +438,7 @@
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <p class="text-blue-100 text-sm font-medium tracking-wide">Proyek Perubahan</p>
+                  <p class="text-blue-100 text-sm font-medium tracking-wide">Produk Pembelajaran</p>
                 </div>
                 <h2 class="text-2xl font-bold text-white leading-normal">{{ selectedProject.title }}</h2>
               </div>
@@ -595,9 +595,9 @@ const { isLoggedIn, getAuthHeaders } = useAuth()
 
 // Page metadata
 useHead({
-  title: 'Hub Proyek Perubahan - Astina',
+  title: 'Hub Produk Pembelajaran - Astina',
   meta: [
-    { name: 'description', content: 'Hub terpusat untuk ribuan Proyek Perubahan dari program pelatihan kepemimpinan PKN Tk I, PKN Tk II, PKA, dan PKP. Jelajahi, pelajari, dan adaptasi best practice transformasi birokrasi.' }
+    { name: 'description', content: 'Hub terpusat untuk ribuan Produk Pembelajaran dari program pelatihan kepemimpinan PKN Tk I, PKN Tk II, PKA, dan PKP. Jelajahi, pelajari, dan adaptasi best practice transformasi birokrasi.' }
   ]
 })
 
@@ -660,7 +660,7 @@ async function fetchProjects() {
       params.append('pelatihan_id', selectedTraining.value)
     }
 
-    const res = await fetch(`/api/proyek_perubahan/paginated?${params}`)
+  const res = await fetch(`/api/proyek_perubahan/paginated?${params}`)
     const data = await res.json()
     
     if (data.success) {

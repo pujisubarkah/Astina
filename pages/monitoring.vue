@@ -6,7 +6,7 @@
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 class="text-4xl font-bold text-blue-900 mb-2">Monitoring Implementasi & Publikasi</h1>
-            <p class="text-blue-700">Pantau implementasi proyek perubahan dan dampak publikasinya di berbagai media</p>
+            <p class="text-blue-700">Pantau implementasi produk pembelajaran dan dampak publikasinya di berbagai media</p>
           </div>
           <div class="flex gap-2">
             <select class="select select-bordered" v-model="monitoringPeriod">
@@ -328,7 +328,7 @@ import * as echarts from 'echarts'
 useHead({
   title: 'Monitoring Proyek - Astina',
   meta: [
-    { name: 'description', content: 'Monitor progres dan status proyek perubahan secara real-time' }
+  { name: 'description', content: 'Monitor progres dan status produk pembelajaran secara real-time' }
   ]
 })
 

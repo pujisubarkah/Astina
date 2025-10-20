@@ -10,8 +10,8 @@
             </svg>
           </a>
           <div>
-            <h1 class="text-4xl font-bold text-blue-900 mb-2">Upload Proyek Perubahan</h1>
-            <p class="text-blue-700">Bagikan laporan proyek perubahan Anda dengan komunitas</p>
+            <h1 class="text-4xl font-bold text-blue-900 mb-2">Upload Produk Pembelajaran</h1>
+            <p class="text-blue-700">Bagikan laporan produk pembelajaran Anda dengan komunitas</p>
           </div>
         </div>
       </div>
@@ -137,7 +137,7 @@
               
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text font-semibold">Judul Proyek Perubahan *</span>
+                  <span class="label-text font-semibold">Judul Produk Pembelajaran *</span>
                 </label>
                 <input 
                   type="text" 
@@ -151,13 +151,44 @@
                 </label>
               </div>
 
+              <!-- Asta Cita -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Asta Cita</span>
+                  <span class="label-text-alt">Opsional - singkat visi/tujuan</span>
+                </label>
+                <input
+                  type="text"
+                  class="input input-bordered w-full"
+                  placeholder="Tuliskan Asta Cita singkat (misal: Meningkatkan kualitas layanan)"
+                  v-model="form.astaCita"
+                />
+                <label class="label">
+                  <span class="label-text-alt">Contoh: Meningkatkan kualitas layanan publik melalui digitalisasi proses</span>
+                </label>
+              </div>
+
+              <!-- SDGs -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">SDGs (Tujuan Pembangunan Berkelanjutan)</span>
+                  <span class="label-text-alt">Pilih semua yang relevan</span>
+                </label>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  <label v-for="sdg in sdgOptions" :key="sdg.id" class="flex items-center gap-2">
+                    <input type="checkbox" class="checkbox" :value="sdg.id" v-model="form.sdgs" />
+                    <span class="text-sm">{{ sdg.id }} - {{ sdg.name }}</span>
+                  </label>
+                </div>
+              </div>
+
               <div class="form-control">
                 <label class="label">
                   <span class="label-text font-semibold">Deskripsi Proyek *</span>
                 </label>
                 <textarea
                   class="textarea textarea-bordered w-full h-32"
-                  placeholder="Jelaskan latar belakang, tujuan, dan ringkasan proyek perubahan Anda..."
+                  placeholder="Jelaskan latar belakang, tujuan, dan ringkasan produk pembelajaran Anda..."
                   v-model="form.description"
                   :maxlength="500"
                   required
@@ -284,7 +315,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-control">
                   <label class="label">
-                    <span class="label-text font-semibold whitespace-normal break-words">Berapa perkiraan nilai ekonomi yang dihasilkan dari proyek perubahan atau dari penerapan hasil pelatihan yang Anda ikuti? *</span>
+                    <span class="label-text font-semibold whitespace-normal break-words">Berapa perkiraan nilai ekonomi yang dihasilkan dari produk pembelajaran atau dari penerapan hasil pelatihan yang Anda ikuti? *</span>
                   </label>
                   <select class="select select-bordered w-full" v-model="form.nilaiEkonomi" required @change="onNilaiEkonomiChange">
                     <option value="">Pilih Nilai Ekonomi</option>
@@ -454,7 +485,7 @@
                 <div>
                   <h3 class="font-bold">Panduan Upload:</h3>
                   <div class="text-sm mt-1">
-                    <p>• Dokumen utama harus berisi laporan lengkap proyek perubahan</p>
+                    <p>• Dokumen utama harus berisi laporan lengkap produk pembelajaran</p>
                     <p>• Gunakan format yang mudah dibaca (PDF lebih direkomendasikan)</p>
                     <p>• File pendukung dapat berupa gambar, data, atau material tambahan</p>
                     <p>• Pastikan tidak ada informasi sensitif/rahasia dalam dokumen</p>
@@ -641,9 +672,9 @@ import { toRaw } from 'vue'
 import UploadFile from "~/components/UploadFile.vue"
 // Page metadata
 useHead({
-  title: 'Upload Proyek Perubahan - Astina',
+  title: 'Upload Produk Pembelajaran - Astina',
   meta: [
-    { name: 'description', content: 'Upload laporan proyek perubahan Anda' }
+  { name: 'description', content: 'Upload laporan produk pembelajaran Anda' }
   ]
 })
 
@@ -677,6 +708,9 @@ const form = reactive({
       { namaMedia: '', linkBerita: '' }
     ]
   },
+  // New fields
+  astaCita: '',
+  sdgs: [],
   nilaiEkonomi: '',
   detailNilaiEkonomi: '',
   progress: 0,
@@ -716,6 +750,17 @@ const nilaiEkonomiOptions = computed(() => {
   }
   return []
 })
+
+// SDG options (simplified subset)
+const sdgOptions = ref([
+  { id: 1, name: 'Tanpa Kemiskinan' },
+  { id: 3, name: 'Kesehatan yang Baik' },
+  { id: 4, name: 'Pendidikan Berkualitas' },
+  { id: 8, name: 'Pekerjaan Layak & Pertumbuhan Ekonomi' },
+  { id: 9, name: 'Infrastruktur, Industri & Inovasi' },
+  { id: 11, name: 'Kota & Permukiman yang Berkelanjutan' },
+  { id: 13, name: 'Tindakan Iklim' }
+])
 
 // Fetch kategori
 const kategoriOptions = ref([]);
@@ -768,6 +813,8 @@ const canProceed = computed(() => {
       training: form.training,
       title: form.title,
       description: form.description,
+  astaCita: form.astaCita || null,
+  sdgs: Array.isArray(form.sdgs) ? form.sdgs : [],
       nilaiEkonomi: form.nilaiEkonomi,
       detailNilaiEkonomi: form.detailNilaiEkonomi,
       mainFileData: form.mainFileData,

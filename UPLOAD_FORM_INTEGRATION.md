@@ -1,7 +1,7 @@
 # Upload Proyek Form Integration
 
 ## Overview
-Form `upload-proyek.vue` telah berhasil diintegrasikan dengan API Project yang baru. Form ini sekarang menggunakan endpoint `/api/project` untuk menyimpan data proyek perubahan.
+Form `upload-proyek.vue` telah berhasil diintegrasikan dengan API Project yang baru. Form ini sekarang menggunakan endpoint `/api/project` untuk menyimpan data produk pembelajaran.
 
 ## Flow Proses Submit
 

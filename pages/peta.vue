@@ -5,8 +5,8 @@
       <div class="mb-8">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 class="text-4xl font-bold text-blue-900 mb-2">Peta Sebaran Proyek Perubahan</h1>
-            <p class="text-blue-700">Klik pada provinsi untuk melihat detail proyek perubahan di wilayah tersebut</p>
+            <h1 class="text-4xl font-bold text-blue-900 mb-2">Peta Sebaran Produk Pembelajaran</h1>
+            <p class="text-blue-700">Klik pada provinsi untuk melihat detail produk pembelajaran di wilayah tersebut</p>
           </div>
           <div class="flex gap-2">
             <select class="select select-bordered" v-model="selectedCategory">
@@ -350,7 +350,7 @@
                     fill="white"
                     font-size="12"
                   >
-                    {{ hoveredKabupaten?.jumlah || 0 }} proyek perubahan
+                    {{ hoveredKabupaten?.jumlah || 0 }} produk pembelajaran
                   </text>
                 </g>
               </svg>
@@ -524,7 +524,7 @@
 useHead({
   title: 'Peta Sebaran Proyek - Astina',
   meta: [
-    { name: 'description', content: 'Peta interaktif sebaran proyek perubahan di seluruh Indonesia' }
+  { name: 'description', content: 'Peta interaktif sebaran produk pembelajaran di seluruh Indonesia' }
   ]
 })
 

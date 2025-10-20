@@ -192,10 +192,10 @@
             <span class="text-yellow-300">Astina</span>
           </h1>
           <p class="text-xl mb-8 opacity-90">
-            Hub Proyek Perubahan Program Pelatihan Kepemimpinan Nasional
+            Hub Produk Pembelajaran Program Pelatihan Kepemimpinan Nasional
           </p>
           <p class="text-lg mb-10 max-w-2xl mx-auto opacity-80">
-            Astina adalah platform terpusat yang menghimpun seluruh Proyek Perubahan dari peserta 
+            Astina adalah platform terpusat yang menghimpun seluruh Produk Pembelajaran dari peserta 
             <strong class="text-yellow-300">PKN Tk I, PKN Tk II, PKA, dan PKP</strong>. 
             Menjadi jembatan kolaborasi lintas instansi untuk berbagi best practice, 
             pembelajaran, dan inovasi transformasi birokrasi di seluruh Indonesia.
@@ -224,7 +224,7 @@
         <div class="text-center mb-16">
           <h2 class="text-4xl font-bold mb-4">Mengapa Astina?</h2>
           <p class="text-lg opacity-70 max-w-3xl mx-auto">
-            Sebagai <strong>Hub Proyek Perubahan</strong> terbesar di Indonesia, Astina mengintegrasikan 
+            Sebagai <strong>Hub Produk Pembelajaran</strong> terbesar di Indonesia, Astina mengintegrasikan 
             seluruh hasil karya peserta program pelatihan kepemimpinan dalam satu platform yang mudah diakses, 
             dipelajari, dan diadaptasi oleh instansi lain.
           </p>
@@ -242,7 +242,7 @@
               </div>
               <h3 class="card-title justify-center text-lg">Hub Repositori</h3>
               <p class="text-sm opacity-70">
-                Pusat penyimpanan digital untuk semua Proyek Perubahan dari PKN Tk I, PKN Tk II, PKA, dan PKP yang terorganisir dengan baik.
+                Pusat penyimpanan digital untuk semua Produk Pembelajaran dari PKN Tk I, PKN Tk II, PKA, dan PKP yang terorganisir dengan baik.
               </p>
             </div>
           </div>
@@ -257,7 +257,7 @@
               </div>
               <h3 class="card-title justify-center text-lg">Tracking Perubahan</h3>
               <p class="text-sm opacity-70">
-                Rekam jejak setiap tahapan proyek perubahan dengan detail kronologi dan milestone yang jelas untuk akuntabilitas
+                Rekam jejak setiap tahapan produk pembelajaran dengan detail kronologi dan milestone yang jelas untuk akuntabilitas
               </p>
             </div>
           </div>
@@ -287,7 +287,7 @@
               </div>
               <h3 class="card-title justify-center text-lg">Learning Hub</h3>
               <p class="text-sm opacity-70">
-                Platform pembelajaran terpusat untuk mengakses panduan, studi kasus, dan dokumentasi lengkap dari setiap Proyek Perubahan.
+                Platform pembelajaran terpusat untuk mengakses panduan, studi kasus, dan dokumentasi lengkap dari setiap Produk Pembelajaran.
               </p>
             </div>
           </div>
@@ -446,10 +446,10 @@
             <p>
               <strong class="text-blue-900">Astina (Aplikasi Sentral Transformasi Inovasi dan Nilai Aparatur)</strong> 
               adalah platform digital yang didedikasikan untuk mengumpulkan, mengelola, dan membagikan 
-              seluruh Proyek Perubahan yang dihasilkan oleh peserta program pelatihan kepemimpinan di Indonesia.
+              seluruh Produk Pembelajaran yang dihasilkan oleh peserta program pelatihan kepemimpinan di Indonesia.
             </p>
             <p>
-              Melalui Astina, ribuan Proyek Perubahan dari alumni <strong>PKN Tk I, PKN Tk II, PKA, dan PKP</strong> 
+              Melalui Astina, ribuan Produk Pembelajaran dari alumni <strong>PKN Tk I, PKN Tk II, PKA, dan PKP</strong> 
               dapat diakses dengan mudah, dipelajari, dan diadaptasi oleh instansi lain untuk menciptakan 
               dampak transformasi yang lebih luas di seluruh birokrasi Indonesia.
             </p>
@@ -457,7 +457,7 @@
               <div class="bg-white p-6 rounded-lg shadow-md">
                 <h3 class="font-bold text-blue-900 mb-3">📚 Yang Tersedia</h3>
                 <p class="text-blue-700">
-                  Akses mudah ke ribuan Proyek Perubahan yang telah terbukti berhasil, lengkap dengan 
+                  Akses mudah ke ribuan Produk Pembelajaran yang telah terbukti berhasil, lengkap dengan 
                   dokumentasi, pembelajaran, dan panduan implementasi untuk diadaptasi di instansi Anda.
                 </p>
               </div>
@@ -478,9 +478,9 @@
     <div class="py-20 bg-base-200">
       <div class="container mx-auto px-4">
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold mb-4">Statistik Proyek Perubahan</h2>
+          <h2 class="text-4xl font-bold mb-4">Statistik Produk Pembelajaran</h2>
           <p class="text-lg opacity-70">
-            Berbagai Proyek Perubahan yang dilakukan peserta pelatihan dari tahun 2020 hingga kini
+            Berbagai Produk Pembelajaran yang dilakukan peserta pelatihan dari tahun 2020 hingga kini
           </p>
         </div>
 
@@ -488,7 +488,7 @@
           <div v-for="program in summaryProgram" :key="program.programId" class="stat bg-base-100 rounded-lg shadow-lg">
             <div class="stat-title">{{ program.programNama }}</div>
             <div class="stat-value text-blue-600">{{ program.count.toLocaleString() }}</div>
-            <div class="stat-desc">Jumlah proyek</div>
+            <div class="stat-desc">Jumlah produk</div>
           </div>
         </div>
       </div>
@@ -501,14 +501,14 @@
         <p class="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
           Ribuan aparatur sipil negara telah menggunakan Astina sebagai hub untuk berkolaborasi, 
           berbagi best practice, dan mengakselerasi transformasi birokrasi. 
-          <strong>Proyek Perubahan Anda bisa menginspirasi instansi lain!</strong>
+          <strong>Produk Pembelajaran Anda bisa menginspirasi instansi lain!</strong>
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a href="/daftar-proyek" class="btn btn-warning btn-lg text-blue-900">
-            Jelajahi Proyek Perubahan
+            Jelajahi Produk Pembelajaran
           </a>
           <a href="/upload-proyek" class="btn btn-outline btn-lg text-white border-white hover:bg-white hover:text-blue-700">
-            Kontribusi Proyek Anda
+            Kontribusi Produk Anda
           </a>
         </div>
       </div>
@@ -536,9 +536,9 @@ onMounted(async () => {
 
 // Set page metadata
 useHead({
-  title: 'ASTINA - Hub Proyek Perubahan Pelatihan Kepemimpinan',
+  title: 'ASTINA - Hub Produk Pembelajaran Pelatihan Kepemimpinan',
   meta: [
-    { name: 'description', content: 'Platform Repositori Proyek Perubahan Pelatihan Kepemimpinan Nasional. Kelola repositori proyek, tracking perubahan, dan kolaborasi tim dengan mudah.' }
+    { name: 'description', content: 'Platform Repositori Produk Pembelajaran Pelatihan Kepemimpinan Nasional. Kelola repositori produk, tracking pembelajaran, dan kolaborasi tim dengan mudah.' }
   ]
 })
 </script>

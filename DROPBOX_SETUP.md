@@ -1,7 +1,7 @@
 # Dropbox Integration Setup
 
 ## Overview
-Astina aplikasi sekarang menggunakan Dropbox untuk menyimpan file upload dari form proyek perubahan. File-file akan diupload ke folder `/astina/uploads/` di Dropbox dan dibuat shared link untuk akses publik.
+Astina aplikasi sekarang menggunakan Dropbox untuk menyimpan file upload dari form produk pembelajaran. File-file akan diupload ke folder `/astina/uploads/` di Dropbox dan dibuat shared link untuk akses publik.
 
 ## Setup Dropbox App
 
