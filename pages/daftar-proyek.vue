@@ -408,107 +408,112 @@
           ></div>
           
           <!-- Modal Content with Glass Effect -->
-          <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl max-w-2xl w-full mx-4 relative z-[110] border border-white/20 overflow-hidden">
-            <!-- Header with Gradient -->
-            <div class="absolute top-0 left-0 right-0 h-48 bg-gradient-to-br from-blue-600 to-blue-800">
+          <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl max-w-4xl w-full mx-4 relative z-[110] border border-white/20 overflow-hidden max-h-[90vh] flex flex-col">
+            <!-- Header with Gradient - Fixed Height -->
+            <div class="relative bg-gradient-to-br from-blue-600 to-blue-800 px-6 py-6 flex-shrink-0">
               <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-blue-400/20 to-transparent"></div>
-            </div>
-            
-            <!-- Close Button -->
-            <button 
-              class="absolute top-4 right-4 btn btn-circle btn-sm bg-white hover:bg-white/90 border-0 text-blue-600 z-10"
-              @click="showModal = false"
-            >
-              ✕
-            </button>
+              
+              <!-- Close Button -->
+              <button 
+                class="absolute top-4 right-4 btn btn-circle btn-sm bg-white hover:bg-white/90 border-0 text-blue-600 z-10"
+                @click="showModal = false"
+              >
+                ✕
+              </button>
 
-            <!-- Content Container -->
-            <div class="relative">
-              <!-- Title Section -->
-              <div class="px-6 pt-8 pb-10">
-                <div class="flex items-center gap-2 mb-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <!-- Title Section with Better Text Handling -->
+              <div class="relative">
+                <div class="flex items-center gap-2 mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-100 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   <p class="text-blue-100 text-sm font-medium tracking-wide">Produk Pembelajaran</p>
                 </div>
-                <h2 class="text-2xl font-bold text-white leading-normal">{{ selectedProject.title }}</h2>
+                <!-- Improved Title with Better Responsive Design -->
+                <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-white leading-tight break-words pr-12">
+                  {{ selectedProject.title }}
+                </h2>
               </div>
+            </div>
               
-              <!-- Main Content Grid -->
-              <div class="grid md:grid-cols-2 gap-6 bg-white/95 backdrop-blur-sm rounded-t-xl p-6 shadow-lg">
+            <!-- Scrollable Main Content -->
+            <div class="flex-1 overflow-y-auto modal-scroll">
+              <div class="grid md:grid-cols-2 gap-6 bg-white/95 backdrop-blur-sm p-6">
                 <!-- Left Column - Basic Info -->
                 <div class="space-y-4">
-                  <div class="flex items-center space-x-2 text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div class="flex items-start space-x-3 text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    <div>
+                    <div class="min-w-0">
                       <p class="text-sm text-gray-500">Nama</p>
-                      <p class="font-medium">{{ selectedProject.author }}</p>
+                      <p class="font-medium break-words">{{ selectedProject.author }}</p>
                     </div>
                   </div>
 
-                  <div class="flex items-center space-x-2 text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div class="flex items-start space-x-3 text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
                     </svg>
-                    <div>
+                    <div class="min-w-0">
                       <p class="text-sm text-gray-500">NIP</p>
-                      <p class="font-medium">{{ selectedProject.nip }}</p>
+                      <p class="font-medium break-words">{{ selectedProject.nip }}</p>
                     </div>
                   </div>
 
-                  <div class="flex items-center space-x-2 text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div class="flex items-start space-x-3 text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
-                    <div>
+                    <div class="min-w-0">
                       <p class="text-sm text-gray-500">Instansi</p>
-                      <p class="font-medium">{{ selectedProject.institution }}</p>
+                      <p class="font-medium break-words">{{ selectedProject.institution }}</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Right Column - Additional Info -->
                 <div class="space-y-4">
-                  <div class="flex items-center space-x-2 text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div class="flex items-start space-x-3 text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <div>
+                    <div class="min-w-0">
                       <p class="text-sm text-gray-500">Nomor KRA</p>
-                      <p class="font-medium">{{ selectedProject.nomorKra }}</p>
+                      <p class="font-medium break-words">{{ selectedProject.nomorKra }}</p>
                     </div>
                   </div>
 
-                  <div class="flex items-center space-x-2 text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div class="flex items-start space-x-3 text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
-                    <div>
+                    <div class="min-w-0">
                       <p class="text-sm text-gray-500">Program</p>
-                      <p class="font-medium">{{ selectedProject.training }}</p>
+                      <p class="font-medium break-words">{{ selectedProject.training }}</p>
                     </div>
                   </div>
                 </div>
 
                 <!-- Full Width Content -->
-                <div class="md:col-span-2 space-y-4">
-                  <!-- Abstract -->
+                <div class="md:col-span-2 space-y-6">
+                  <!-- Abstract with Scrollable Content -->
                   <div class="bg-gray-50 rounded-lg p-4">
-                    <h3 class="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
+                    <h3 class="text-sm font-medium text-gray-500 mb-3 flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
                       </svg>
                       Abstrak
                     </h3>
-                    <p class="text-gray-700 leading-relaxed">{{ selectedProject.description }}</p>
+                    <!-- Scrollable description for long content -->
+                    <div class="max-h-48 overflow-y-auto description-scroll">
+                      <p class="text-gray-700 leading-relaxed whitespace-pre-wrap break-words">{{ selectedProject.description }}</p>
+                    </div>
                   </div>
 
                   <!-- Tags -->
                   <div>
-                    <h3 class="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
+                    <h3 class="text-sm font-medium text-gray-500 mb-3 flex items-center gap-2">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                       </svg>
@@ -960,6 +965,44 @@ function prevPage() {
 
 .card {
   transition: all 0.3s ease;
+}
+
+/* Custom scrollbar styles for modal */
+.modal-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Description scrollbar */
+.description-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.description-scroll::-webkit-scrollbar-track {
+  background: #f8fafc;
+  border-radius: 2px;
+}
+
+.description-scroll::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 2px;
+}
+
+.description-scroll::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
 }
 
 .card:hover {

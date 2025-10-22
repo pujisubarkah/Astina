@@ -34,20 +34,8 @@
             <div v-if="currentStep === 1" class="space-y-6">
               <h2 class="text-2xl font-semibold text-gray-800 mb-4">Informasi Dasar</h2>
               
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text font-semibold">Nama Lengkap *</span>
-                  </label>
-                  <input 
-                    type="text" 
-                    placeholder="Masukkan nama lengkap Anda"
-                    class="input input-bordered w-full"
-                    v-model="form.authorName"
-                    required
-                  />
-                </div>
-
+              <!-- NIP dan Program Pelatihan di atas -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
                 <div class="form-control">
                   <label class="label">
                     <span class="label-text font-semibold">NIP *</span>
@@ -58,7 +46,64 @@
                     class="input input-bordered w-full"
                     v-model="form.nip"
                     required
+                    @input="onNipOrPelatihanChange"
                   />
+                  <label class="label">
+                    <span class="label-text-alt text-blue-600">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Data akan terisi otomatis jika NIP dan Program Pelatihan sudah terdaftar
+                    </span>
+                  </label>
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Program Pelatihan *</span>
+                  </label>
+                  <select class="select select-bordered w-full" v-model="form.training" required @change="onNipOrPelatihanChange">
+                    <option :value="''">Pilih Program Pelatihan</option>
+                    <option v-for="pelatihan in pelatihanOptions" :key="pelatihan.id" :value="Number(pelatihan.id)">
+                      {{ pelatihan.nama }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Loading indicator for auto-fill -->
+              <div v-if="isLoadingAutoFill" class="flex items-center justify-center p-4 bg-yellow-50 rounded-lg">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-yellow-700">Sedang mencari data yang sesuai...</span>
+              </div>
+
+              <!-- Auto-fill success message -->
+              <div v-if="autoFillMessage" class="alert alert-success">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{{ autoFillMessage }}</span>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">Nama Lengkap *</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder="Masukkan nama lengkap Anda"
+                    class="input input-bordered w-full"
+                    :class="{ 'input-success': form.isAutoFilled }"
+                    v-model="form.authorName"
+                    required
+                  />
+                  <label v-if="form.isAutoFilled" class="label">
+                    <span class="label-text-alt text-green-600">✓ Terisi otomatis</span>
+                  </label>
                 </div>
 
                 <div class="form-control">
@@ -76,14 +121,41 @@
 
                 <div class="form-control">
                   <label class="label">
+                    <span class="label-text font-semibold">Nomor KRA</span>
+                    <span class="label-text-alt text-gray-500">Otomatis terisi jika data ditemukan</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder="Akan terisi otomatis jika NIP dan Program Pelatihan terdaftar"
+                    class="input input-bordered w-full bg-gray-50"
+                    :class="{ 'input-success bg-green-50': form.isAutoFilled && form.nomorKra }"
+                    v-model="form.nomorKra"
+                    readonly
+                    disabled
+                  />
+                  <label v-if="form.isAutoFilled && form.nomorKra" class="label">
+                    <span class="label-text-alt text-green-600">✓ Terisi otomatis</span>
+                  </label>
+                  <label v-else class="label">
+                    <span class="label-text-alt text-gray-500">Field ini tidak dapat diedit manual</span>
+                  </label>
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
                     <span class="label-text font-semibold">Kategori Instansi *</span>
                   </label>
-                  <select class="select select-bordered w-full" v-model="form.kategoriInstansi" required @change="onKategoriChange">
+                  <select class="select select-bordered w-full" 
+                    :class="{ 'select-success': form.isAutoFilled }"
+                    v-model="form.kategoriInstansi" required @change="onKategoriChange">
                     <option :value="''">Pilih Kategori Instansi</option>
                     <option v-for="kategori in kategoriOptions" :key="kategori.id" :value="Number(kategori.id)">
                       {{ kategori.nama }}
                     </option>
                   </select>
+                  <label v-if="form.isAutoFilled" class="label">
+                    <span class="label-text-alt text-green-600">✓ Terisi otomatis</span>
+                  </label>
                 </div>
 
                 <div class="form-control">
@@ -95,6 +167,7 @@
                     <input
                       type="text"
                       class="input input-bordered w-full"
+                      :class="{ 'input-success': form.isAutoFilled }"
                       placeholder="Ketik untuk mencari instansi..."
                       v-model="instansiQuery"
                       :disabled="!form.kategoriInstansi"
@@ -113,6 +186,9 @@
                     </ul>
                   </div>
                   <input type="hidden" :value="form.institution" />
+                  <label v-if="form.isAutoFilled" class="label">
+                    <span class="label-text-alt text-green-600">✓ Terisi otomatis</span>
+                  </label>
                 </div>
 
                   <div class="form-control">
@@ -124,6 +200,7 @@
                       <input
                         type="text"
                         class="input input-bordered w-full"
+                        :class="{ 'input-success': form.isAutoFilled }"
                         placeholder="Ketik untuk mencari Lembaga Diklat..."
                         v-model="lemdikQuery"
                         @focus="lemdikOpen = true"
@@ -141,20 +218,9 @@
                       </ul>
                     </div>
                     <input type="hidden" :value="form.lembagaDiklat" />
-                  </div>
-
-                 
-
-                  <div class="form-control md:col-span-2">
-                    <label class="label">
-                      <span class="label-text font-semibold">Program Pelatihan *</span>
+                    <label v-if="form.isAutoFilled" class="label">
+                      <span class="label-text-alt text-green-600">✓ Terisi otomatis</span>
                     </label>
-                    <select class="select select-bordered w-full" v-model="form.training" required>
-                      <option :value="''">Pilih Program Pelatihan</option>
-                      <option v-for="pelatihan in pelatihanOptions" :key="pelatihan.id" :value="Number(pelatihan.id)">
-                        {{ pelatihan.nama }}
-                      </option>
-                    </select>
                   </div>
               </div>
             </div>
@@ -171,11 +237,13 @@
                   type="text" 
                   placeholder="Berikan judul yang jelas dan deskriptif"
                   class="input input-bordered w-full"
+                  :class="{ 'input-success': form.isAutoFilled && form.title }"
                   v-model="form.title"
                   required
                 />
                 <label class="label">
                   <span class="label-text-alt">{{ form.title.length }}/100 karakter</span>
+                  <span v-if="form.isAutoFilled && form.title" class="label-text-alt text-green-600">✓ Terisi otomatis</span>
                 </label>
               </div>
 
@@ -853,6 +921,8 @@ const form = reactive({
   training: '',
   nip: '',
   nomorKra: '',
+  proper_id: null, // ID dari tabel proper untuk tracking
+  isAutoFilled: false, // Flag untuk menandai data yang terisi otomatis
   
   // Step 2
   title: '',
@@ -892,6 +962,10 @@ const form = reactive({
   agreeTerms: false,
   agreeAccuracy: false
 })
+
+// State untuk auto-fill
+const isLoadingAutoFill = ref(false)
+const autoFillMessage = ref('')
 
 // Asta Cita options fetched from API
 const astacitaOptions = ref([])
@@ -1130,6 +1204,78 @@ const getMediaMassaLinks = () => {
 const onKategoriChange = () => {
   // Reset pilihan instansi ketika kategori berubah
   form.institution = undefined
+}
+
+// Fungsi untuk auto-fill data berdasarkan NIP dan Program Pelatihan
+const autoFillFromProper = async () => {
+  // Reset pesan dan status auto-fill
+  autoFillMessage.value = ''
+  form.isAutoFilled = false
+  
+  // Validasi input
+  if (!form.nip || !form.training) {
+    return
+  }
+
+  isLoadingAutoFill.value = true
+
+  try {
+    const response = await fetch(`/api/proper/autofill?nip=${encodeURIComponent(form.nip)}&pelatihanId=${form.training}`)
+    const result = await response.json()
+
+    if (result.success && result.data) {
+      const data = result.data
+      
+      // Fill form data
+      form.proper_id = data.proper_id
+      form.authorName = data.authorName
+      form.email = data.email || form.email // Gunakan yang sudah ada jika kosong
+      form.kategoriInstansi = data.kategoriInstansi
+      form.institution = data.institution
+      form.lembagaDiklat = data.lembagaDiklat
+      form.title = data.title
+      form.nomorKra = data.nomorKra || ''
+      
+      // Update combobox queries
+      instansiQuery.value = data.institutionName
+      lemdikQuery.value = data.lembagaDiklatName
+      
+      // Set flag auto-filled
+      form.isAutoFilled = true
+      autoFillMessage.value = result.message
+      
+      // Auto-hide message after 5 seconds
+      setTimeout(() => {
+        autoFillMessage.value = ''
+      }, 5000)
+
+    } else {
+      // Data tidak ditemukan, reset flag dan clear auto-filled fields
+      form.isAutoFilled = false
+      form.proper_id = null
+      form.nomorKra = '' // Reset nomor KRA
+      
+      if (result.message && result.message !== 'Data tidak ditemukan untuk NIP dan Program Pelatihan tersebut') {
+        console.warn('Auto-fill warning:', result.message)
+      }
+    }
+  } catch (error) {
+    console.error('Error during auto-fill:', error)
+    form.isAutoFilled = false
+    form.proper_id = null
+    form.nomorKra = '' // Reset nomor KRA on error
+  } finally {
+    isLoadingAutoFill.value = false
+  }
+}
+
+// Handler untuk perubahan NIP atau Program Pelatihan
+const onNipOrPelatihanChange = () => {
+  // Debounce untuk menghindari terlalu banyak request
+  clearTimeout(window.autoFillTimeout)
+  window.autoFillTimeout = setTimeout(() => {
+    autoFillFromProper()
+  }, 500) // 500ms delay
 }
 
 const onNilaiEkonomiChange = () => {
@@ -1442,6 +1588,11 @@ const submitProject = async () => {
       updatedAt: new Date().toISOString()
     }
 
+    // Tambahkan proper_id jika data berasal dari auto-fill
+    if (form.proper_id) {
+      projectData.properId = form.proper_id
+    }
+
     if (instansiIdSafe !== undefined) projectData.instansiId = instansiIdSafe
     if (kategoriInstansiIdSafe !== undefined) projectData.kategoriInstansiId = kategoriInstansiIdSafe
     if (lemdikIdSafe !== undefined) projectData.lemdikId = lemdikIdSafe
@@ -1564,6 +1715,25 @@ watch(() => form.metodeUpload, (newVal) => {
     form.supportLinks = ['']
   }
 })
+
+// Watch for manual changes to auto-filled fields to reset auto-fill status
+watch([
+  () => form.authorName,
+  () => form.email,
+  () => form.kategoriInstansi,
+  () => form.institution,
+  () => form.lembagaDiklat,
+  () => form.title,
+  () => form.nomorKra
+], () => {
+  // Reset auto-fill status if user manually edits fields
+  if (form.isAutoFilled) {
+    // Small delay to avoid triggering on programmatic changes
+    setTimeout(() => {
+      autoFillMessage.value = ''
+    }, 100)
+  }
+}, { deep: false })
 
 // Auto-save draft (optional)
 watchEffect(() => {
