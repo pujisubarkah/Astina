@@ -210,7 +210,7 @@
           </div>
           <div class="stat-title">Kontributor</div>
           <div class="stat-value text-purple-600">{{ totalContributors }}</div>
-          <div class="stat-desc text-sm text-gray-500">Jumlah kontributor unik yang mengunggah Produk Pembelajaran</div>
+          <div class="stat-desc text-sm text-gray-500">Jumlah kontributor Produk Pembelajaran</div>
         </div>
       </div>
 

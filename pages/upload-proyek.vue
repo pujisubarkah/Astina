@@ -438,43 +438,99 @@
             <div v-if="currentStep === 3" class="space-y-6">
               <h2 class="text-2xl font-semibold text-gray-800 mb-4">Upload File Laporan</h2>
               
-              <!-- Main Document -->
+              <!-- Pertanyaan Awal: Apakah ada berkas pendukung -->
               <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Apakah produk pembelajaran memiliki berkas pendukung? *</span>
+                </label>
+                <div class="flex gap-4">
+                  <label class="label cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="hasBerkas" 
+                      class="radio radio-primary" 
+                      :value="true"
+                      v-model="form.hasBerkasPendukung"
+                    />
+                    <span class="label-text ml-2">Ya</span>
+                  </label>
+                  <label class="label cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="hasBerkas" 
+                      class="radio radio-primary" 
+                      :value="false"
+                      v-model="form.hasBerkasPendukung"
+                    />
+                    <span class="label-text ml-2">Tidak</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Jika Ya, tampilkan pilihan metode upload -->
+              <div v-if="form.hasBerkasPendukung" class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Metode upload produk pembelajaran *</span>
+                </label>
+                <div class="flex gap-4">
+                  <label class="label cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="metodeUpload" 
+                      class="radio radio-primary" 
+                      value="link"
+                      v-model="form.metodeUpload"
+                    />
+                    <span class="label-text ml-2">Melalui Link</span>
+                  </label>
+                  <label class="label cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name="metodeUpload" 
+                      class="radio radio-primary" 
+                      value="upload"
+                      v-model="form.metodeUpload"
+                    />
+                    <span class="label-text ml-2">Upload File</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Main Document -->
+              <div v-if="form.hasBerkasPendukung" class="form-control">
                 <label class="label">
                   <span class="label-text font-semibold">Dokumen Utama *</span>
                 </label>
-                <!-- If pelatihan 1 or 2 -> allow file upload using UploadFile -->
-                <div v-if="[1,2].includes(Number(form.training))">
-                  <UploadFile @fileUploaded="handleMainFileUploaded" @uploadError="handleUploadError" />
-                </div>
-                <!-- If pelatihan 3 or 4 -> ask for a link (Google Drive or other) -->
-                <div v-else-if="[3,4].includes(Number(form.training))">
+                
+                <!-- Jika memilih melalui link -->
+                <div v-if="form.metodeUpload === 'link'">
                   <input
                     type="url"
-                    placeholder="https://drive.google.com/your-file-link"
+                    placeholder="https://drive.google.com/file/d/your-file-id/view"
                     class="input input-bordered w-full"
                     v-model="form.mainFileLink"
                     required
                   />
                   <label class="label">
-                    <span class="label-text-alt">Masukkan link publik file (Google Drive, OneDrive, Dropbox, dll.)</span>
+                    <span class="label-text-alt">Lampirkan link/tautan dokumen produk pembelajaran yang telah diupload di GDrive/OneDrive dengan akses yang diatur terbuka (Anyone can view)</span>
                   </label>
                 </div>
-                <!-- Fallback for other pelatihan types -->
-                <div v-else>
+                
+                <!-- Jika memilih upload file -->
+                <div v-else-if="form.metodeUpload === 'upload'">
                   <UploadFile @fileUploaded="handleMainFileUploaded" @uploadError="handleUploadError" />
                 </div>
               </div>
 
               <!-- Cover -->
-              <div class="form-control">
+              <div v-if="form.hasBerkasPendukung && form.metodeUpload" class="form-control">
                 <label class="label">
                   <span class="label-text font-semibold">Cover (gambar)</span>
                   <span class="label-text-alt">Opsional - upload cover sebagai gambar (JPG/PNG)</span>
                 </label>
                 <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                  <!-- For pelatihan 1/2: file inputs (cover image only) -->
-                  <template v-if="[1,2].includes(Number(form.training))">
+                  <!-- Jika metode upload file -->
+                  <template v-if="form.metodeUpload === 'upload'">
                     <input 
                       type="file" 
                       class="hidden" 
@@ -493,36 +549,24 @@
                       Tambah Cover
                     </button>
                   </template>
-                  <!-- For pelatihan 3/4: accept links instead -->
-                  <template v-else-if="[3,4].includes(Number(form.training))">
-                    <p class="text-gray-600 mb-2">Masukkan link file pendukung (Google Drive, Dropbox, dll.)</p>
+                  <!-- Jika metode link -->
+                  <template v-else-if="form.metodeUpload === 'link'">
+                    <p class="text-gray-600 mb-2">Masukkan link file pendukung (Google Drive, OneDrive, dll.)</p>
                     <div class="space-y-2">
                       <div v-for="(link, idx) in form.supportLinks" :key="idx" class="flex gap-2">
-                        <input type="url" v-model="form.supportLinks[idx]" class="input input-bordered flex-1 input-sm" placeholder="https://drive.google.com/..." />
+                        <input 
+                          type="url" 
+                          v-model="form.supportLinks[idx]" 
+                          class="input input-bordered flex-1 input-sm" 
+                          placeholder="https://drive.google.com/file/d/your-file-id/view"
+                        />
                         <button type="button" class="btn btn-ghost btn-sm text-red-500" @click="removeSupportLink(idx)">✕</button>
                       </div>
                       <button type="button" class="btn btn-outline btn-sm" @click="addSupportLink">Tambah Link</button>
                     </div>
-                  </template>
-                  <!-- Fallback: file inputs -->
-                  <template v-else>
-                    <input 
-                      type="file" 
-                      class="hidden" 
-                      ref="supportFileInput"
-                      @change="handleSupportFiles"
-                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xls,.xlsx"
-                      multiple
-                    />
-                    <p class="text-gray-600 mb-2">Upload file pendukung (gambar, excel, dll)</p>
-                    <p class="text-sm text-gray-500 mb-4">PDF, DOC, JPG, PNG, XLS (Max 5MB per file)</p>
-                    <button 
-                      type="button" 
-                      class="btn btn-outline btn-sm"
-                      @click="$refs.supportFileInput.click()"
-                    >
-                      Tambah File
-                    </button>
+                    <label class="label">
+                      <span class="label-text-alt">Lampirkan link file pendukung dengan akses yang diatur terbuka (Anyone can view)</span>
+                    </label>
                   </template>
                 </div>
                 
@@ -662,16 +706,37 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
+                    <p class="font-semibold text-gray-700">Berkas Pendukung:</p>
+                    <span class="badge badge-secondary">{{ form.hasBerkasPendukung ? 'Ya' : 'Tidak' }}</span>
+                  </div>
+                  <div v-if="form.hasBerkasPendukung && form.metodeUpload">
+                    <p class="font-semibold text-gray-700">Metode Upload:</p>
+                    <span class="badge badge-outline">{{ form.metodeUpload === 'link' ? 'Melalui Link' : 'Upload File' }}</span>
+                  </div>
+                  <div v-if="form.hasBerkasPendukung">
                     <p class="font-semibold text-gray-700">Total File:</p>
                     <span class="badge badge-secondary">{{ getTotalFiles() }} file</span>
                   </div>
-                  <div v-if="form.mainFileData">
+                </div>
+                
+                <div v-if="form.hasBerkasPendukung" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div v-if="form.mainFileData && form.metodeUpload === 'upload'">
                     <p class="font-semibold text-gray-700">Dokumen Utama:</p>
                     <span class="badge badge-primary">{{ form.mainFileData.filename }}</span>
+                  </div>
+                  <div v-if="form.mainFileLink && form.metodeUpload === 'link'">
+                    <p class="font-semibold text-gray-700">Link Dokumen Utama:</p>
+                    <a :href="form.mainFileLink" target="_blank" class="text-blue-500 hover:underline text-sm truncate block">
+                      {{ form.mainFileLink }}
+                    </a>
                   </div>
                   <div v-if="form.supportFiles.length > 0">
                     <p class="font-semibold text-gray-700">File Pendukung:</p>
                     <span class="badge badge-outline">{{ form.supportFiles.length }} file</span>
+                  </div>
+                  <div v-if="form.supportLinks.filter(l => l && l.trim()).length > 0">
+                    <p class="font-semibold text-gray-700">Link Pendukung:</p>
+                    <span class="badge badge-outline">{{ form.supportLinks.filter(l => l && l.trim()).length }} link</span>
                   </div>
                 </div>
                 
@@ -814,11 +879,13 @@ const form = reactive({
   endDate: '',
   
   // Step 3
+  hasBerkasPendukung: null, // true/false untuk apakah ada berkas pendukung
+  metodeUpload: '', // 'link' atau 'upload'
   mainFile: null,
   mainFileData: null, // Store uploaded file data from Dropbox
   // If training requires link-based upload (pelatihan 3/4) we store link(s)
   mainFileLink: '',
-  supportLinks: [],
+  supportLinks: [''],
   supportFiles: [],
   
   // Step 4
@@ -978,14 +1045,22 @@ const canProceed = computed(() => {
       case 2:
         return form.title && form.description && form.nilaiEkonomi && form.detailNilaiEkonomi
       case 3:
-        // If training 1/2 require uploaded file, otherwise require a link for 3/4
-        if ([1,2].includes(Number(form.training))) {
-          return form.mainFileData
+        // Jika tidak ada berkas pendukung, bisa langsung lanjut
+        if (form.hasBerkasPendukung === false) {
+          return true
         }
-        if ([3,4].includes(Number(form.training))) {
-          return form.mainFileLink && form.mainFileLink.trim() !== ''
+        // Jika ada berkas pendukung, harus pilih metode dan isi sesuai metode
+        if (form.hasBerkasPendukung === true) {
+          if (!form.metodeUpload) return false
+          if (form.metodeUpload === 'link') {
+            return form.mainFileLink && form.mainFileLink.trim() !== ''
+          }
+          if (form.metodeUpload === 'upload') {
+            return form.mainFileData
+          }
         }
-        return form.mainFileData
+        // Jika belum pilih ya/tidak
+        return form.hasBerkasPendukung !== null
       case 4:
         return form.agreeTerms && form.agreeAccuracy
       default:
@@ -1095,6 +1170,9 @@ const removeMediaSosial = (index) => {
 }
 
 const addSupportLink = () => {
+  if (!Array.isArray(form.supportLinks)) {
+    form.supportLinks = []
+  }
   form.supportLinks.push('')
 }
 
@@ -1193,8 +1271,8 @@ const handleUploadError = (error) => {
 const { uploadToGoogleDrive } = useFileUpload()
 
 const handleSupportFiles = async (event) => {
-  // If this training uses link-based uploads, ignore file input
-  if ([3,4].includes(Number(form.training))) {
+  // If metode upload is not 'upload', ignore file input
+  if (form.metodeUpload !== 'upload') {
     return
   }
 
@@ -1222,7 +1300,22 @@ const handleSupportFiles = async (event) => {
 }
 
 const getTotalFiles = () => {
-  return (form.mainFileData ? 1 : 0) + form.supportFiles.length
+  if (!form.hasBerkasPendukung) return 0
+  
+  let total = 0
+  
+  // Count main file/link
+  if (form.metodeUpload === 'upload' && form.mainFileData) {
+    total += 1
+  } else if (form.metodeUpload === 'link' && form.mainFileLink && form.mainFileLink.trim()) {
+    total += 1
+  }
+  
+  // Count support files/links
+  total += form.supportFiles.length
+  total += form.supportLinks.filter(l => l && l.trim()).length
+  
+  return total
 }
 
 function validateProjectData(projectData) {
@@ -1252,21 +1345,29 @@ function validateProjectData(projectData) {
 const submitProject = async () => {
   isSubmitting.value = true
   try {
-    // Step 1: Get file URL from uploaded data or link depending on training
+    // Step 1: Get file URL from uploaded data or link depending on user choice
     let mainFileUrl = null
-    if ([1,2].includes(Number(form.training))) {
-      mainFileUrl = form.mainFileData?.url || null
-      if (!mainFileUrl) {
-        throw new Error('File utama belum diupload')
-      }
-    } else if ([3,4].includes(Number(form.training))) {
-      mainFileUrl = form.mainFileLink ? String(form.mainFileLink).trim() : null
-      if (!mainFileUrl) {
-        throw new Error('Silakan masukkan link file utama')
+    
+    // Jika tidak ada berkas pendukung, set null
+    if (form.hasBerkasPendukung === false) {
+      mainFileUrl = null
+    } else if (form.hasBerkasPendukung === true) {
+      // Jika ada berkas pendukung, ambil sesuai metode yang dipilih
+      if (form.metodeUpload === 'link') {
+        mainFileUrl = form.mainFileLink ? String(form.mainFileLink).trim() : null
+        if (!mainFileUrl) {
+          throw new Error('Silakan masukkan link file utama')
+        }
+      } else if (form.metodeUpload === 'upload') {
+        mainFileUrl = form.mainFileData?.url || null
+        if (!mainFileUrl) {
+          throw new Error('File utama belum diupload')
+        }
+      } else {
+        throw new Error('Silakan pilih metode upload')
       }
     } else {
-      mainFileUrl = form.mainFileData?.url || form.mainFileLink || null
-      if (!mainFileUrl) throw new Error('File utama belum diupload')
+      throw new Error('Silakan pilih apakah ada berkas pendukung')
     }
     
     // Step 2: Get institution, lemdik, and training IDs from selected values
@@ -1436,6 +1537,33 @@ const submitProject = async () => {
     isSubmitting.value = false
   }
 }
+
+// Watch for changes in hasBerkasPendukung to reset related fields
+watch(() => form.hasBerkasPendukung, (newVal) => {
+  if (newVal === false) {
+    // Reset all file-related fields when user selects "Tidak"
+    form.metodeUpload = ''
+    form.mainFileLink = ''
+    form.mainFileData = null
+    form.mainFile = null
+    form.supportFiles = []
+    form.supportLinks = ['']
+  }
+})
+
+// Watch for changes in metodeUpload to reset related fields
+watch(() => form.metodeUpload, (newVal) => {
+  if (newVal === 'link') {
+    // Clear uploaded file data when switching to link method
+    form.mainFileData = null
+    form.mainFile = null
+    form.supportFiles = []
+  } else if (newVal === 'upload') {
+    // Clear link data when switching to upload method
+    form.mainFileLink = ''
+    form.supportLinks = ['']
+  }
+})
 
 // Auto-save draft (optional)
 watchEffect(() => {
