@@ -1,4 +1,4 @@
-import { pgTable, bigint, varchar, text, timestamp, boolean, jsonb } from 'drizzle-orm/pg-core'
+import { pgTable, bigint, varchar, text, timestamp, boolean, jsonb, integer } from 'drizzle-orm/pg-core'
 
 export const project = pgTable('projects', {
   id: bigint('id', { mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
@@ -7,6 +7,8 @@ export const project = pgTable('projects', {
   kategoriInstansiId: bigint('kategori_instansi_id', { mode: 'number' }).notNull(), // Kategori instansi
   lemdikId: bigint('lemdik_id', { mode: 'number' }).notNull(),
   pelatihanId: bigint('pelatihan_id', { mode: 'number' }).notNull(),
+  // Penambahan kolom NIP untuk mendukung validasi unik per NIP + pelatihan
+  nip: varchar('nip', { length: 50 }),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description').notNull(),
   nilaiEkonomi: text('nilai_ekonomi'), // Range nilai ekonomi
@@ -17,6 +19,10 @@ export const project = pgTable('projects', {
   startDate: timestamp('start_date'), // Tanggal mulai proyek
   endDate: timestamp('end_date'), // Target selesai proyek
   mainFileUrl: text('main_file_url'),
+  // SDGs and Asta Cita (refer to master tables) - stored as integer keys
+  sdgs: integer('sdgs'),
+  astacita: integer('astacita'),
+  properId: integer('proper_id'),
   status: varchar('status', { length: 50 }).default('draft').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),

@@ -179,27 +179,18 @@
       </div>
 
       <!-- Stats Summary -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div class="stat bg-white rounded-lg shadow">
           <div class="stat-figure text-blue-600">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <div class="stat-title">Total Proyek</div>
+          <div class="stat-title">Total Produk Pembelajaran</div>
           <div class="stat-value text-blue-600">{{ totalProjectCount.toLocaleString() }}</div>
+          <div class="stat-desc text-sm text-gray-500">Jumlah seluruh produk yang tersimpan di hub</div>
         </div>
-        
-        <div class="stat bg-white rounded-lg shadow">
-          <div class="stat-figure text-green-600">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div class="stat-title">Proyek Selesai</div>
-          <div class="stat-value text-green-600">{{ completedProjects.toLocaleString() }}</div>
-        </div>
-        
+
         <div class="stat bg-white rounded-lg shadow">
           <div class="stat-figure text-orange-600">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -208,9 +199,9 @@
           </div>
           <div class="stat-title">Ditampilkan</div>
           <div class="stat-value text-orange-600">{{ filteredProjectsCount.toLocaleString() }}</div>
-          <div class="stat-desc">dari {{ pagination.total.toLocaleString() }} hasil</div>
+          <div class="stat-desc text-sm text-gray-500">Produk yang sesuai filter dan saat ini terlihat</div>
         </div>
-        
+
         <div class="stat bg-white rounded-lg shadow">
           <div class="stat-figure text-purple-600">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -219,6 +210,7 @@
           </div>
           <div class="stat-title">Kontributor</div>
           <div class="stat-value text-purple-600">{{ totalContributors }}</div>
+          <div class="stat-desc text-sm text-gray-500">Jumlah kontributor unik yang mengunggah Produk Pembelajaran</div>
         </div>
       </div>
 

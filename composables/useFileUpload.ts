@@ -52,62 +52,95 @@ export const useFileUpload = () => {
       uploadProgress.value = 30 // Initial progress
 
       try {
-        // Try Dropbox upload first
-        console.log('Attempting Dropbox upload...')
-        const response = await $fetch<any>('/api/upload/dropbox', {
+        // Try Cloudinary upload first (new unified endpoint)
+        console.log('Attempting Cloudinary upload (/api/upload)...')
+        const response = await $fetch<any>('/api/upload', {
           method: 'POST',
           body: formData
         })
 
         uploadProgress.value = 100
-        
-        if (response && (response.data)) {
-          console.log('Dropbox upload successful')
+
+        if (response && response.success && response.data) {
+          console.log('Cloudinary upload successful')
+          // Cloudinary response typically contains secure_url, public_id, etc.
+          const data = response.data
           return {
             success: true,
             data: {
-              filename: response.data.filename || file.name,
-              path: response.data.path || `/dropbox/${Date.now()}`,
-              size: response.data.size || file.size,
-              url: response.data.url,
-              shareUrl: response.data.shareUrl || response.data.url,
-              uploadedAt: response.data.uploadedAt || new Date().toISOString(),
-              id: response.data.id || `dropbox_${Date.now()}`
+              filename: data.original_filename || file.name,
+              path: data.public_id ? `${data.public_id}` : `/cloud/${Date.now()}`,
+              size: data.bytes || file.size,
+              url: data.secure_url || data.url,
+              shareUrl: data.secure_url || data.url,
+              uploadedAt: data.created_at || new Date().toISOString(),
+              id: data.public_id || `cloud_${Date.now()}`
             }
           }
         } else {
-          throw new Error('No response data from Dropbox')
+          throw new Error('No response data from Cloudinary')
         }
 
-      } catch (dropboxError: any) {
-        console.warn('Dropbox upload failed, trying local upload...', dropboxError.message)
-        
-        // If Dropbox fails, fallback to local upload
-        uploadProgress.value = 50
-        
-        const localResponse = await $fetch<any>('/api/upload-local', {
-          method: 'POST',
-          body: formData
-        })
+      } catch (cloudError: any) {
+        console.warn('Cloudinary upload failed, trying Dropbox then local...', cloudError?.message || cloudError)
 
-        uploadProgress.value = 100
+        // If Cloudinary fails, fallback to Dropbox
+        try {
+          uploadProgress.value = 50
+          console.log('Attempting Dropbox upload as fallback...')
+          const response = await $fetch<any>('/api/upload/dropbox', {
+            method: 'POST',
+            body: formData
+          })
 
-        if (localResponse && localResponse.success) {
-          console.log('Local upload successful as fallback')
-          return {
-            success: true,
-            data: {
-              filename: localResponse.filename || file.name,
-              path: localResponse.path || `/local/${Date.now()}`,
-              size: localResponse.size || file.size,
-              url: localResponse.url || `/uploads/${localResponse.filename}`,
-              shareUrl: localResponse.url || `/uploads/${localResponse.filename}`,
-              uploadedAt: new Date().toISOString(),
-              id: `local_${Date.now()}`
+          uploadProgress.value = 100
+
+          if (response && (response.data)) {
+            console.log('Dropbox upload successful')
+            return {
+              success: true,
+              data: {
+                filename: response.data.filename || file.name,
+                path: response.data.path || `/dropbox/${Date.now()}`,
+                size: response.data.size || file.size,
+                url: response.data.url,
+                shareUrl: response.data.shareUrl || response.data.url,
+                uploadedAt: response.data.uploadedAt || new Date().toISOString(),
+                id: response.data.id || `dropbox_${Date.now()}`
+              }
             }
+          } else {
+            throw new Error('No response data from Dropbox')
           }
-        } else {
-          throw new Error('Both Dropbox and local upload failed')
+        } catch (dropboxError: any) {
+          console.warn('Dropbox upload failed, trying local upload...', dropboxError?.message || dropboxError)
+
+          // If Dropbox fails, fallback to local upload
+          uploadProgress.value = 50
+          const localResponse = await $fetch<any>('/api/upload-local', {
+            method: 'POST',
+            body: formData
+          })
+
+          uploadProgress.value = 100
+
+          if (localResponse && localResponse.success) {
+            console.log('Local upload successful as fallback')
+            return {
+              success: true,
+              data: {
+                filename: localResponse.filename || file.name,
+                path: localResponse.path || `/local/${Date.now()}`,
+                size: localResponse.size || file.size,
+                url: localResponse.url || `/uploads/${localResponse.filename}`,
+                shareUrl: localResponse.url || `/uploads/${localResponse.filename}`,
+                uploadedAt: new Date().toISOString(),
+                id: `local_${Date.now()}`
+              }
+            }
+          } else {
+            throw new Error('Cloudinary, Dropbox, and local upload all failed')
+          }
         }
       }
 

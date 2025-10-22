@@ -123,8 +123,51 @@ async function handlePost(event: any) {
     const body = await readBody(event)
     console.log('Received body:', body)
 
+    // debug: detect any fields sent as empty string which may later coerce to NaN
+    const emptyStringFields: string[] = []
+    Object.keys(body || {}).forEach((k) => {
+      if (body[k] === '') emptyStringFields.push(k)
+    })
+    if (emptyStringFields.length > 0) {
+      console.warn('Request contains empty-string fields (may cause numeric NaN):', emptyStringFields)
+    }
+
+    // detailed per-field diagnostics for incoming body
+    try {
+      const fieldDiagnostics = Object.keys(body || {}).map((k) => {
+        const val = body[k]
+        const t = typeof val
+        let preview: any = val
+        try {
+          if (val === null) preview = 'null'
+          else if (val === undefined) preview = 'undefined'
+          else if (typeof val === 'object') preview = Array.isArray(val) ? `[array:${val.length}]` : '[object]'
+          else if (typeof val === 'string' && val.length > 100) preview = `${val.slice(0, 100)}...`
+        } catch (e) {
+          preview = String(val)
+        }
+        const isEmptyString = val === ''
+        const isNaNString = typeof val === 'string' && val.toLowerCase() === 'nan'
+        const numericValue = Number(val)
+        const isNumeric = Number.isFinite(numericValue)
+        return {
+          key: k,
+          type: t,
+          preview,
+          isEmptyString,
+          isNaNString,
+          numericValue: isNumeric ? numericValue : null,
+          isNumeric
+        }
+      })
+      console.log('Incoming field diagnostics:', fieldDiagnostics)
+    } catch (e) {
+      console.warn('Failed to produce incoming field diagnostics', e)
+    }
+
     const {
       userId,
+      nip,
       instansiId,
       kategoriInstansiId,
       lemdikId,
@@ -139,28 +182,106 @@ async function handlePost(event: any) {
       startDate,
       endDate,
       mainFileUrl,
+      sdgs,
+      astacita,
+      properId,
       status = 'draft',
       isApproved = false
     } = body
 
     // Wajib ada
-    if (!userId || !instansiId || !kategoriInstansiId || !lemdikId || !pelatihanId || !title || !description) {
+    // Helper: coerce to finite number or undefined
+    const toNumber = (v: any) => {
+      if (v === null || v === undefined || v === '') return undefined
+      const n = Number(v)
+      return Number.isFinite(n) ? n : undefined
+    }
+
+    // Validate required fields and numeric conversions
+    const missing: string[] = []
+    if (userId === undefined || userId === null || String(userId) === '') missing.push('userId')
+    if (instansiId === undefined || instansiId === null || String(instansiId) === '') missing.push('instansiId')
+    if (kategoriInstansiId === undefined || kategoriInstansiId === null || String(kategoriInstansiId) === '') missing.push('kategoriInstansiId')
+    if (lemdikId === undefined || lemdikId === null || String(lemdikId) === '') missing.push('lemdikId')
+    if (pelatihanId === undefined || pelatihanId === null || String(pelatihanId) === '') missing.push('pelatihanId')
+    if (!title) missing.push('title')
+    if (!description) missing.push('description')
+    if (!nip) missing.push('nip')
+
+    if (missing.length > 0) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Missing required fields: userId, instansiId, kategoriInstansiId, lemdikId, pelatihanId, title, description'
+        statusMessage: 'Missing required fields',
+        message: `Missing required fields: ${missing.join(', ')}`
       })
     }
 
+    // parse/validate numeric ids
+    const userIdNum = toNumber(userId)
+    const instansiIdNum = toNumber(instansiId)
+    const kategoriInstansiIdNum = toNumber(kategoriInstansiId)
+    const lemdikIdNum = toNumber(lemdikId)
+    const pelatihanIdNum = toNumber(pelatihanId)
+
+    console.log('Parsed numeric ids:', {
+      userIdNum,
+      instansiIdNum,
+      kategoriInstansiIdNum,
+      lemdikIdNum,
+      pelatihanIdNum
+    })
+
+    const invalidNums: string[] = []
+    if (userIdNum === undefined) invalidNums.push('userId')
+    if (instansiIdNum === undefined) invalidNums.push('instansiId')
+    if (kategoriInstansiIdNum === undefined) invalidNums.push('kategoriInstansiId')
+    if (lemdikIdNum === undefined) invalidNums.push('lemdikId')
+    if (pelatihanIdNum === undefined) invalidNums.push('pelatihanId')
+
+    if (invalidNums.length > 0) {
+      console.warn('Invalid numeric fields in request:', invalidNums)
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Invalid numeric fields',
+        message: `The following fields must be valid numbers: ${invalidNums.join(', ')}`
+      })
+    }
+
+    // Cek duplikasi: kombinasi nip + pelatihanId harus unik
+    try {
+      const existing = await db
+        .select()
+        .from(project)
+        .where(and(eq(project.nip, String(nip)), eq(project.pelatihanId, Number(pelatihanId))))
+
+      if (Array.isArray(existing) && existing.length > 0) {
+        throw createError({
+          statusCode: 409,
+          statusMessage: 'Duplicate',
+          message: 'Anda telah mengisi form ini sebelumnya untuk kombinasi NIP dan Program Pelatihan yang sama.'
+        })
+      }
+    } catch (dupError) {
+      const e: any = dupError
+      if (e && e.statusCode === 409) throw e
+      // if other DB errors, continue to regular flow so error handling below captures it
+    }
+
     const projectData: any = {
-      userId: Number(userId),
-      instansiId: Number(instansiId),
-      kategoriInstansiId: Number(kategoriInstansiId),
-      lemdikId: Number(lemdikId),
-      pelatihanId: Number(pelatihanId),
+      userId: userIdNum,
+      nip: String(nip),
+      instansiId: instansiIdNum,
+      kategoriInstansiId: kategoriInstansiIdNum,
+      lemdikId: lemdikIdNum,
+      pelatihanId: pelatihanIdNum,
       title: String(title),
       description: String(description),
       status: String(status),
       isApproved: Boolean(isApproved),
+      // optional master refs
+      sdgs: sdgs !== undefined && sdgs !== null ? Number(sdgs) : undefined,
+      astacita: astacita !== undefined && astacita !== null ? Number(astacita) : undefined,
+      properId: properId !== undefined && properId !== null ? Number(properId) : undefined,
       createdAt: new Date(),
       updatedAt: new Date()
     }
@@ -170,11 +291,11 @@ async function handlePost(event: any) {
       projectData.nilaiEkonomi = String(nilaiEkonomi)
     }
     if (detailNilaiEkonomi) {
-      const cleanAmount =
-        typeof detailNilaiEkonomi === 'string'
-          ? parseInt(detailNilaiEkonomi.replace(/[^\d]/g, ''), 10)
-          : Number(detailNilaiEkonomi)
-      if (!isNaN(cleanAmount)) {
+      const cleanAmountRaw = typeof detailNilaiEkonomi === 'string'
+        ? detailNilaiEkonomi.replace(/[^\d-]/g, '')
+        : String(detailNilaiEkonomi)
+      const cleanAmount = toNumber(cleanAmountRaw)
+      if (cleanAmount !== undefined) {
         projectData.detailNilaiEkonomi = cleanAmount
       }
     }
@@ -223,6 +344,55 @@ async function handlePost(event: any) {
     if (startDate) projectData.startDate = new Date(startDate)
     if (endDate) projectData.endDate = new Date(endDate)
     if (mainFileUrl) projectData.mainFileUrl = String(mainFileUrl)
+
+  // ensure JSONB/defaults for optional arrays
+  if (!projectData.publikasiMediaSosial) projectData.publikasiMediaSosial = []
+  if (!projectData.publikasiMediaMassa) projectData.publikasiMediaMassa = []
+  if (!projectData.tags) projectData.tags = []
+
+  // optional master refs: sdgs, astacita, properId — coerce safely
+  const sdgsNum = toNumber(sdgs)
+  const astacitaNum = toNumber(astacita)
+  const properIdNum = toNumber(properId)
+  if (sdgsNum !== undefined) projectData.sdgs = sdgsNum
+  if (astacitaNum !== undefined) projectData.astacita = astacitaNum
+  if (properIdNum !== undefined) projectData.properId = properIdNum
+
+    // debug: show projectData before insert
+    // also show per-field diagnostics for projectData
+    try {
+      const projectDiagnostics = Object.keys(projectData || {}).map((k) => {
+        const val = projectData[k]
+        return {
+          key: k,
+          type: typeof val,
+          preview: typeof val === 'string' && val.length > 100 ? `${val.slice(0, 100)}...` : val,
+          isNaNString: typeof val === 'string' && val.toLowerCase() === 'nan',
+          isInvalidNumber: typeof val === 'number' && !Number.isFinite(val)
+        }
+      })
+      console.log('Project data before sanitization (per-field):', projectDiagnostics)
+    } catch (e) {
+      console.warn('Failed to produce projectData diagnostics', e)
+    }
+    console.log('Project data before sanitization:', projectData)
+
+    // Sanitization: remove undefined/null or non-finite numeric values and 'NaN' strings
+    const removedKeys: string[] = []
+    Object.keys(projectData).forEach((k) => {
+      const val = projectData[k]
+      const isNaNString = typeof val === 'string' && val.toLowerCase() === 'nan'
+      const isInvalidNumber = typeof val === 'number' && !Number.isFinite(val)
+      if (val === undefined || val === null || isNaNString || isInvalidNumber) {
+        removedKeys.push(k)
+        delete projectData[k]
+      }
+    })
+
+    if (removedKeys.length > 0) {
+      console.warn('Removed invalid keys from projectData before insert:', removedKeys)
+      console.log('Project data after sanitization:', projectData)
+    }
 
     // Insert ke DB
     const newProject = await db

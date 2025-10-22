@@ -90,29 +90,57 @@
                   <label class="label">
                     <span class="label-text font-semibold">Kementerian/Lembaga/Pemerintah Daerah *</span>
                   </label>
-                  <select 
-                    class="select select-bordered w-full" 
-                    v-model="form.institution" 
-                    required
-                    :disabled="!form.kategoriInstansi"
-                  >
-                    <option :value="''">{{ form.kategoriInstansi ? 'Pilih Instansi' : 'Pilih Kategori Instansi terlebih dahulu' }}</option>
-                    <option v-for="instansi in filteredInstansiOptions" :key="instansi.instansi_id" :value="Number(instansi.instansi_id)">
-                      {{ instansi.nama_instansi }}
-                    </option>
-                  </select>
+                  <!-- Searchable Combobox for Instansi -->
+                  <div class="relative">
+                    <input
+                      type="text"
+                      class="input input-bordered w-full"
+                      placeholder="Ketik untuk mencari instansi..."
+                      v-model="instansiQuery"
+                      :disabled="!form.kategoriInstansi"
+                      @focus="instansiOpen = true"
+                      @input="onInstansiInput"
+                    />
+                    <ul v-if="instansiOpen && filteredInstansiQuery.length > 0" class="absolute z-50 mt-1 w-full bg-white border rounded shadow max-h-60 overflow-auto">
+                      <li
+                        v-for="inst in filteredInstansiQuery"
+                        :key="inst.instansi_id"
+                        class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                        @click="selectInstansi(inst)"
+                      >
+                        {{ inst.nama_instansi }}
+                      </li>
+                    </ul>
+                  </div>
+                  <input type="hidden" :value="form.institution" />
                 </div>
 
                   <div class="form-control">
                     <label class="label">
                       <span class="label-text font-semibold">Lembaga Diklat *</span>
                     </label>
-                    <select class="select select-bordered w-full" v-model="form.lembagaDiklat" required>
-                      <option :value="''">Pilih Lembaga Diklat</option>
-                      <option v-for="lemdik in lemdikOptions" :key="lemdik.id" :value="Number(lemdik.id)">
-                        {{ lemdik.namalemdik }}
-                      </option>
-                    </select>
+                    <!-- Searchable Combobox for Lembaga Diklat -->
+                    <div class="relative">
+                      <input
+                        type="text"
+                        class="input input-bordered w-full"
+                        placeholder="Ketik untuk mencari Lembaga Diklat..."
+                        v-model="lemdikQuery"
+                        @focus="lemdikOpen = true"
+                        @input="onLemdikInput"
+                      />
+                      <ul v-if="lemdikOpen && filteredLemdikQuery.length > 0" class="absolute z-50 mt-1 w-full bg-white border rounded shadow max-h-60 overflow-auto">
+                        <li
+                          v-for="lem in filteredLemdikQuery"
+                          :key="lem.id"
+                          class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                          @click="selectLemdik(lem)"
+                        >
+                          {{ lem.namalemdik }}
+                        </li>
+                      </ul>
+                    </div>
+                    <input type="hidden" :value="form.lembagaDiklat" />
                   </div>
 
                  
@@ -151,38 +179,7 @@
                 </label>
               </div>
 
-              <!-- Asta Cita -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-semibold">Asta Cita</span>
-                  <span class="label-text-alt">Opsional - singkat visi/tujuan</span>
-                </label>
-                <input
-                  type="text"
-                  class="input input-bordered w-full"
-                  placeholder="Tuliskan Asta Cita singkat (misal: Meningkatkan kualitas layanan)"
-                  v-model="form.astaCita"
-                />
-                <label class="label">
-                  <span class="label-text-alt">Contoh: Meningkatkan kualitas layanan publik melalui digitalisasi proses</span>
-                </label>
-              </div>
-
-              <!-- SDGs -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text font-semibold">SDGs (Tujuan Pembangunan Berkelanjutan)</span>
-                  <span class="label-text-alt">Pilih semua yang relevan</span>
-                </label>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  <label v-for="sdg in sdgOptions" :key="sdg.id" class="flex items-center gap-2">
-                    <input type="checkbox" class="checkbox" :value="sdg.id" v-model="form.sdgs" />
-                    <span class="text-sm">{{ sdg.id }} - {{ sdg.name }}</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="form-control">
+               <div class="form-control">
                 <label class="label">
                   <span class="label-text font-semibold">Deskripsi Proyek *</span>
                 </label>
@@ -198,6 +195,40 @@
                   <span class="label-text-alt text-xs text-gray-500">{{ form.description.length }}/500 karakter</span>
                 </label>
               </div>
+
+              <!-- Asta Cita (dropdown) -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">Asta Cita</span>
+                  <span class="label-text-alt">Pilih salah satu Asta Cita</span>
+                </label>
+                <select class="select select-bordered w-full" v-model="form.astaCitaKe" @change="updateAstaCitaText">
+                  <option value="">-- Pilih Asta Cita --</option>
+                  <option v-for="opt in astacitaOptions" :key="opt.id" :value="opt.astacita_ke">
+                    {{ opt.astacita_ke }} - {{ opt.astacita }}
+                  </option>
+                </select>
+                <label class="label">
+                  <span class="label-text-alt">Jika ingin, Anda bisa menambahkan catatan tambahan di kolom deskripsi.</span>
+                </label>
+              </div>
+
+              <!-- SDGs -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-semibold">SDGs (Tujuan Pembangunan Berkelanjutan)</span>
+                  <span class="label-text-alt">Pilih semua yang relevan</span>
+                </label>
+                <select class="select select-bordered w-full" v-model="form.sdgsKe" @change="updateSdgText">
+                  <option value="">-- Pilih SDG --</option>
+                  <option v-for="sdg in sdgOptions" :key="sdg.id" :value="sdg.tujuan_ke">{{ sdg.tujuan_ke }} - {{ sdg.sdgs }}</option>
+                </select>
+                <label class="label">
+                  <span class="label-text-alt">Pilih SDG yang paling relevan.</span>
+                </label>
+              </div>
+
+             
 
               <!-- Publikasi Media Section -->
               <div class="form-control">
@@ -412,37 +443,91 @@
                 <label class="label">
                   <span class="label-text font-semibold">Dokumen Utama *</span>
                 </label>
-                <UploadFile @fileUploaded="handleMainFileUploaded" @uploadError="handleUploadError" />
+                <!-- If pelatihan 1 or 2 -> allow file upload using UploadFile -->
+                <div v-if="[1,2].includes(Number(form.training))">
+                  <UploadFile @fileUploaded="handleMainFileUploaded" @uploadError="handleUploadError" />
+                </div>
+                <!-- If pelatihan 3 or 4 -> ask for a link (Google Drive or other) -->
+                <div v-else-if="[3,4].includes(Number(form.training))">
+                  <input
+                    type="url"
+                    placeholder="https://drive.google.com/your-file-link"
+                    class="input input-bordered w-full"
+                    v-model="form.mainFileLink"
+                    required
+                  />
+                  <label class="label">
+                    <span class="label-text-alt">Masukkan link publik file (Google Drive, OneDrive, Dropbox, dll.)</span>
+                  </label>
+                </div>
+                <!-- Fallback for other pelatihan types -->
+                <div v-else>
+                  <UploadFile @fileUploaded="handleMainFileUploaded" @uploadError="handleUploadError" />
+                </div>
               </div>
 
-              <!-- Supporting Documents -->
+              <!-- Cover -->
               <div class="form-control">
                 <label class="label">
-                  <span class="label-text font-semibold">Dokumen Pendukung</span>
-                  <span class="label-text-alt">Opsional</span>
+                  <span class="label-text font-semibold">Cover (gambar)</span>
+                  <span class="label-text-alt">Opsional - upload cover sebagai gambar (JPG/PNG)</span>
                 </label>
                 <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                  <input 
-                    type="file" 
-                    class="hidden" 
-                    ref="supportFileInput"
-                    @change="handleSupportFiles"
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xls,.xlsx"
-                    multiple
-                  />
-                  <p class="text-gray-600 mb-2">Upload file pendukung (gambar, excel, dll)</p>
-                  <p class="text-sm text-gray-500 mb-4">PDF, DOC, JPG, PNG, XLS (Max 5MB per file)</p>
-                  <button 
-                    type="button" 
-                    class="btn btn-outline btn-sm"
-                    @click="$refs.supportFileInput.click()"
-                  >
-                    Tambah File
-                  </button>
+                  <!-- For pelatihan 1/2: file inputs (cover image only) -->
+                  <template v-if="[1,2].includes(Number(form.training))">
+                    <input 
+                      type="file" 
+                      class="hidden" 
+                      ref="supportFileInput"
+                      @change="handleSupportFiles"
+                      accept=".jpg,.jpeg,.png"
+                      multiple
+                    />
+                    <p class="text-gray-600 mb-2">Upload cover (gambar: JPG/PNG)</p>
+                    <p class="text-sm text-gray-500 mb-4">Preferensi: resolusi baik untuk thumbnail (Max 5MB)</p>
+                    <button 
+                      type="button" 
+                      class="btn btn-outline btn-sm"
+                      @click="$refs.supportFileInput.click()"
+                    >
+                      Tambah Cover
+                    </button>
+                  </template>
+                  <!-- For pelatihan 3/4: accept links instead -->
+                  <template v-else-if="[3,4].includes(Number(form.training))">
+                    <p class="text-gray-600 mb-2">Masukkan link file pendukung (Google Drive, Dropbox, dll.)</p>
+                    <div class="space-y-2">
+                      <div v-for="(link, idx) in form.supportLinks" :key="idx" class="flex gap-2">
+                        <input type="url" v-model="form.supportLinks[idx]" class="input input-bordered flex-1 input-sm" placeholder="https://drive.google.com/..." />
+                        <button type="button" class="btn btn-ghost btn-sm text-red-500" @click="removeSupportLink(idx)">✕</button>
+                      </div>
+                      <button type="button" class="btn btn-outline btn-sm" @click="addSupportLink">Tambah Link</button>
+                    </div>
+                  </template>
+                  <!-- Fallback: file inputs -->
+                  <template v-else>
+                    <input 
+                      type="file" 
+                      class="hidden" 
+                      ref="supportFileInput"
+                      @change="handleSupportFiles"
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xls,.xlsx"
+                      multiple
+                    />
+                    <p class="text-gray-600 mb-2">Upload file pendukung (gambar, excel, dll)</p>
+                    <p class="text-sm text-gray-500 mb-4">PDF, DOC, JPG, PNG, XLS (Max 5MB per file)</p>
+                    <button 
+                      type="button" 
+                      class="btn btn-outline btn-sm"
+                      @click="$refs.supportFileInput.click()"
+                    >
+                      Tambah File
+                    </button>
+                  </template>
                 </div>
                 
                 <!-- Support Files List -->
-                <div v-if="form.supportFiles.length > 0" class="mt-4 space-y-2">
+                      <div v-if="form.supportFiles.length > 0" class="mt-4 space-y-2">
                   <div 
                     v-for="(file, index) in form.supportFiles" 
                     :key="index"
@@ -452,7 +537,7 @@
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
-                      <div>
+                        <div>
                         <p class="font-medium">{{ file.filename }}</p>
                         <p class="text-sm text-gray-500">{{ formatFileSize(file.size) }} • Google Drive</p>
                       </div>
@@ -678,6 +763,13 @@ useHead({
   ]
 })
 
+// Helper to coerce numbers safely; returns undefined for '', null, NaN
+const maybeNumber = (v) => {
+  if (v === undefined || v === null || v === '') return undefined
+  const n = Number(v)
+  return Number.isFinite(n) ? n : undefined
+}
+
 // Reactive data
 const currentStep = ref(1)
 const isSubmitting = ref(false)
@@ -710,7 +802,9 @@ const form = reactive({
   },
   // New fields
   astaCita: '',
-  sdgs: [],
+  astaCitaKe: '',
+  sdgsKe: '',
+  sdgsText: '',
   nilaiEkonomi: '',
   detailNilaiEkonomi: '',
   progress: 0,
@@ -722,6 +816,9 @@ const form = reactive({
   // Step 3
   mainFile: null,
   mainFileData: null, // Store uploaded file data from Dropbox
+  // If training requires link-based upload (pelatihan 3/4) we store link(s)
+  mainFileLink: '',
+  supportLinks: [],
   supportFiles: [],
   
   // Step 4
@@ -729,38 +826,67 @@ const form = reactive({
   agreeAccuracy: false
 })
 
+// Asta Cita options fetched from API
+const astacitaOptions = ref([])
+
+const fetchAstaCitaOptions = async () => {
+  try {
+    const res = await fetch('/api/astacita')
+    const json = await res.json()
+    if (json.success && Array.isArray(json.data)) {
+      astacitaOptions.value = json.data
+    }
+  } catch (e) {
+    astacitaOptions.value = []
+  }
+}
+
+const updateAstaCitaText = () => {
+  const selected = astacitaOptions.value.find(a => Number(a.astacita_ke) === Number(form.astaCitaKe) || Number(a.id) === Number(form.astaCitaKe))
+  form.astaCita = selected ? selected.astacita : ''
+}
+
+const updateSdgText = () => {
+  const selected = sdgOptions.value.find(s => Number(s.tujuan_ke) === Number(form.sdgsKe) || Number(s.id) === Number(form.sdgsKe))
+  form.sdgsText = selected ? selected.sdgs : ''
+}
+
 const nilaiEkonomiOptions = computed(() => {
-  // Cari pelatihan yang dipilih berdasarkan ID
-  const selected = pelatihanOptions.value.find(p => p.id === form.training)
-  const id = selected?.id
+  // Cari pelatihan yang dipilih berdasarkan ID (gunakan cast ke Number untuk aman)
+  const selected = pelatihanOptions.value.find(p => Number(p.id) === Number(form.training))
+  const id = Number(selected?.id)
+
+  // Gunakan label yang konsisten dan mudah dibaca
   if (id === 1 || id === 2) {
     return [
-      'Kurang dari Rp.100.000.000,- (seratus juta rupiah)',
-      'Rp100.000.000,- s.d. Rp1.000.000.000,-',
-      'Rp1.000.000.001,- s.d. Rp10.000.000.000,-',
-      'Lebih dari Rp10.000.000.000,- (sepuluh miliar rupiah)'
+      'Kurang dari Rp 100.000.000',
+      'Rp 100.000.000 - Rp 1.000.000.000',
+      'Rp 1.000.000.001 - Rp 10.000.000.000',
+      'Lebih dari Rp 10.000.000.000'
     ]
   } else if (id === 3 || id === 4) {
     return [
-      'Kurang dari Rp 50.000.000 (lima puluh juta rupiah)',
-      'Rp 50.000.000,- s.d Rp 100.000.000,-',
-      'Rp 100.000.001,- s.d Rp 500.000.000,-',
-      'Lebih dari Rp 500.000.000,- (lima ratus juta rupiah)'
+      'Kurang dari Rp 50.000.000',
+      'Rp 50.000.000 - Rp 100.000.000',
+      'Rp 100.000.001 - Rp 500.000.000',
+      'Lebih dari Rp 500.000.000'
     ]
   }
+
   return []
 })
 
-// SDG options (simplified subset)
-const sdgOptions = ref([
-  { id: 1, name: 'Tanpa Kemiskinan' },
-  { id: 3, name: 'Kesehatan yang Baik' },
-  { id: 4, name: 'Pendidikan Berkualitas' },
-  { id: 8, name: 'Pekerjaan Layak & Pertumbuhan Ekonomi' },
-  { id: 9, name: 'Infrastruktur, Industri & Inovasi' },
-  { id: 11, name: 'Kota & Permukiman yang Berkelanjutan' },
-  { id: 13, name: 'Tindakan Iklim' }
-])
+// SDGs will be fetched from API
+const sdgOptions = ref([])
+const fetchSdgOptions = async () => {
+  try {
+    const res = await fetch('/api/sdgs')
+    const json = await res.json()
+    if (json.success && Array.isArray(json.data)) sdgOptions.value = json.data
+  } catch (e) {
+    sdgOptions.value = []
+  }
+}
 
 // Fetch kategori
 const kategoriOptions = ref([]);
@@ -784,6 +910,65 @@ const filteredInstansiOptions = computed(() => {
   return kategori ? kategori.instansi : [];
 });
 
+// Searchable combobox state for Instansi
+const instansiQuery = ref('')
+const instansiOpen = ref(false)
+const filteredInstansiQuery = computed(() => {
+  const list = filteredInstansiOptions.value || []
+  const q = instansiQuery.value.trim().toLowerCase()
+  if (!q) return list
+  return list.filter(i => (i.nama_instansi || '').toLowerCase().includes(q))
+})
+
+function onInstansiInput() {
+  instansiOpen.value = true
+}
+
+function selectInstansi(inst) {
+  form.institution = Number(inst.instansi_id)
+  instansiQuery.value = inst.nama_instansi
+  instansiOpen.value = false
+}
+
+// Close dropdown when clicking outside
+if (process.client) {
+  window.addEventListener('click', (e) => {
+    const path = e.composedPath ? e.composedPath() : []
+    // crude check: close both dropdowns on outside click
+    const clickedInput = path.some((el) => {
+      try {
+        return el && el.classList && typeof el.classList.contains === 'function' && el.classList.contains('input')
+      } catch (err) {
+        return false
+      }
+    })
+    if (!clickedInput) {
+      instansiOpen.value = false
+      lemdikOpen.value = false
+    }
+  })
+}
+
+// Searchable combobox state for Lemdik
+const lemdikQuery = ref('')
+const lemdikOpen = ref(false)
+const filteredLemdikQuery = computed(() => {
+  const list = lemdikOptions.value || []
+  const q = lemdikQuery.value.trim().toLowerCase()
+  if (!q) return list
+  return list.filter(l => (l.namalemdik || '').toLowerCase().includes(q))
+})
+
+function onLemdikInput() {
+  lemdikOpen.value = true
+}
+
+function selectLemdik(lem) {
+  form.lembagaDiklat = Number(lem.id)
+  lemdikQuery.value = lem.namalemdik
+  lemdikOpen.value = false
+}
+
 // Computed properties
 const canProceed = computed(() => {
   const result = (() => {
@@ -793,7 +978,14 @@ const canProceed = computed(() => {
       case 2:
         return form.title && form.description && form.nilaiEkonomi && form.detailNilaiEkonomi
       case 3:
-        return form.mainFileData // Check for uploaded file data instead of file object
+        // If training 1/2 require uploaded file, otherwise require a link for 3/4
+        if ([1,2].includes(Number(form.training))) {
+          return form.mainFileData
+        }
+        if ([3,4].includes(Number(form.training))) {
+          return form.mainFileLink && form.mainFileLink.trim() !== ''
+        }
+        return form.mainFileData
       case 4:
         return form.agreeTerms && form.agreeAccuracy
       default:
@@ -862,7 +1054,7 @@ const getMediaMassaLinks = () => {
 // Methods
 const onKategoriChange = () => {
   // Reset pilihan instansi ketika kategori berubah
-  form.institution = ''
+  form.institution = undefined
 }
 
 const onNilaiEkonomiChange = () => {
@@ -900,6 +1092,14 @@ const removeMediaSosial = (index) => {
   if (form.publikasi.mediaSosial.length > 1) {
     form.publikasi.mediaSosial.splice(index, 1)
   }
+}
+
+const addSupportLink = () => {
+  form.supportLinks.push('')
+}
+
+const removeSupportLink = (index) => {
+  form.supportLinks.splice(index, 1)
 }
 
 const nextStep = () => {
@@ -993,6 +1193,11 @@ const handleUploadError = (error) => {
 const { uploadToGoogleDrive } = useFileUpload()
 
 const handleSupportFiles = async (event) => {
+  // If this training uses link-based uploads, ignore file input
+  if ([3,4].includes(Number(form.training))) {
+    return
+  }
+
   const files = Array.from(event.target.files)
   
   for (const file of files) {
@@ -1027,6 +1232,7 @@ function validateProjectData(projectData) {
     'kategoriInstansiId',
     'lemdikId',
     'pelatihanId',
+    'nip',
     'title',
     'description',
     'status'
@@ -1046,10 +1252,21 @@ function validateProjectData(projectData) {
 const submitProject = async () => {
   isSubmitting.value = true
   try {
-    // Step 1: Get file URL from uploaded data
-    const mainFileUrl = form.mainFileData?.url || null
-    if (!mainFileUrl) {
-      throw new Error('File utama belum diupload')
+    // Step 1: Get file URL from uploaded data or link depending on training
+    let mainFileUrl = null
+    if ([1,2].includes(Number(form.training))) {
+      mainFileUrl = form.mainFileData?.url || null
+      if (!mainFileUrl) {
+        throw new Error('File utama belum diupload')
+      }
+    } else if ([3,4].includes(Number(form.training))) {
+      mainFileUrl = form.mainFileLink ? String(form.mainFileLink).trim() : null
+      if (!mainFileUrl) {
+        throw new Error('Silakan masukkan link file utama')
+      }
+    } else {
+      mainFileUrl = form.mainFileData?.url || form.mainFileLink || null
+      if (!mainFileUrl) throw new Error('File utama belum diupload')
     }
     
     // Step 2: Get institution, lemdik, and training IDs from selected values
@@ -1088,27 +1305,53 @@ const submitProject = async () => {
     }
     
     // Step 3: Create project using the new API
+    // Helper to coerce numbers safely; returns undefined for '', null, NaN
+    const maybeNumber = (v) => {
+      if (v === undefined || v === null || v === '') return undefined
+      const n = Number(v)
+      return Number.isFinite(n) ? n : undefined
+    }
+
+    const instansiIdSafe = maybeNumber(selectedInstansi?.instansi_id)
+    const kategoriInstansiIdSafe = maybeNumber(selectedKategori?.kategori_id ?? selectedKategori?.id ?? selectedKategori?.kategori_id)
+    const lemdikIdSafe = maybeNumber(selectedLemdik?.id)
+    const pelatihanIdSafe = maybeNumber(selectedPelatihan?.id)
+    const detailNilaiSafe = (() => {
+      if (!form.detailNilaiEkonomi) return undefined
+      const cleaned = String(form.detailNilaiEkonomi).replace(/[^\d-]/g, '')
+      return maybeNumber(cleaned)
+    })()
+    const sdgsKeSafe = maybeNumber(form.sdgsKe)
+    const astaCitaKeSafe = maybeNumber(form.astaCitaKe)
+
     const projectData = {
       userId: 1, // TODO: Get from authentication/session
-      instansiId: Number(selectedInstansi.instansi_id),
-      kategoriInstansiId: Number(selectedKategori.kategori_id),
-      lemdikId: Number(selectedLemdik.id),
-      pelatihanId: Number(selectedPelatihan.id),
+      nip: String(form.nip || ''),
       title: form.title,
       description: form.description,
-      nilaiEkonomi: form.nilaiEkonomi,
-      detailNilaiEkonomi: Number(form.detailNilaiEkonomi.replace(/[^\d]/g, '')),
+      nilaiEkonomi: form.nilaiEkonomi || undefined,
       publikasiMediaSosial: Array.isArray(form.publikasi.mediaSosial) ? form.publikasi.mediaSosial.filter(item => item.platform && item.linkMedia) : [],
       publikasiMediaMassa: Array.isArray(form.publikasi.mediaMassa) ? form.publikasi.mediaMassa.filter(item => item.namaMedia && item.linkBerita) : [],
       tags: Array.isArray(form.tags) ? form.tags : [],
-      startDate: form.startDate ? new Date(form.startDate).toISOString() : null,
-      endDate: form.endDate ? new Date(form.endDate).toISOString() : null,
       mainFileUrl: mainFileUrl,
+      supportLinks: Array.isArray(form.supportLinks) ? form.supportLinks.filter(l => l && l.trim() !== '') : [],
       status: 'submitted',
       isApproved: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
+
+    if (instansiIdSafe !== undefined) projectData.instansiId = instansiIdSafe
+    if (kategoriInstansiIdSafe !== undefined) projectData.kategoriInstansiId = kategoriInstansiIdSafe
+    if (lemdikIdSafe !== undefined) projectData.lemdikId = lemdikIdSafe
+    if (pelatihanIdSafe !== undefined) projectData.pelatihanId = pelatihanIdSafe
+    if (detailNilaiSafe !== undefined) projectData.detailNilaiEkonomi = detailNilaiSafe
+    if (sdgsKeSafe !== undefined) projectData.sdgs = sdgsKeSafe
+    if (astaCitaKeSafe !== undefined) projectData.astacita = astaCitaKeSafe
+    if (form.sdgsText) projectData.sdgsText = form.sdgsText
+    if (form.astaCita) projectData.astaCita = form.astaCita
+    if (form.startDate) projectData.startDate = new Date(form.startDate).toISOString()
+    if (form.endDate) projectData.endDate = new Date(form.endDate).toISOString()
     
     console.log('Payload sebelum submit:', projectData)
     
@@ -1129,7 +1372,12 @@ const submitProject = async () => {
     
     const projectResult = await projectResponse.json()
     
-    if (!projectResponse.ok || !projectResult.success) {
+    if (!projectResponse.ok) {
+      // Handle duplicate (409) specially
+      if (projectResponse.status === 409) {
+        alert(projectResult.message || 'Anda telah mengisi form ini sebelumnya untuk kombinasi NIP dan Program Pelatihan yang sama.')
+        return
+      }
       throw new Error(projectResult.message || 'Gagal membuat project')
     }
     
@@ -1240,6 +1488,18 @@ onMounted(async () => {
   } catch (err) {
     console.error('Gagal fetch pelatihan:', err)
   }
+  // Fetch Asta Cita options
+  try {
+    await fetchAstaCitaOptions()
+  } catch (e) {
+    console.error('Gagal fetch Asta Cita options:', e)
+  }
+  // Fetch SDG options
+  try {
+    await fetchSdgOptions()
+  } catch (e) {
+    console.error('Gagal fetch SDG options:', e)
+  }
 })
   // Validasi ulang value form setelah semua data di-fetch
   watch(
@@ -1250,7 +1510,7 @@ onMounted(async () => {
         !form.kategoriInstansi ||
         !kategoriInstansiOptions.value.some(k => Number(k.kategori_id) === Number(form.kategoriInstansi))
       ) {
-        form.kategoriInstansi = Number(kategoriInstansiOptions.value[0]?.kategori_id) || ''
+        form.kategoriInstansi = maybeNumber(kategoriInstansiOptions.value[0]?.kategori_id)
       }
       // Instansi
       let allInstansi = []
@@ -1263,21 +1523,21 @@ onMounted(async () => {
       ) {
         // Pilih instansi pertama dari kategori yang dipilih
         const selectedKategori = kategoriInstansiOptions.value.find(k => Number(k.kategori_id) === Number(form.kategoriInstansi))
-        form.institution = Number(selectedKategori?.instansi?.[0]?.instansi_id) || ''
+        form.institution = maybeNumber(selectedKategori?.instansi?.[0]?.instansi_id)
       }
       // Lemdik
       if (
         !form.lembagaDiklat ||
         !lemdikOptions.value.some(l => Number(l.id) === Number(form.lembagaDiklat))
       ) {
-        form.lembagaDiklat = Number(lemdikOptions.value[0]?.id) || ''
+        form.lembagaDiklat = maybeNumber(lemdikOptions.value[0]?.id)
       }
       // Pelatihan
       if (
         !form.training ||
         !pelatihanOptions.value.some(p => Number(p.id) === Number(form.training))
       ) {
-        form.training = Number(pelatihanOptions.value[0]?.id) || ''
+        form.training = maybeNumber(pelatihanOptions.value[0]?.id)
       }
     },
     { immediate: true }

@@ -1,156 +1,61 @@
 import formidable from 'formidable'
-import { readFileSync } from 'fs'
+import { PassThrough } from 'stream'
+import fs from 'fs'
+import cloudinary from '~/server/utils/cloudinary'
 
 export const config = {
   api: {
-    bodyParser: false, // wajib matiin default body parser
+    bodyParser: false, // disable default body parser for multipart
   },
 }
 
 export default defineEventHandler(async (event) => {
-  console.log('=== UPLOAD REQUEST START ===')
-  console.log('Method:', getMethod(event))
-
   try {
-    // Check if Dropbox token exists
-    if (!process.env.DROPBOX_ACCESS_TOKEN) {
-      console.error('DROPBOX_ACCESS_TOKEN not found in environment')
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Dropbox configuration missing'
-      })
-    }
-
-    console.log('Dropbox token found, length:', process.env.DROPBOX_ACCESS_TOKEN.length)
-    
-    // Import Dropbox client early to catch import issues
-    console.log('Importing Dropbox client...')
-    const { dbx } = await import('~/lib/dropbox')
-    console.log('Dropbox client imported successfully')
-    
-    console.log('Parsing form data...')
-    
-    // Parse form data
     const form = formidable({
-      maxFileSize: 10 * 1024 * 1024, // 10MB limit
+      maxFileSize: 50 * 1024 * 1024, // 50MB
       keepExtensions: true
     })
 
     const [fields, files] = await form.parse(event.node.req)
-    console.log('Form parsed successfully')
-    console.log('Fields:', Object.keys(fields))
-    console.log('Files:', Object.keys(files))
-    
     const uploadedFile = Array.isArray(files.file) ? files.file[0] : files.file
-    
+
     if (!uploadedFile) {
-      console.error('No file found in request')
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'No file uploaded'
-      })
+      throw createError({ statusCode: 400, statusMessage: 'No file uploaded' })
     }
 
-    console.log('File info:', {
-      name: uploadedFile.originalFilename,
-      size: uploadedFile.size,
-      type: uploadedFile.mimetype,
-      path: uploadedFile.filepath
-    })
+    // Upload to Cloudinary using upload_stream
+    const filePath = (uploadedFile as any).filepath
+    const buffer: Buffer = filePath ? await fs.promises.readFile(filePath) : Buffer.from('')
 
-    // Read file content
-    const fileContent = readFileSync(uploadedFile.filepath)
-    console.log('File content read, actual size:', fileContent.length)
-    
-    // Generate unique filename
-    const timestamp = Date.now()
-    const filename = `${timestamp}_${uploadedFile.originalFilename}`
-    const dropboxPath = `/astina/uploads/${filename}`
-
-    console.log('Uploading to Dropbox path:', dropboxPath)
-    console.log('File size to upload:', fileContent.length)
-
-    // Upload to Dropbox
-    console.log('Starting Dropbox upload...')
-    const uploadResponse = await dbx.filesUpload({
-      path: dropboxPath,
-      contents: fileContent,
-      mode: { '.tag': 'add' },
-      autorename: true
-    })
-
-    console.log('Upload successful:', uploadResponse.result.name)
-
-    // Create shared link
-    console.log('Creating shared link...')
-    const sharedLinkResponse = await dbx.sharingCreateSharedLinkWithSettings({
-      path: uploadResponse.result.path_display || dropboxPath,
-      settings: {
-        requested_visibility: { '.tag': 'public' }
+    const streamUpload = () => new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { resource_type: 'auto', folder: 'astina/uploads' },
+        (error: any, result: any) => {
+          if (error) return reject(error)
+          resolve(result)
+        }
+      )
+      if (buffer && buffer.length) {
+        const passthrough = new PassThrough()
+        passthrough.end(buffer)
+        passthrough.pipe(uploadStream)
+      } else if (filePath) {
+        const readStream = fs.createReadStream(filePath)
+        readStream.pipe(uploadStream)
+      } else {
+        reject(new Error('No file buffer or path available for upload'))
       }
     })
 
-    console.log('Shared link created:', sharedLinkResponse.result.url)
+    const result = await streamUpload()
 
-    // Convert Dropbox share URL to direct download URL
-    const shareUrl = sharedLinkResponse.result.url
-    const directUrl = shareUrl.replace('dropbox.com', 'dl.dropboxusercontent.com').replace('?dl=0', '')
-
-    const result = {
-      id: timestamp.toString(),
-      name: uploadedFile.originalFilename,
-      webViewLink: shareUrl,
-      webContentLink: directUrl,
-      url: directUrl,
-      size: uploadedFile.size,
-      mimeType: uploadedFile.mimetype,
-      message: 'File uploaded successfully to Dropbox'
+    return {
+      success: true,
+      message: 'File uploaded successfully to Cloudinary',
+      data: result
     }
-
-    console.log('=== UPLOAD SUCCESS ===')
-    return result
-
   } catch (error: any) {
-    console.error('=== UPLOAD ERROR ===')
-    console.error('Error type:', typeof error)
-    console.error('Error message:', error.message)
-    console.error('Error status:', error.status)
-    console.error('Error code:', error.code)
-    console.error('Full error object keys:', Object.keys(error))
-    
-    if (error.error) {
-      console.error('Dropbox error details:', JSON.stringify(error.error, null, 2))
-    }
-    
-    // Handle specific Dropbox errors
-    if (error.error && error.error['.tag']) {
-      const errorTag = error.error['.tag']
-      console.error('Dropbox error tag:', errorTag)
-      
-      if (errorTag === 'path_write_error') {
-        throw createError({
-          statusCode: 400,
-          statusMessage: 'Invalid file path or file already exists'
-        })
-      } else if (errorTag === 'insufficient_space') {
-        throw createError({
-          statusCode: 507,
-          statusMessage: 'Insufficient storage space in Dropbox'
-        })
-      }
-    }
-
-    // Handle auth errors
-    if (error.status === 401) {
-      throw createError({
-        statusCode: 401,
-        statusMessage: 'Dropbox authentication failed. Please check access token.'
-      })
-    }
-
-    throw createError({
-      statusCode: 500,
-      statusMessage: `Upload failed: ${error.message || 'Unknown error'}`
-    })
+    console.error('Cloudinary upload error:', error)
+    throw createError({ statusCode: 500, statusMessage: error.message || 'Upload failed' })
   }
 })
