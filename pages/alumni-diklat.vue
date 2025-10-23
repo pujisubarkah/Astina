@@ -7,18 +7,7 @@
 				<p class="text-blue-700">Ringkasan alumni pelatihan PKN / PKA / PKP (2020 — 2025)</p>
 			</div>
 
-			<!-- Controls -->
-			<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-				<div class="flex items-center gap-3">
-					<label class="text-sm text-gray-600">Periode</label>
-					<select v-model="yearRange" class="select select-bordered select-sm w-40">
-						<option value="2020-2025">2020 - 2025</option>
-						<option value="2021-2025">2021 - 2025</option>
-					</select>
-					<button class="btn btn-sm btn-ghost" @click="refresh">Refresh</button>
-				</div>
-				<div class="text-sm text-gray-600">Total alumni terdaftar: <span class="font-semibold">{{ formatNumber(totalAlumni) }}</span></div>
-			</div>
+
 
 			<!-- Stat cards (dashboard style) -->
 			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
@@ -88,34 +77,39 @@
 			</div>
 
 			<!-- Charts (dashboard style cards) -->
-			<!-- Gender chart -->
+			<!-- Gender chart + Map side-by-side -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-						<div class="card bg-white shadow-lg md:col-span-1">
+				<div class="card bg-white shadow-lg md:col-span-1">
 					<div class="card-body">
 						<h3 class="font-semibold mb-2 text-gray-800">Distribusi Jenis Kelamin</h3>
-								<client-only>
-									<div v-if="genderSeries && genderSeries.length">
-										<apexchart type="donut" :options="genderOptions" :series="genderSeries" height="280" />
-									</div>
-									<div v-else class="h-64 flex items-center justify-center">
-										<div class="loading loading-spinner loading-lg"></div>
-									</div>
-								</client-only>
-								<div class="mt-4 flex items-center gap-2">
-									<button :class="['btn btn-sm', selectedGender === 'Pria' ? 'btn-primary' : 'btn-ghost']" @click="setGender('Pria')">Pria</button>
-									<button :class="['btn btn-sm', selectedGender === 'Wanita' ? 'btn-pink' : 'btn-ghost']" @click="setGender('Wanita')">Wanita</button>
-									<button v-if="selectedGender" class="btn btn-sm btn-outline" @click="setGender(undefined)">Clear</button>
-								</div>
+						<client-only>
+							<div v-if="genderSeries && genderSeries.length">
+								<apexchart type="donut" :options="genderOptions" :series="genderSeries" height="280" />
+							</div>
+							<div v-else class="h-64 flex items-center justify-center">
+								<div class="loading loading-spinner loading-lg"></div>
+							</div>
+						</client-only>
+						<div class="mt-4 flex items-center gap-2">
+							<button :class="['btn btn-sm', selectedGender === 'Pria' ? 'btn-primary' : 'btn-ghost']" @click="setGender('Pria')">Pria</button>
+							<button :class="['btn btn-sm', selectedGender === 'Wanita' ? 'btn-pink' : 'btn-ghost']" @click="setGender('Wanita')">Wanita</button>
+							<button v-if="selectedGender" class="btn btn-sm btn-outline" @click="setGender(undefined)">Clear</button>
+						</div>
+						<!-- legend -->
+						<div class="mt-4 flex items-center gap-3 justify-center">
+							<div v-for="(b, i) in legendBuckets" :key="i" class="flex items-center gap-2">
+								<div :style="{ width: '28px', height: '18px', background: b.color, border: '1px solid #e6eef8' }" class="rounded-sm"></div>
+								<div class="text-xs text-gray-600">{{ b.label }}</div>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-				<!-- Province map card -->
-				<div class="card bg-white shadow-lg md:col-span-3">
+				<!-- Map sits beside the gender chart on md+ -->
+				<div class="card bg-white shadow-lg md:col-span-2">
 					<div class="card-body">
 						<h3 class="font-semibold mb-2 text-gray-800">Peta Sebaran Alumni per Provinsi</h3>
-						<p class="text-sm text-gray-600 mb-4">Sumber: /api/alumni/provinsi — hover untuk melihat detail</p>
+					
 						<div class="w-full overflow-auto">
 							<div class="relative bg-slate-50 p-4 rounded">
 								<div class="w-full flex justify-center">
@@ -139,27 +133,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="card bg-white shadow-lg md:col-span-1">
-					<div class="card-body">
-						<h3 class="font-semibold mb-2 text-gray-800">Distribusi Program (Pie)</h3>
-						<apexchart type="pie" :options="pieOptions" :series="pieSeries" height="320" />
-					</div>
-				</div>
-
-				<div class="card bg-white shadow-lg md:col-span-2">
-					<div class="card-body">
-						<h3 class="font-semibold mb-2 text-gray-800">Jumlah Alumni per Lembaga (Bar)</h3>
-						<apexchart type="bar" :options="barOptions" :series="barSeries" height="320" />
-					</div>
-				</div>
-
-				<div class="card bg-white shadow-lg md:col-span-3">
-					<div class="card-body">
-						<h3 class="font-semibold mb-2 text-gray-800">Piramida Usia (Horizontal)</h3>
-						<apexchart type="bar" :options="pyramidOptions" :series="pyramidSeries" height="340" />
-					</div>
-				</div>
 			</div>
+
+
 		</div>
 	</div>
 </template>
@@ -269,11 +245,24 @@ const sparks = ref({ pkn1: [], pkn2: [], pka: [], pkp: [] })
 const formatNumber = (n) => (n || n === 0) ? Number(n).toLocaleString('id-ID') : '0'
 
 // Province map state
+
+// Province map state
 const provinsiRaw = ref({})
 const provinsiList = ref([])
 const svgViewBox = ref('0 0 1000 800')
 
+// simple in-memory cache for master province geometry to avoid refetching
+const provinsiMasterCache = { data: null, ts: 0 }
+
 const provTip = ref({ visible: false, name: '', total: 0, pria: 0, wanita: 0, style: { left: '0px', top: '0px' } })
+
+// loading flags and abort controllers
+const provinsiLoading = ref(false)
+let provAbortController = null
+
+const genderLoading = ref(false)
+let genderAbortController = null
+let genderDebounceTimer = null
 
 const maxProvinceTotal = computed(() => {
 	const arr = provinsiList.value.map(p => Number(p.total) || 0)
@@ -288,6 +277,20 @@ function getColorForTotal(total) {
 	const mix = (a, b) => Math.round(a + (b - a) * t)
 	return `rgb(${mix(start[0], end[0])}, ${mix(start[1], end[1])}, ${mix(start[2], end[2])})`
 }
+
+// Legend: create 5 buckets from 0..max
+const legendBuckets = computed(() => {
+	const max = maxProvinceTotal.value || 1
+	const steps = 5
+	const buckets = []
+	for (let i = 0; i < steps; i++) {
+		const low = Math.round((i / steps) * max)
+		const high = Math.round(((i + 1) / steps) * max)
+		const mid = Math.round((low + high) / 2)
+		buckets.push({ label: `${formatNumber(low)} - ${formatNumber(high)}`, color: getColorForTotal(mid) })
+	}
+	return buckets
+})
 
 function showProvTip(ev, prov) {
 	provTip.value.visible = true
@@ -311,26 +314,61 @@ function selectProv(prov) {
 	provTip.value.name = prov.name
 }
 
-const fetchProvinsi = async () => {
+// Fetch provinsi geometry (master) and alumni counts. Accepts optional gender filter.
+const fetchProvinsi = async (gender) => {
+	// cancel previous request if any
 	try {
-		const res = await fetch('/api/alumni/provinsi')
-		const json = await res.json()
-		if (json && json.success && json.data) {
-			provinsiRaw.value = json.data
-			// transform into list: keep svgPath but clean quotes
-			provinsiList.value = Object.keys(json.data).map(k => {
-				const item = json.data[k]
-				// svgPath may include surrounding quotes - clean them
-				let raw = item.svgPath || item.svgPath || ''
-				// remove starting/ending quotes if present
-				raw = raw.replace(/^"|"$/g, '')
-				return { name: k, total: item.total || 0, pria: item.pria || 0, wanita: item.wanita || 0, svgPathRaw: raw, svgPathClean: raw }
-			})
-			// optionally compute viewBox from bounds - leave default for now
+		if (provAbortController) provAbortController.abort()
+	} catch (e) {}
+	provAbortController = new AbortController()
+	const signal = provAbortController.signal
+
+	provinsiLoading.value = true
+	try {
+		// use cached master geometry if fresh (5m)
+		let master = provinsiMasterCache.data
+		const now = Date.now()
+		if (!master || (now - provinsiMasterCache.ts) > 1000 * 60 * 5) {
+			const mres = await fetch('/api/provinsi', { signal })
+			const mjson = await mres.json().catch(() => null)
+			master = (mjson && mjson.success && Array.isArray(mjson.data)) ? mjson.data : []
+			provinsiMasterCache.data = master
+			provinsiMasterCache.ts = Date.now()
+		}
+
+		// fetch alumni counts (can be filtered by gender)
+		const url = gender ? `/api/alumni/provinsi?gender=${encodeURIComponent(gender)}` : '/api/alumni/provinsi'
+		const ares = await fetch(url, { signal })
+		const ajson = await ares.json().catch(() => null)
+		const alumniData = (ajson && ajson.success && ajson.data) ? ajson.data : {}
+
+		// normalize alumni keys for matching
+		const alumniMap = new Map()
+		for (const k of Object.keys(alumniData)) {
+			if (!k) continue
+			alumniMap.set(String(k).trim().toUpperCase(), alumniData[k])
+		}
+
+		provinsiRaw.value = { master, alumni: alumniData }
+
+		provinsiList.value = master.map((p) => {
+			const name = p.nama || p.name || p.nama_provinsi || ''
+			const key = String(name || '').trim().toUpperCase()
+			const counts = alumniMap.get(key) || { total: 0, pria: 0, wanita: 0, svgPath: p.svgPath }
+			// prefer geometry svgPath from master, fallback to alumni-provided svgPath
+			let raw = p.svgPath || counts.svgPath || ''
+			raw = String(raw).replace(/^\s*"|"\s*$/g, '')
+			return { name: name || key, total: counts.total || 0, pria: counts.pria || 0, wanita: counts.wanita || 0, svgPathRaw: raw, svgPathClean: raw }
+		})
+		provinsiLoading.value = false
+	} catch (e) {
+		if (e && e.name === 'AbortError') {
+			// aborted - keep previous data
+			provinsiLoading.value = false
 			return
 		}
-	} catch (e) {
-		// ignore: keep empty list
+		provinsiList.value = []
+		provinsiLoading.value = false
 	}
 }
 
@@ -357,20 +395,24 @@ function navigateProv(name) {
 
 const refresh = () => {
 	// keep available: when ready to use real API, call fetchData()
-	fetchData(selectedGender)
+	fetchData(selectedGender.value)
 }
 
 // selected gender filter for charts
 const selectedGender = ref(undefined)
 
 function setGender(g) {
+	// debounce rapid toggles
 	selectedGender.value = g
-	// refetch both stats and charts with selected gender
-	fetchStatCards()
-	fetchGender()
-	fetchData(selectedGender.value)
-	// refresh province map for selected gender
-	fetchProvinsi()
+	if (genderDebounceTimer) clearTimeout(genderDebounceTimer)
+	genderDebounceTimer = setTimeout(() => {
+		// refetch both stats and charts with selected gender
+		fetchStatCards()
+		fetchGender()
+		fetchData(selectedGender.value)
+		// refresh province map for selected gender
+		fetchProvinsi(selectedGender.value)
+	}, 250)
 }
 
 const fetchStatCards = async () => {
@@ -394,18 +436,26 @@ const fetchStatCards = async () => {
 }
 
 const fetchGender = async () => {
+	// cancel previous gender fetch
+	try { if (genderAbortController) genderAbortController.abort() } catch (e) {}
+	genderAbortController = new AbortController()
+	const signal = genderAbortController.signal
+	genderLoading.value = true
 	try {
-		const res = await fetch('/api/alumni/gender')
+		const res = await fetch('/api/alumni/gender', { signal })
 		const json = await res.json()
 		if (json && json.success && json.data) {
 			const pria = Number(json.data['Pria'] || 0)
 			const wanita = Number(json.data['Wanita'] || 0)
 			genderSeries.value = [pria, wanita]
+			genderLoading.value = false
 			return
 		}
 	} catch (e) {
+		if (e && e.name === 'AbortError') { genderLoading.value = false; return }
 		// fallback
 		genderSeries.value = [51778, 23528]
+		genderLoading.value = false
 	}
 }
 
