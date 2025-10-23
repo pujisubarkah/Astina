@@ -19,6 +19,7 @@
         <ul
           tabindex="0"
           class="menu menu-sm dropdown-content bg-primary rounded-box z-[1] mt-3 w-52 p-2 shadow">
+          <li><a href="/alumni-diklat" class="hover:bg-primary-focus">Alumni Diklat</a></li>
           <li><a href="/dashboard" class="hover:bg-primary-focus">Dashboard</a></li>
           <li><a href="/daftar-proyek" class="hover:bg-primary-focus">Daftar Proyek</a></li>
           <li><a href="/peta" class="hover:bg-primary-focus">Peta Sebaran</a></li>
@@ -38,6 +39,16 @@
     
     <div class="navbar-center hidden lg:flex">
       <ul class="menu menu-horizontal px-1">
+        <li>
+          <a href="/alumni-diklat" class="hover:bg-primary-focus transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-4-4h-1" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20H4v-2a4 4 0 014-4h1" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a4 4 0 100-8 4 4 0 000 8z" />
+            </svg>
+            Alumni Diklat
+          </a>
+        </li>
         <li>
           <a href="/dashboard" class="hover:bg-primary-focus transition-colors duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
