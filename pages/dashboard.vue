@@ -267,6 +267,234 @@
           </div>
         </div>
       </div>
+
+      <!-- SDGs dan Asta Cita Section -->
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold text-blue-900 mb-6">SDGs dan Asta Cita</h2>
+        <p class="text-blue-700 mb-6">Distribusi produk pembelajaran berdasarkan SDGs dan Asta Cita</p>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- SDGs Chart -->
+          <div class="card bg-white shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title text-xl text-blue-800 mb-4">Produk Pembelajaran Mendukung SDGs</h3>
+              <div class="mb-4 p-4 bg-blue-50 rounded-lg">
+                <p class="text-sm text-blue-700 font-semibold">Total <span class="text-lg font-bold">257</span> Produk Pembelajaran</p>
+              </div>
+              <client-only>
+                <apexchart 
+                  type="bar" 
+                  height="500" 
+                  :options="sdgsChartOptions" 
+                  :series="sdgsChartSeries" 
+                />
+              </client-only>
+              
+              <!-- SDGs Legend -->
+              <div class="mt-6 bg-blue-50 p-4 rounded-lg">
+                <h4 class="font-semibold text-blue-900 mb-3">Sustainable Development Goals (SDGs)</h4>
+                <div class="space-y-2 text-sm">
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">1.</span>
+                    <span>Tanpa Kemiskinan</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">2.</span>
+                    <span>Tanpa Kelaparan</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">3.</span>
+                    <span>Kehidupan Sehat dan Sejahtera</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">4.</span>
+                    <span>Pendidikan Berkualitas</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">5.</span>
+                    <span>Kesetaraan Gender</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">6.</span>
+                    <span>Air Bersih dan Sanitasi Layak</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">7.</span>
+                    <span>Energi Bersih dan Terjangkau</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">8.</span>
+                    <span>Pekerjaan Layak dan Pertumbuhan Ekonomi</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">9.</span>
+                    <span>Industri, Inovasi, dan Infrastruktur</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">10.</span>
+                    <span>Berkurangnya Kesenjangan</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">11.</span>
+                    <span>Kota dan Pemukiman yang Berkelanjutan</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">12.</span>
+                    <span>Konsumsi dan Produksi yang Bertanggung Jawab</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">13.</span>
+                    <span>Penanganan Perubahan Iklim</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">14.</span>
+                    <span>Ekosistem Laut</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">15.</span>
+                    <span>Ekosistem Daratan</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">16.</span>
+                    <span>Perdamaian, Keadilan, dan Kelembagaan yang Tangguh</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">17.</span>
+                    <span>Kemitraan untuk Mencapai Tujuan</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Asta Cita Chart -->
+          <div class="card bg-white shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title text-xl text-blue-800 mb-4">Produk Pembelajaran Mendukung Asta Cita</h3>
+              <div class="mb-4 p-4 bg-blue-50 rounded-lg">
+                <p class="text-sm text-blue-700 font-semibold">Total <span class="text-lg font-bold">257</span> Produk Pembelajaran</p>
+              </div>
+              <client-only>
+                <apexchart 
+                  type="bar" 
+                  height="450" 
+                  :options="astaCitaChartOptions" 
+                  :series="astaCitaChartSeries" 
+                />
+              </client-only>
+              
+              <!-- Asta Cita Legend -->
+              <div class="mt-6 bg-blue-50 p-4 rounded-lg">
+                <h4 class="font-semibold text-blue-900 mb-3">Asta Cita</h4>
+                <div class="space-y-2 text-sm">
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">1.</span>
+                    <span>Memperkokoh ideologi Pancasila, demokrasi, dan HAM</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">2.</span>
+                    <span>Memantapkan sistem pertahanan keamanan negara serta mendorong kemandirian bangsa melalui swasembada pangan, energi, air, ekonomi kreatif, ekonomi hijau, dan ekonomi biru</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">3.</span>
+                    <span>Meningkatkan lapangan kerja yang berkualitas, mendorong kewirausahaan, mengembangkan industri kreatif, dan melanjutkan pembangunan infrastruktur</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">4.</span>
+                    <span>Memperkuat pembangunan Sumber Daya Manusia (SDM), sains, teknologi, pendidikan, kesehatan, prestasi olahraga, kesetaraan gender, serta penguatan peran perempuan, pemuda, dan penyandang disabilitas</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">5.</span>
+                    <span>Melanjutkan hilirisasi dan industrialisasi untuk meningkatkan nilai tambah di dalam negeri</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">6.</span>
+                    <span>Membangun dari desa dan dari bawah untuk pemerataan ekonomi dan pengentasan kemiskinan</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">7.</span>
+                    <span>Memperkuat reformasi politik, hukum, dan birokrasi, serta memperkuat pencegahan dan pemberantasan korupsi dan narkoba</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="font-semibold text-blue-700">8.</span>
+                    <span>Memperkuat penyelarasan kehidupan yang harmonis dengan lingkungan, alam, dan budaya, serta meningkatkan toleransi antarumat beragama untuk mewujudkan masyarakat yang adil dan makmur</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistik Penelusuran Google Section -->
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold text-blue-900 mb-6">Statistik Penelusuran Google</h2>
+        <p class="text-blue-700 mb-6">Rekap hasil pencarian Google untuk proyek perubahan dan aksi perubahan</p>
+        
+        <!-- Data Table -->
+        <div class="card bg-white shadow-lg mb-6">
+          <div class="card-body">
+            <h3 class="card-title text-xl text-blue-800 mb-4">Rekap Hasil Pencarian Google</h3>
+            <div class="overflow-x-auto">
+              <table class="table table-zebra w-full">
+                <thead>
+                  <tr class="bg-blue-900 text-white">
+                    <th class="text-white">Tahun</th>
+                    <th class="text-white">2021</th>
+                    <th class="text-white">2022</th>
+                    <th class="text-white">2023</th>
+                    <th class="text-white">2024</th>
+                    <th class="text-white">2025 (s.d Sept)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="font-semibold text-red-600">Proyek Perubahan</td>
+                    <td>194.000</td>
+                    <td>282.000</td>
+                    <td>3.290.000</td>
+                    <td>5.050.000</td>
+                    <td>5.440.000</td>
+                  </tr>
+                  <tr>
+                    <td class="font-semibold text-red-600">Aksi Perubahan</td>
+                    <td>171.000</td>
+                    <td>333.000</td>
+                    <td>2.220.000</td>
+                    <td>3.480.000</td>
+                    <td>4.350.000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="card bg-white shadow-lg">
+          <div class="card-body">
+            <h3 class="card-title text-xl text-blue-800 mb-4">Grafik Hasil Pencarian Google</h3>
+            <client-only>
+              <apexchart 
+                type="line" 
+                height="400" 
+                :options="googleSearchChartOptions" 
+                :series="googleSearchChartSeries" 
+              />
+            </client-only>
+            
+            <!-- Insight Box -->
+            <div class="mt-6 bg-blue-50 p-4 rounded-lg">
+              <h4 class="font-semibold text-blue-900 mb-3">Insight</h4>
+              <div class="text-sm text-blue-800 space-y-2">
+                <p>Dari grafik hasil pencarian Google terhadap kata kunci <span class="font-semibold text-red-600">proyek perubahan</span> dan <span class="font-semibold text-red-600">aksi perubahan</span> dapat disimpulkan bahwa <span class="font-semibold">peningkatan signifikan</span> terhadap hasil pencarian di google <span class="font-semibold text-red-600">terjadi sejak Tahun 2023</span>.</p>
+                
+                <p>Hal ini memberikan bukti bahwa <span class="font-semibold">Keputusan Kepala Lembaga Administrasi Negara Nomor: 2/K.1/PDP.07/2023</span> Tentang Pedoman Penyelenggaraan Pelatihan Struktural Kepemimpinan dengan memasukkan <span class="font-semibold text-red-600">Implementasi Strategi Marketing dan Diseminasi</span> dalam unsur penilaian <span class="font-semibold text-red-600">berdampak signifikan terhadap peningkatan hasil pencarian di Google</span>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -877,6 +1105,219 @@ const detailChartSeries = computed(() => {
     data: topInstansi.map(item => item.total_proyek)
   }]
 })
+
+// SDGs Chart Configuration
+const sdgsChartOptions = computed(() => ({
+  chart: {
+    id: 'sdgs-chart',
+    type: 'bar',
+    toolbar: {
+      show: true
+    }
+  },
+  plotOptions: {
+    bar: {
+      horizontal: true,
+      borderRadius: 4,
+      dataLabels: {
+        position: 'top'
+      }
+    }
+  },
+  dataLabels: {
+    enabled: true,
+    offsetX: 30,
+    style: {
+      fontSize: '12px',
+      fontWeight: 'bold',
+      colors: ['#333']
+    }
+  },
+  xaxis: {
+    categories: [
+      'SDGs 17', 'SDGs 16', 'SDGs 15', 'SDGs 14', 'SDGs 13', 'SDGs 12', 'SDGs 11', 'SDGs 10', 
+      'SDGs 9', 'SDGs 8', 'SDGs 7', 'SDGs 6', 'SDGs 5', 'SDGs 4', 'SDGs 3', 'SDGs 2', 'SDGs 1'
+    ],
+    labels: {
+      style: {
+        fontSize: '12px'
+      }
+    }
+  },
+  yaxis: {
+    labels: {
+      style: {
+        fontSize: '12px'
+      }
+    }
+  },
+  colors: ['#3b82f6'],
+  grid: {
+    borderColor: '#e5e7eb'
+  },
+  tooltip: {
+    y: {
+      formatter: function(val) {
+        return val + ' produk'
+      }
+    }
+  }
+}))
+
+const sdgsChartSeries = computed(() => ([{
+  name: 'Jumlah Produk',
+  data: [14, 73, 1, 3, 3, 5, 6, 2, 25, 33, 1, 1, 2, 26, 25, 29, 8]
+}]))
+
+// Asta Cita Chart Configuration
+const astaCitaChartOptions = computed(() => ({
+  chart: {
+    id: 'asta-cita-chart',
+    type: 'bar',
+    toolbar: {
+      show: true
+    }
+  },
+  plotOptions: {
+    bar: {
+      horizontal: true,
+      borderRadius: 4,
+      dataLabels: {
+        position: 'top'
+      }
+    }
+  },
+  dataLabels: {
+    enabled: true,
+    offsetX: 30,
+    style: {
+      fontSize: '12px',
+      fontWeight: 'bold',
+      colors: ['#333']
+    }
+  },
+  xaxis: {
+    categories: [
+      'Asta Cita 8', 'Asta Cita 7', 'Asta Cita 6', 'Asta Cita 5', 
+      'Asta Cita 4', 'Asta Cita 3', 'Asta Cita 2', 'Asta Cita 1'
+    ],
+    labels: {
+      style: {
+        fontSize: '12px'
+      }
+    }
+  },
+  yaxis: {
+    labels: {
+      style: {
+        fontSize: '12px'
+      }
+    }
+  },
+  colors: ['#10b981'],
+  grid: {
+    borderColor: '#e5e7eb'
+  },
+  tooltip: {
+    y: {
+      formatter: function(val) {
+        return val + ' produk'
+      }
+    }
+  }
+}))
+
+const astaCitaChartSeries = computed(() => ([{
+  name: 'Jumlah Produk',
+  data: [11, 70, 20, 1, 75, 25, 43, 12]
+}]))
+
+// Google Search Chart Configuration
+const googleSearchChartOptions = computed(() => ({
+  chart: {
+    id: 'google-search-chart',
+    type: 'line',
+    toolbar: {
+      show: true
+    }
+  },
+  stroke: {
+    width: 3,
+    curve: 'smooth'
+  },
+  markers: {
+    size: 6,
+    strokeWidth: 2,
+    strokeColors: ['#fff'],
+    fillOpacity: 1,
+    hover: {
+      size: 8
+    }
+  },
+  dataLabels: {
+    enabled: true,
+    background: {
+      enabled: true,
+      borderRadius: 2,
+      padding: 4,
+      opacity: 0.8
+    },
+    style: {
+      fontSize: '11px',
+      fontWeight: 'bold'
+    },
+    formatter: function(val) {
+      return val.toLocaleString()
+    }
+  },
+  xaxis: {
+    categories: ['2021', '2022', '2023', '2024', '2025 (s.d Sept)'],
+    labels: {
+      style: {
+        fontSize: '12px'
+      }
+    }
+  },
+  yaxis: {
+    labels: {
+      style: {
+        fontSize: '12px'
+      },
+      formatter: function(val) {
+        return val.toLocaleString()
+      }
+    },
+    title: {
+      text: 'Jumlah Hasil Pencarian'
+    }
+  },
+  colors: ['#3b82f6', '#f59e0b'],
+  grid: {
+    borderColor: '#e5e7eb'
+  },
+  legend: {
+    position: 'top',
+    horizontalAlign: 'center'
+  },
+  tooltip: {
+    y: {
+      formatter: function(val) {
+        return val.toLocaleString() + ' hasil'
+      }
+    }
+  }
+}))
+
+const googleSearchChartSeries = computed(() => ([
+  {
+    name: 'Proyek Perubahan',
+    data: [194000, 282000, 3290000, 5050000, 5440000]
+  },
+  {
+    name: 'Aksi Perubahan',
+    data: [171000, 333000, 2220000, 3480000, 4350000]
+  }
+]))
 </script>
 
 <style scoped>
