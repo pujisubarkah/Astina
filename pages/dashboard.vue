@@ -441,7 +441,10 @@
           >
             <option value="pka-vi">PKA Angkatan VI</option>
             <option value="pkn-ii-angkatan-ii">PKN Tk. II Angkatan II</option>
+            <option value="pkn-ii-angkatan-x">PKN Tk. II Angkatan X</option>
+            <option value="pkn-ii-angkatan-xv">PKN Tk. II Angkatan XV</option>
             <option value="pkn-i-angkatan-lxii">PKN Tk. I Angkatan LXII</option>
+            <option value="pkn-i-angkatan-lxiii">PKN Tk. I Angkatan LXIII</option>
           </select>
         </div>
 
@@ -740,16 +743,16 @@ function onInstansiChange() {
 const economicProgramsData = {
   'pka-vi': {
     title: 'Dampak Produk Pembelajaran PKA Angkatan VI',
-    programName: 'Alumni PKN Tk. II Angkatan II',
+    programName: 'Alumni PKA Angkatan VI',
     programCode: 'PKA VI',
     alumni: 45,
     cost: 'Rp. 17.000.000',
     totalCost: 'Rp. 765.000.000',
     totalTrainingCost: 'Rp. 765.000.000',
     economicImpact: 'RP. 182.056.198.175',
-    chartSeries: [29, 12],
+    chartSeries: [29, 16], // Ya: 29, Tidak: 16
     analysis: 'Perhitungan dampak ekonomi berasal dari perhitungan masing-masing peserta dengan menggunakan metode cost and benefit analysis.',
-    additionalInfo: '*Tim Ditjar mapim sedang mengembangkan instrumen yang dapat digunakan oleh peserta dalam menghitung dampak nilai ekonomi produk pembelajaran'
+    additionalInfo: null
   },
   'pkn-ii-angkatan-ii': {
     title: 'Dampak Produk Pembelajaran PKN Tk. II Angkatan II',
@@ -759,22 +762,61 @@ const economicProgramsData = {
     cost: 'Rp. 22.945.000',
     totalCost: 'Rp. 1.284.920.000',
     totalTrainingCost: 'Rp. 1.284.920.000',
-    economicImpact: 'RP. 3.003.545.174.496.580',
-    chartSeries: [40, 16],
-    analysis: 'Perhitungan dampak ekonomi berasal dari perhitungan masing-masing peserta dengan menggunakan metode cost and benefit analysis. Terdapat data outlier yang disebabkan ada 1 alumni memiliki dampak ekonomi sebanyak RP.3.000.000.000.000.000 peserta an Dr. Ir. Heru Kustanto, M.Si. Judul: STRATEGI PENGUATAN TATA KELOLA PROGRAM PENINGKATAN PENGGUNAAN PRODUK DALAM NEGERI UNTUK MENDUKUNG PERTUMBUHAN EKONOMI DI KEMENTERIAN PERINDUSTRIAN',
+    economicImpact: 'RP. 3.545.174.496.580',
+    chartSeries: [40, 16], // Ya: 40, Tidak: 16
+    analysis: 'Perhitungan dampak ekonomi berasal dari perhitungan masing-masing peserta dengan menggunakan metode cost and benefit analysis. Terdapat data outlier yang kami hapus karena ada 1 alumni memiliki dampak ekonomi sebanyak RP.3.000.000.000.000.000 peserta an Dr. Ir. Heru Kustanto, M.Si. Judul: STRATEGI PENGUATAN TATA KELOLA PROGRAM PENINGKATAN PENGGUNAAN PRODUK DALAM NEGERI UNTUK MENDUKUNG PERTUMBUHAN EKONOMI DI KEMENTERIAN PERINDUSTRIAN',
+    additionalInfo: null
+  },
+  'pkn-ii-angkatan-x': {
+    title: 'Dampak Produk Pembelajaran PKN Tk. II Angkatan X',
+    programName: 'Alumni PKN Tk. II Angkatan X',
+    programCode: 'PKN II',
+    alumni: 60,
+    cost: 'Rp. 22.945.000',
+    totalCost: 'Rp. 1.376.700.000',
+    totalTrainingCost: 'Rp. 1.376.700.000',
+    economicImpact: 'RP. 1.078.328.515.145',
+    chartSeries: [44, 16], // Ya: 44, Tidak: 16
+    analysis: 'Perhitungan dampak ekonomi berasal dari perhitungan masing-masing peserta dengan menggunakan metode cost and benefit analysis',
+    additionalInfo: null
+  },
+  'pkn-ii-angkatan-xv': {
+    title: 'Dampak Produk Pembelajaran PKN Tk. II Angkatan XV',
+    programName: 'Alumni PKN Tk. II Angkatan XV',
+    programCode: 'PKN II',
+    alumni: 62,
+    cost: 'Rp. 22.945.000',
+    totalCost: 'Rp. 1.422.590.000',
+    totalTrainingCost: 'Rp. 1.422.590.000',
+    economicImpact: 'RP. 17.771.815.162.988',
+    chartSeries: [43, 19], // Ya: 43, Tidak: 19
+    analysis: 'Perhitungan dampak ekonomi berasal dari perhitungan masing-masing peserta dengan menggunakan metode cost and benefit analysis.',
     additionalInfo: null
   },
   'pkn-i-angkatan-lxii': {
     title: 'Dampak Produk Pembelajaran PKN Tk. I Angkatan LXII',
-    programName: 'Alumni PKN Tk. II Angkatan II',
+    programName: 'Alumni PKN Tk. I Angkatan LXII',
     programCode: 'PKN I',
     alumni: 42,
     cost: 'Rp. 40.000.000',
     totalCost: 'Rp. 1.680.000.000',
     totalTrainingCost: 'Rp. 1.680.000.000',
     economicImpact: 'RP. 26.636.612.830.604',
-    chartSeries: [28, 14],
+    chartSeries: [28, 14], // Ya: 28, Tidak: 14
     analysis: 'Perhitungan dampak ekonomi berasal dari perhitungan masing-masing peserta dengan menggunakan metode cost and benefit analysis',
+    additionalInfo: null
+  },
+  'pkn-i-angkatan-lxiii': {
+    title: 'Dampak Produk Pembelajaran PKN Tk. I Angkatan LXIII',
+    programName: 'Alumni PKN Tk. I Angkatan LXIII',
+    programCode: 'PKN I',
+    alumni: 43,
+    cost: 'Rp. 40.000.000',
+    totalCost: 'Rp. 1.720.000.000',
+    totalTrainingCost: 'Rp. 1.720.000.000',
+    economicImpact: 'RP. 410.096.393.798.828',
+    chartSeries: [29, 14], // Ya: 29, Tidak: 14
+    analysis: 'Perhitungan dampak ekonomi berasal dari perhitungan masing-masing peserta dengan menggunakan metode cost and benefit analysis.',
     additionalInfo: null
   }
 }
@@ -789,14 +831,14 @@ const currentEconomicData = computed(() => {
   return economicProgramsData[selectedEconomicProgram.value] || economicProgramsData['pka-vi']
 })
 
-// Economic Chart Options
+// Economic Chart Options - Changed back to pie chart
 const economicChartOptions = computed(() => ({
   chart: {
     id: 'economic-impact-pie',
     type: 'pie'
   },
   labels: ['Ya', 'Tidak'],
-  colors: ['#3b82f6', '#ef4444'],
+  colors: ['#10b981', '#ef4444'],
   dataLabels: {
     enabled: true,
     style: {
