@@ -20,11 +20,20 @@
           tabindex="0"
           class="menu menu-sm dropdown-content bg-primary rounded-box z-[1] mt-3 w-52 p-2 shadow">
           <li><a href="/" class="hover:bg-primary-focus">Beranda</a></li>
-          <li><a href="/alumni-diklat" class="hover:bg-primary-focus">Alumni Diklat</a></li>
+          <li v-if="false"><a href="/alumni-diklat" class="hover:bg-primary-focus">Alumni Diklat</a></li>
           <li><a href="/dashboard" class="hover:bg-primary-focus">Dashboard</a></li>
           <li><a href="/daftar-proyek" class="hover:bg-primary-focus">Daftar Proyek</a></li>
           <li><a href="/peta" class="hover:bg-primary-focus">Peta Sebaran</a></li>
           <li class="divider my-1"></li>
+            <li class="dropdown dropdown-hover">
+              <a tabindex="0" class="hover:bg-primary-focus">ProperExpo</a>
+              <ul class="dropdown-content menu p-2 shadow bg-primary rounded-box w-52">
+                <li><a href="/proper-expo" class="hover:bg-primary-focus">PKN I</a></li>
+                <li><a href="/proper-expo?type=pkn2" class="hover:bg-primary-focus">PKN II</a></li>
+                <li><a href="/proper-expo?type=pka" class="hover:bg-primary-focus">PKA</a></li>
+                <li><a class="opacity-50 cursor-not-allowed">PKP</a></li>
+              </ul>
+            </li>
           <!-- Authentication links for mobile -->
           <li v-if="!isLoggedIn"><a @click="openLoginModal" class="hover:bg-primary-focus">Login</a></li>
           <li v-if="isLoggedIn"><a href="/profile" class="hover:bg-primary-focus">Profile</a></li>
@@ -83,6 +92,21 @@
             </svg>
             Peta Sebaran
           </a>
+        </li>
+        <li class="dropdown dropdown-hover">
+          <a tabindex="0" class="hover:bg-primary-focus transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h8" />
+            </svg>
+            ProperExpo
+          </a>
+          <ul class="dropdown-content menu p-2 shadow bg-primary rounded-box w-52">
+            <li><a href="/proper-expo" class="hover:bg-primary-focus">PKN I</a></li>
+                <li><a href="/proper-expo?type=pkn2" class="hover:bg-primary-focus">PKN II</a></li>
+            <li><a class="opacity-50 cursor-not-allowed">PKA</a></li>
+            <li><a class="opacity-50 cursor-not-allowed">PKP</a></li>
+          </ul>
         </li>
       </ul>
     </div>
