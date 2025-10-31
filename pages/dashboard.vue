@@ -1501,6 +1501,15 @@ const googleSearchChartSeries = computed(() => ([
     data: [171000, 333000, 2220000, 3480000, 4350000]
   }
 ]))
+
+
+// Set page metadata
+useHead({
+  title: 'Dashboard Statistik | ASTINA',
+  meta: [
+    { name: 'description', content: 'Dashboard statistik untuk memantau dan menganalisis produk pembelajaran pelatihan kepemimpinan.' }
+  ]
+})
 </script>
 
 <style scoped>

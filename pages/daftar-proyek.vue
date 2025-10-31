@@ -592,7 +592,7 @@ const { isLoggedIn, getAuthHeaders } = useAuth()
 
 // Page metadata
 useHead({
-  title: 'Hub Produk Pembelajaran - Astina',
+  title: 'Hub Produk Pembelajaran | ASTINA',
   meta: [
     { name: 'description', content: 'Hub terpusat untuk ribuan Produk Pembelajaran dari program pelatihan kepemimpinan PKN Tk I, PKN Tk II, PKA, dan PKP. Jelajahi, pelajari, dan adaptasi best practice transformasi birokrasi.' }
   ]

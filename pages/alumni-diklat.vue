@@ -512,6 +512,14 @@ onMounted(() => {
 	fetchGender()
 	fetchProvinsi()
 })
+
+// Page metadata
+useHead({
+  title: 'Alumni Pelatihan | ASTINA',
+  meta: [
+    { name: 'description', content: 'Halaman ini menampilkan informasi dan statistik terkait alumni program pelatihan kepemimpinan.' }
+  ]
+})
 </script>
 
 <style scoped>

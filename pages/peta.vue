@@ -522,9 +522,9 @@
 <script setup>
 // Page metadata
 useHead({
-  title: 'Peta Sebaran Proyek - Astina',
+  title: 'Peta Sebaran Proyek | ASTINA',
   meta: [
-  { name: 'description', content: 'Peta interaktif sebaran produk pembelajaran di seluruh Indonesia' }
+  { name: 'description', content: 'Peta interaktif sebaran produk pembelajaran pelatihan kepemimpinan di seluruh Indonesia' }
   ]
 })
 
