@@ -1,6 +1,8 @@
-import { pgTable, serial, integer, varchar, timestamp } from 'drizzle-orm/pg-core'
+import { pgSchema, serial, integer, varchar, timestamp } from 'drizzle-orm/pg-core'
 
-export const lemdik = pgTable('master_lemdik', {
+const appSchema = pgSchema('proper')
+
+export const lemdik = appSchema.table('master_lemdik', {
   id: serial('id').primaryKey(),
   idsipka: integer('idsipka'),
   namalemdik: varchar('namalemdik', { length: 255 }),

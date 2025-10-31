@@ -1,6 +1,8 @@
-import { pgTable, bigint, varchar, text, timestamp } from 'drizzle-orm/pg-core'
+import { pgSchema, bigint, varchar, text, timestamp } from 'drizzle-orm/pg-core'
 
-export const projectSupport = pgTable('project_support_files', {
+const appSchema = pgSchema('proper')
+
+export const projectSupport = appSchema.table('project_support_files', {
   id: bigint('id', { mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   projectId: bigint('project_id', { mode: 'number' }).notNull(),
   fileUrl: text('file_url').notNull(),

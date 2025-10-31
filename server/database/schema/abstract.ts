@@ -1,6 +1,8 @@
-import { pgTable, serial, integer, text } from 'drizzle-orm/pg-core'
+import { pgSchema, serial, integer, text } from 'drizzle-orm/pg-core'
 
-export const abstract = pgTable('abstract', {
+const appSchema = pgSchema('proper')
+
+export const abstract = appSchema.table('abstract', {
   id: serial('id').primaryKey(),
   proper_id: integer('proper_id'),
   abstract: text('abstract'),

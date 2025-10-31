@@ -1,6 +1,8 @@
-import { pgTable, bigint, varchar, text, timestamp, boolean, jsonb, integer } from 'drizzle-orm/pg-core'
+import { pgSchema, bigint, varchar, text, timestamp, boolean, jsonb, integer } from 'drizzle-orm/pg-core'
 
-export const project = pgTable('projects', {
+const appSchema = pgSchema('proper')
+
+export const project = appSchema.table('projects', {
   id: bigint('id', { mode: 'number' }).primaryKey().generatedByDefaultAsIdentity(),
   userId: bigint('user_id', { mode: 'number' }).notNull(),
   instansiId: bigint('instansi_id', { mode: 'number' }).notNull(),

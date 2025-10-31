@@ -1,6 +1,8 @@
-import { pgTable, serial, varchar, timestamp } from 'drizzle-orm/pg-core'
+import { pgSchema, serial, varchar } from 'drizzle-orm/pg-core'
 
-export const pelatihan = pgTable('pelatihan', {
+const appSchema = pgSchema('proper')
+
+export const pelatihan = appSchema.table('pelatihan', {
   id: serial('id').primaryKey(),
   nama: varchar('nama', { length: 255 }).notNull(),
 })
