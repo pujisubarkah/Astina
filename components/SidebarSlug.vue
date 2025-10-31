@@ -52,8 +52,11 @@ import { navigateTo } from '#app'
 const { logout } = useAuth()
 const route = useRoute()
 
-// base path for slug pages (strip trailing slash)
-const base = route.path.replace(/\/$/, '')
+// base path for slug pages.
+// Prefer route.params.slug (the dynamic param) so links become 
+// /:slug/upload-surat etc. Fallback to first path segment when params missing.
+const slug = route.params?.slug || (route.path.split('/')[1] || '')
+const base = `/${slug}`
 
 const doLogout = async () => {
   try {

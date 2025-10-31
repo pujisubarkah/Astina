@@ -22,7 +22,7 @@
           <li><a href="/" class="hover:bg-primary-focus">Beranda</a></li>
           <li><a href="/dashboard" class="hover:bg-primary-focus">Dashboard</a></li>
           <li><a href="/daftar-proyek" class="hover:bg-primary-focus">Daftar Proyek</a></li>
-          <li><a href="/peta" class="hover:bg-primary-focus">Alumni & Peta</a></li>
+          <li><a href="/peta" class="hover:bg-primary-focus">Peta Sebaran</a></li>
           <li class="divider my-1"></li>
             <li class="dropdown dropdown-hover">
               <a tabindex="0" class="hover:bg-primary-focus">ProperExpo</a>
@@ -80,7 +80,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 616 0z" />
             </svg>
-            Alumni & Peta
+            Peta Sebaran
           </a>
         </li>
         <li class="dropdown dropdown-hover">

@@ -38,8 +38,13 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 definePageMeta({ layout: 'slug' })
+
+const route = useRoute()
+// Allow caller to override the data API via ?api=/api/my-endpoint
+const apiUrl = route?.query?.api ? String(route.query.api) : '/api/proper'
 
 const rows = ref([])
 const loading = ref(true)
@@ -47,14 +52,17 @@ const loading = ref(true)
 async function fetchRows() {
   loading.value = true
   try {
-    const res = await fetch('/api/proper')
-    if (!res.ok) throw new Error('Gagal mengambil data')
+    const res = await fetch(apiUrl)
+    if (!res.ok) throw new Error('Gagal mengambil data dari ' + apiUrl)
     const json = await res.json()
     if (json && json.success && Array.isArray(json.data)) {
       rows.value = json.data
     } else if (Array.isArray(json)) {
       // fallback if endpoint returns array directly
       rows.value = json
+    } else if (json && Array.isArray(json.rows)) {
+      // some endpoints return { rows: [...] }
+      rows.value = json.rows
     } else {
       rows.value = []
     }
