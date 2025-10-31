@@ -2,8 +2,8 @@
   <div class="min-h-screen bg-base-100 flex font-poppins">
     <!-- Sidebar -->
     <Sidebar />
-    <div class="flex-1 flex flex-col">
-      <!-- Header -->
+    <div class="flex-1 flex flex-col pt-16"> <!-- reserve space for fixed header -->
+      <!-- Header (fixed) -->
       <Header />
       <!-- Main Content Area -->
       <main class="flex-1 p-6 bg-gray-50">

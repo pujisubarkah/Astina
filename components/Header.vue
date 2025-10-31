@@ -1,6 +1,6 @@
 <template>
-  <header class="bg-primary shadow-lg border-b border-primary-focus px-6 py-4">
-    <div class="flex items-center justify-between">
+  <header class="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg border-b border-primary-focus px-6 h-16">
+  <div class="flex items-center justify-between h-16">
       <!-- Left Section: Logos & Page Title -->
       <div class="flex items-center space-x-6">
         <!-- Logo Section -->

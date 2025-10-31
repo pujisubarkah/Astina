@@ -1,5 +1,5 @@
 <template>
-  <aside class="w-64 bg-primary text-primary-content shadow-xl h-full flex flex-col">
+  <aside class="w-64 bg-primary text-primary-content shadow-xl min-h-screen flex flex-col">
     <!-- Header Sidebar -->
     <div class="px-6 py-6 border-b border-primary-focus/20">
       <div class="flex items-center gap-3">
@@ -30,8 +30,9 @@
       </div>
     </div>
 
-    <!-- Navigation Menu -->
-    <nav class="flex-1 px-4 py-4 space-y-2">
+  <!-- Navigation Menu -->
+  <!-- make the nav scrollable if it grows taller than the viewport -->
+  <nav class="flex-1 px-4 py-4 space-y-2 overflow-y-auto sidebar-scroll">
       <!-- Dynamic Menu Sections from Composable -->
       <div v-for="section in menuSections" :key="section.id" class="mb-4">
         <div class="px-3 py-2 text-xs font-semibold text-primary-content/70 uppercase tracking-wider">
