@@ -9,6 +9,6 @@
 <script setup>
 // Tambahkan logic dashboard user di sini
 definePageMeta({
-  layout: 'main'
+  layout: 'slug'
 })
 </script>
