@@ -200,20 +200,7 @@
             Menjadi jembatan kolaborasi lintas instansi untuk berbagi best practice, 
             pembelajaran, dan inovasi transformasi birokrasi di seluruh Indonesia.
           </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <button class="btn btn-warning btn-lg text-blue-900">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              Mulai Sekarang
-            </button>
-            <button class="btn btn-outline btn-lg text-white border-white hover:bg-white hover:text-blue-800">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h8m-1 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Pelajari Lebih Lanjut
-            </button>
-          </div>
+          <!-- Primary hero CTAs removed as requested -->
         </div>
       </div>
     </div>

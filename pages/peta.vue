@@ -8,20 +8,26 @@
             <h1 class="text-4xl font-bold text-blue-900 mb-2">Peta Sebaran Produk Pembelajaran</h1>
             <p class="text-blue-700">Klik pada provinsi untuk melihat detail produk pembelajaran di wilayah tersebut</p>
           </div>
-          <div class="flex gap-2">
-            <select class="select select-bordered" v-model="selectedCategory">
-              <option value="">Semua Kategori</option>
-              <option value="digitalisasi">Digitalisasi</option>
-              <option value="sakip">SAKIP & Reformasi</option>
-              <option value="inovasi">Inovasi</option>
-              <option value="manajemen">Manajemen Perubahan</option>
-            </select>
-            <select class="select select-bordered" v-model="selectedStatus">
-              <option value="">Semua Status</option>
-              <option value="completed">Selesai</option>
-              <option value="ongoing">Berjalan</option>
-              <option value="planning">Perencanaan</option>
-            </select>
+          <div class="flex items-center gap-3">
+            <div class="btn-group">
+              <button :class="['btn', viewMode === 'map' ? 'btn-primary' : 'btn-ghost']" @click="viewMode = 'map'">Peta</button>
+              <button :class="['btn', viewMode === 'alumni' ? 'btn-primary' : 'btn-ghost']" @click="viewMode = 'alumni'">Alumni</button>
+            </div>
+            <div v-if="viewMode === 'map'" class="flex gap-2">
+              <select class="select select-bordered" v-model="selectedCategory">
+                <option value="">Semua Kategori</option>
+                <option value="digitalisasi">Digitalisasi</option>
+                <option value="sakip">SAKIP & Reformasi</option>
+                <option value="inovasi">Inovasi</option>
+                <option value="manajemen">Manajemen Perubahan</option>
+              </select>
+              <select class="select select-bordered" v-model="selectedStatus">
+                <option value="">Semua Status</option>
+                <option value="completed">Selesai</option>
+                <option value="ongoing">Berjalan</option>
+                <option value="planning">Perencanaan</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -73,8 +79,8 @@
         </div>
       </div>
 
-      <!-- Map and Details Section -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Map and Details Section -->
+  <div v-if="viewMode === 'map'" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Indonesia Map -->
         <div class="lg:col-span-2">
           <div class="card bg-white shadow-lg">
@@ -275,6 +281,10 @@
             </div>
           </div>
         </div>
+      </div>
+      <!-- Alumni dashboard embedded when user switches to Alumni view -->
+      <div v-else class="mt-6">
+        <AlumniDiklat />
       </div>
     </div>
   </div>
@@ -528,9 +538,13 @@ useHead({
   ]
 })
 
+// Import alumni dashboard so it can be shown inside the combined Peta page
+import AlumniDiklat from './alumni-diklat.vue'
+
 // Reactive data
 const selectedCategory = ref('')
 const selectedStatus = ref('')
+const viewMode = ref('map')
 const hoveredProvince = ref(null)
 const hoveredKabupaten = ref(null)
 const selectedProvinceData = ref(null)
