@@ -88,7 +88,9 @@ const handleLogin = async () => {
     if (user.value?.roleId === 1) {
       await navigateTo('/admin/dashboard')
     } else {
-      await navigateTo(`/${user.value?.username}/dashboard`)
+      // Use name as slug instead of username
+      const slug = user.value?.name?.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || 'user'
+      await navigateTo(`/${slug}/dashboard`)
     }
     
   } catch (error) {

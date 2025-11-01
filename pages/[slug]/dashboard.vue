@@ -1,6 +1,12 @@
 <template>
   <div class="p-8">
-    <h1 class="text-2xl font-bold mb-4 text-blue-700">SIPENDAR — Pendaftaran Peserta Diklat Kepemimpinan</h1>
+    <!-- Welcome Section -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-blue-700 mb-2">Selamat Datang, {{ userName }}!</h1>
+      <p class="text-lg text-gray-600">Selamat datang di dashboard SIPENDAR Anda</p>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-4 text-blue-700">SIPENDAR — Pendaftaran Peserta Diklat Kepemimpinan</h2>
 
     <p class="mb-4 text-gray-700">
       SIPENDAR adalah sistem pendaftaran daring untuk calon peserta Diklat Kepemimpinan (Diklatpim).
@@ -60,9 +66,30 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
 
 const route = useRoute()
-const base = route?.params?.slug ? `/${route.params.slug}` : ''
+const { getUserInfo } = useAuth()
+
+// Get user name from auth first, fallback to slug conversion
+const userInfo = getUserInfo()
+let userName = userInfo?.name || 'User'
+
+// If no name from auth, try to convert slug to readable name
+if (userName === 'User' && route.params.slug) {
+  // Convert slug format (kementerian-agama) to readable format (Kementerian Agama)
+  userName = route.params.slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
+// Always generate slug from user name, not from route params
+const slug = userName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+const base = `/${slug}`
+
+// If route slug doesn't match user slug, we still show the dashboard but use user's actual name
+// This handles cases where user accesses old username-based URLs
 
 definePageMeta({ layout: 'slug' })
 </script>

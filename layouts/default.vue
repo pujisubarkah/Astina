@@ -8,6 +8,9 @@
     </main>
     <!-- Footer -->
     <Footer />
+    
+    <!-- Global Chatbot (only shows on main pages, not admin/slug) -->
+    <GlobalChatbot />
   </div>
 </template>
 

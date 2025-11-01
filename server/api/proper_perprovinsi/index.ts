@@ -1,7 +1,7 @@
 import { proper } from '../../database/schema/proper'
-import { instansi } from '@/server/database/schema/instansi'
-import { provinsi } from '@/server/database/schema/provinsi'
-import { db } from '@/server/db'
+import { instansi } from '../../database/schema/instansi'
+import { provinsi } from '../../database/schema/provinsi'
+import { db } from '../../db'
 import { sql } from 'drizzle-orm'
 import { defineEventHandler } from 'h3'
 

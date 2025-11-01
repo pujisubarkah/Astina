@@ -62,7 +62,9 @@ const userRoleString = computed(() => {
 
 // Get user slug for dynamic routes
 const userSlug = computed(() => {
-  return currentUser.value?.username || user.value?.username || ''
+  // Use name as slug instead of username
+  const name = currentUser.value?.name || user.value?.name
+  return name ? name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''
 })
 
 // Get menu sections based on user role

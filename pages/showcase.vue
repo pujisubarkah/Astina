@@ -1,17 +1,35 @@
 <template>
-  <div class="netflix-bg min-h-screen py-8">
-    <h1 class="netflix-title">PROYEK PERUBAHAN {{ type === 'pkn2' ? 'PKN II' : '' }}</h1>
-    <hr class="netflix-divider" />
-    <div class="netflix-carousel-wrapper">
+  <div class="netflix-bg">
+    <!-- Header -->
+    <div class="text-center py-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4 shadow-lg">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+      </div>
+      <h1 class="netflix-title">Showcase</h1>
+      <hr class="netflix-divider">
+      <p class="text-lg text-blue-700 mb-6">Galeri Inovasi Showcase</p>
+    </div>
+
+    <div class="showcase-wrapper">
       <div class="expo-grid">
         <template v-if="type === 'pkn2'">
           <div v-for="item in pkn2Data" :key="item.img" class="netflix-card" @click="window.open(item.link, '_blank')">
-            <img :src="item.img" alt="PKN II" class="netflix-poster" />
+            <img :src="item.img" :alt="item.title" class="netflix-poster" />
+            <div class="netflix-card-info">
+              <h3>PKN Tingkat II</h3>
+              <p>Inovasi dari alumni PKN II</p>
+            </div>
           </div>
         </template>
         <template v-else-if="type === 'pka'">
           <div v-for="item in pkaData" :key="item.img" class="netflix-card" @click="window.open(item.img, '_blank')">
-            <img :src="item.img" alt="PKA" class="netflix-poster" />
+            <img :src="item.img" :alt="item.title" class="netflix-poster" />
+            <div class="netflix-card-info">
+              <h3>PKA Innovation</h3>
+              <p>Program Kepemimpinan Administrator</p>
+            </div>
           </div>
         </template>
         <template v-else>
@@ -25,36 +43,51 @@
         </template>
       </div>
     </div>
-    <div v-if="type !== 'pkn2' && totalPages > 1" class="netflix-pagination">
-      <button v-for="pageNumber in visiblePages" :key="pageNumber" @click="handlePageChange(pageNumber)"
-        :class="['pagination-btn', currentPage === pageNumber ? 'active' : '']">
-        {{ pageNumber }}
-      </button>
+
+    <!-- Enhanced Pagination -->
+    <div v-if="type !== 'pkn2' && totalPages > 1" class="flex justify-center mt-12">
+      <div class="join">
+        <button class="join-item btn btn-sm" :disabled="currentPage === 1" @click="handlePageChange(currentPage - 1)">
+          «
+        </button>
+        <button 
+          v-for="pageNumber in visiblePages" 
+          :key="pageNumber" 
+          @click="handlePageChange(pageNumber)"
+          :class="['join-item btn btn-sm', currentPage === pageNumber ? 'btn-active' : '']"
+        >
+          {{ pageNumber }}
+        </button>
+        <button class="join-item btn btn-sm" :disabled="currentPage === totalPages" @click="handlePageChange(currentPage + 1)">
+          »
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router'
-/**
- * @typedef {Object} NewsItem
- * @property {number} id
- * @property {string} title
- * @property {string} image
- * @property {string} author
- * @property {string} instansi
- * @property {string} date
- */
 
-/** @type {import('vue').Ref<NewsItem[]>} */
-const newsItems = ref([])
+// Basic state for pagination
 const currentPage = ref(1)
 const itemsPerPage = 8
 const totalPages = 20
 
+/** @type {import('vue').Ref<NewsItem[]>} */
+const newsItems = ref([])
 const route = useRoute()
 const type = computed(() => route.query.type || 'pkn1')
+
 const pkn2Data = [
+  {
+    img: "https://lh3.googleusercontent.com/sitesv/AAzXCkdLLedifsI8LmQC9n644g7w4t4KnZ6b0xxb46ZBVqeFC3XqChnOH8fTIf47ZCfmOjuQxnQije6Q1mTDCq54sgbvPhPd04egiovejTPW6NO8sqRjZgArjagiUUhOfLvUJ4kH22JNMieHv2Wj6KW0RhWXYGeaU7oPRRyZRmZRE8gjgnqxUfKoeW2inPifdI5KdUQF6bcNODEsCXzEQvZUsYMbsYEiP2OW1h0EAnE=w1280",
+    link: "https://drive.google.com/file/d/1qRz7gsm3SxDHjvewMt8WPGBairGqLHda/view?usp=sharing"
+  },
+  {
+    img: "https://lh3.googleusercontent.com/sitesv/AAzXCkddtwjwDwR-J24m5JgoewosJxZ9Y9gKGzQD7S6X9VqwR1j2f4GNG2bjdG3uhWJ0nuBxTyYH-8sOT4hFuggF63PibN-z4RxFBOSvcevYgsNq7oVPyXCs0irrLwE7Yi8-060oJF4F9J5uYY31q2J8s7tHh-OQt9nLQJ-fIRjshJW3w5nBhh84ErcVQHp55qOEVOj7YzGrOtYcqGs2CVlmG6Kw9MrYbEvzmXN3zpWk=w1280",
+    link: "https://drive.google.com/file/d/1fQOtxUvEVU-3iP5hLG02-l1Mj_u0mxsl/view?usp=sharing"
+  },
   {
     img: "https://lh3.googleusercontent.com/sitesv/AAzXCkeKUkq5Vgnxlv2tme3QukrIaumwComQTRFaUow5VTqOax0FqOqYsiyozIeV3DhBJtmgCa_ks1ZkacVqemBOl428vDY4CdYerdhZcWssuyVYcMMO5DTR0uJjPDmL_6hzNuLQ9sDqat53V76DsAwHcONtZp6N7gPImtCN3xX2cCEZsR2LzHVmWN_n5mN1sUF6V1dXfHPbnyunSW8RJFC19lb_cclKl3SSxDwh=w1280",
     link: "https://drive.google.com/file/d/1hFv41o2yZhVgg86IGVw5AcBMmrpkbql0/view?usp=sharing"
@@ -75,19 +108,11 @@ const pkn2Data = [
     img: "https://lh3.googleusercontent.com/sitesv/AAzXCkeNd22_7HtNdTXxdhIr9Uy7tBtXfxwa6ayUAUfHXX5zCEyuflGMrVvoxRJ2cS11oGrexMbnkvjOtbA-hIpNkpJQ4NMjOQlSgaeZcFpo-SzrSoLvTwgZl_VNFcwZizmqx7jW37o7kIdsnw90g6R8zdOjj235fXG-rEXRbZ5ubwyBFgIdizr1IwPhRTNRb-VBLdX1uP68zzfeFV7zmzU81T-lb14NYJ4WhIsf=w1280",
     link: "https://drive.google.com/file/d/1KpYz8rqBA7SNzqdoZtxeb0mo1LTW4MLA/view?usp=sharing"
   },
-  {
-    img: "https://lh3.googleusercontent.com/sitesv/AAzXCkdLLedifsI8LmQC9n644g7w4t4KnZ6b0xxb46ZBVqeFC3XqChnOH8fTIf47ZCfmOjuQxnQije6Q1mTDCq54sgbvPhPd04egiovejTPW6NO8sqRjZgArjagiUUhOfLvUJ4kH22JNMieHv2Wj6KW0RhWXYGeaU7oPRRyZRmZRE8gjgnqxUfKoeW2inPifdI5KdUQF6bcNODEsCXzEQvZUsYMbsYEiP2OW1h0EAnE=w1280",
-    link: "https://drive.google.com/file/d/1qRz7gsm3SxDHjvewMt8WPGBairGqLHda/view?usp=sharing"
-  },
-  {
-    img: "https://lh3.googleusercontent.com/sitesv/AAzXCkddtwjwDwR-J24m5JgoewosJxZ9Y9gKGzQD7S6X9VqwR1j2f4GNG2bjdG3uhWJ0nuBxTyYH-8sOT4hFuggF63PibN-z4RxFBOSvcevYgsNq7oVPyXCs0irrLwE7Yi8-060oJF4F9J5uYY31q2J8s7tHh-OQt9nLQJ-fIRjshJW3w5nBhh84ErcVQHp55qOEVOj7YzGrOtYcqGs2CVlmG6Kw9MrYbEvzmXN3zpWk=w1280",
-    link: "https://drive.google.com/file/d/1fQOtxUvEVU-3iP5hLG02-l1Mj_u0mxsl/view?usp=sharing"
-  }
 ];
 
 const pkaData = [
-  { img: "https://lh3.googleusercontent.com/sitesv/AAzXCkeH3SnLdMAifc-1cMYvO22dfIvjXXgkItu4eXyXfIpTZQgz8g0vlXf32dH2s58cH4xvmnqZb0hAG9hECU4RjvUqpn6uCP-JJZYNOjrFOQJauL3HZOe0w2QkGAojlNd0_VxqdFE9jwPkYINUPrzwXXCcMI7ra2t3gLWLetKHa9ZQOqTbhYrA3KTdIMAHuvwAne5aNj2aZq8OzojCU-Ozrp1m347xEVs6YnYbqfo=w1280" },
-  { img: "https://lh3.googleusercontent.com/sitesv/AAzXCkdQaQ2zalxH9Lg-Rmofkv6i-cfeBbdPQ6j6TNBZHYb-u1bdMGeIFK2RjyS38xd1i5yLButYXsHjWsC-kqNf58HDOeItOGfNW1kXj8SBFiQ-5vUayIqa26lVXJuqb255EDmRseD490cpKAf3wtogffw0ML9JSmZpQMUINm7LJNGadDZVPdBHnk12hoDARKR5oyX3ZuQWiCauQZg6TCA2CM_WkBxyUq9Xb2G8=w1280" },
+  { img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000375/ta8aut2ni68m2n8ylhyf.png" },
+  { img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000374/eyiupn3dp2ohzye6wy9u.png" },
   { img: "https://lh3.googleusercontent.com/sitesv/AAzXCkcUYsH1-WVSgJFe8x_ABnfrU900rhmNFsmwDVmQntm8VnMXGCIgoTTbJxl64d-PKR466BF9GCkkQJx2NfjgenqySk0mXxWPtiExJaYmpdMbWN7Yc9IBxs5398g0619urFvYlKVGdatPKX8Gl1VM2tRr1m-qcMYjclsGLgUlsokT_CK0UrDsrWhZbcsimqAv9tMPIrbXt87RWd0XWUgZ5lcCF1mS10n5kKSYK-w=w1280" },
   { img: "https://lh3.googleusercontent.com/sitesv/AAzXCkdqD9xiQOYlaS8x2WN8VdqoP3VhTFq-dh0i1DnPh345itLTtTPZ0dNM_LoTJvItmhYgc4NLIgakYoWcimVd3D45j7W8TULMEuOdtTZ3UHP8KpDPPCu7qH88jtxYC79pq86Ovk7qxjAxNfwRa3AZfIYmGnZhZxeiZ8i2QODA6riDwDogDNV4bax1P_TpzzNEh2FM8g_rZYQ1Z9etiD1opTbecKO7C-_oYieLCKc=w1280" },
   { img: "https://lh3.googleusercontent.com/sitesv/AAzXCkfOjAJZa7J58K6S4MkUzLaTSl12-5UsUC_xwhbSn4lWmAfVBOEuXoqjlXQL1UOOek9czYCljFRFu_RU2C4zdc6ooG-HSR5wB_5RbEqjmPVbSzLn4gZYzIaIf5CMbCYU9VkgjAi4zEHuvRqTpBR3JHjruOVmNJgHcJQ98OMB6iLErCkf70CElzRZDPwKolr9goOdlJSqa1FtlTHbQ7jcOoP-pFwWouAaEa6gf50=w1280" },
@@ -117,7 +142,7 @@ const handlePageChange = (newPage) => {
 const fetchBeritaFromAPI = async () => {
   try {
     const { data } = await $fetch(
-      `https://properexpo.lan.go.id/app/api/tx-proper?perPage=${itemsPerPage}&page=${currentPage.value}`
+      `https://properexpo.lan.go.id/app/api/tx-proper?perPage=${itemsPerPage}&page=${currentPage.value}&sort=created_at&order=desc`
     )
     
     const responseData = data.data
@@ -133,7 +158,7 @@ const fetchBeritaFromAPI = async () => {
     
     newsItems.value = formattedData
     
-    console.log('api:', `https://properexpo.lan.go.id/app/api/tx-proper?perPage=${itemsPerPage}&page=${currentPage.value}`)
+    console.log('api:', `https://properexpo.lan.go.id/app/api/tx-proper?perPage=${itemsPerPage}&page=${currentPage.value}&sort=created_at&order=desc`)
   } catch (error) {
     console.error('Error fetching news from API:', error)
   }
@@ -239,153 +264,5 @@ onMounted(() => {
   background: #f5f6fa;
   color: #222;
   min-height: 100vh;
-}
-.netflix-carousel-wrapper {
-  position: relative;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 1400px;
-}
-.netflix-carousel {
-  display: flex;
-  overflow-x: auto;
-  gap: 1.5rem;
-  padding-bottom: 1rem;
-  scrollbar-width: thin;
-  scrollbar-color: #444 #222;
-}
-.netflix-carousel::-webkit-scrollbar {
-  height: 8px;
-}
-.netflix-carousel::-webkit-scrollbar-thumb {
-  background: #444;
-  border-radius: 4px;
-}
-.netflix-card {
-  min-width: 220px;
-  max-width: 220px;
-  background: #222;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.7);
-  cursor: pointer;
-  position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.netflix-card:hover {
-  transform: scale(1.08);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.8);
-  z-index: 2;
-}
-.netflix-poster {
-  width: 100%;
-  height: 320px;
-  object-fit: cover;
-  display: block;
-}
-.netflix-card-info {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(0deg, rgba(24,24,24,0.95) 80%, rgba(24,24,24,0.2) 100%);
-  color: #fff;
-  padding: 1rem 0.75rem 0.5rem 0.75rem;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.netflix-card:hover .netflix-card-info {
-  opacity: 1;
-}
-.netflix-card-info h3 {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-  line-height: 1.2;
-}
-.netflix-card-info p {
-  font-size: 0.85rem;
-  color: #b3b3b3;
-  margin: 0;
-}
-.carousel-arrow {
-  background: rgba(24,24,24,0.7);
-  color: #fff;
-  border: none;
-  font-size: 2.5rem;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 3;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.carousel-arrow.left {
-  left: -60px;
-}
-.carousel-arrow.right {
-  right: -60px;
-}
-.carousel-arrow:hover {
-  background: #16578d;
-}
-.netflix-pagination {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-}
-.pagination-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  background-color: #222;
-  color: #fff;
-  cursor: pointer;
-  font-size: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  transition: background-color 0.2s;
-}
-.pagination-btn:hover {
-  background-color: #16578d;
-}
-.pagination-btn.active {
-  background-color: #fff;
-  color: #16578d;
-}
-@media (max-width: 900px) {
-  .netflix-card, .netflix-card-info {
-    min-width: 160px;
-    max-width: 160px;
-  }
-  .netflix-poster {
-    height: 200px;
-  }
-}
-@media (max-width: 600px) {
-  .netflix-title {
-    font-size: 1.5rem;
-    margin-left: 1rem;
-  }
-  .netflix-divider {
-    margin-left: 1rem;
-  }
-  .netflix-carousel-wrapper {
-    margin: 0 0.5rem;
-  }
-  .carousel-arrow.left {
-    left: -30px;
-  }
-  .carousel-arrow.right {
-    right: -30px;
-  }
 }
 </style>

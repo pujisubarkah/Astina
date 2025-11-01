@@ -1,9 +1,9 @@
-import { abstract } from '@/server/database/schema/abstract' // Ensure this file exists at the specified path
+import { abstract } from '../../database/schema/abstract' // Ensure this file exists at the specified path
 
 // If the file does not exist, create '../../../database/schema/abstract.ts' with the following content:
 // export const abstract = { /* schema definition here */ };
-import { proper } from '@/server/database/schema/proper'
-import { db } from '@/server/db'
+import { proper } from '../../database/schema/proper'
+import { db } from '../../db'
 import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {

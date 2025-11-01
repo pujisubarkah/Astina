@@ -60,7 +60,17 @@ export const useAuth = () => {
           const decoded = decodeJWTPayload(storedToken)
           if (decoded && decoded.exp * 1000 > Date.now()) {
             token.value = storedToken
-            user.value = JSON.parse(storedUser)
+            
+            let userData = JSON.parse(storedUser)
+            
+            // If stored user data doesn't have name but JWT does, update it
+            if (!userData.name && decoded.name) {
+              userData.name = decoded.name
+              // Update localStorage with corrected data
+              localStorage.setItem('user_data', JSON.stringify(userData))
+            }
+            
+            user.value = userData
           } else {
             // Token expired, clear storage
             clearAuth()

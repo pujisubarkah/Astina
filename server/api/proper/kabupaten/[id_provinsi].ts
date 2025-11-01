@@ -1,14 +1,14 @@
 // server/api/proper/kabupaten/[id_provinsi].ts
 
-import { proper } from '@/server/database/schema/proper'
-import { db } from '@/server/db'
+import { proper } from '../../../database/schema/proper'
+import { db } from '../../../db'
 import { sql, eq, count } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
   try {
     if (event.method === 'GET') {
-      const { instansi } = await import('@/server/database/schema/instansi')
-      const { kabupaten } = await import('@/server/database/schema/kabupaten')
+      const { instansi } = await import('../../../database/schema/instansi')
+      const { kabupaten } = await import('../../../database/schema/kabupaten')
 
       // ambil param dari path
       const idProvinsi = Number(getRouterParam(event, 'id_provinsi'))

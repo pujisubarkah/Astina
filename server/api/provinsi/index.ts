@@ -1,7 +1,7 @@
 // server/api/provinsi/index.ts
 
-import { provinsi } from '@/server/database/schema/provinsi'
-import { db } from '@/server/db'
+import { provinsi } from '../../database/schema/provinsi'
+import { db } from '../../db'
 
 
 // GET: Ambil semua data provinsi

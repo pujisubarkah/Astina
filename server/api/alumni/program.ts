@@ -1,8 +1,8 @@
 // server/api/alumni/program.ts
 
-import { proper } from '@/server/database/schema/proper'
-import { pelatihan } from '@/server/database/schema/pelatihan'
-import { db } from '@/server/db'
+import { proper } from '../../database/schema/proper'
+import { pelatihan } from '../../database/schema/pelatihan'
+import { db } from '../../db'
 import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {

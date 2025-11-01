@@ -1,5 +1,5 @@
-import { proper } from '@/server/database/schema/proper'
-import { db } from '@/server/db'
+import { proper } from '../database/schema/proper'
+import { db } from '../db'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     // If abstract data is provided, insert into abstract table
     let resultAbstract = null
     if (abstract || kata_kunci || nilai_ekonomi || tanggal_mulai || tanggal_akhir) {
-      const { abstract: abstractTable } = await import('@/server/database/schema/abstract')
+      const { abstract: abstractTable } = await import('../database/schema/abstract')
       resultAbstract = await db.insert(abstractTable).values({
         proper_id,
         abstract,

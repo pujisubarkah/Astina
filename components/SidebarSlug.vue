@@ -49,13 +49,15 @@ import { useAuth } from '@/composables/useAuth'
 import { useRoute } from 'vue-router'
 import { navigateTo } from '#app'
 
-const { logout } = useAuth()
+const { logout, getUserInfo } = useAuth()
 const route = useRoute()
 
-// base path for slug pages.
-// Prefer route.params.slug (the dynamic param) so links become 
-// /:slug/upload-surat etc. Fallback to first path segment when params missing.
-const slug = route.params?.slug || (route.path.split('/')[1] || '')
+// Get user info to use name as slug
+const userInfo = getUserInfo()
+const userName = userInfo?.name || 'User'
+
+// Always use name as slug instead of username - convert to URL-friendly format
+const slug = userName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
 const base = `/${slug}`
 
 const doLogout = async () => {

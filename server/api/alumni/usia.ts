@@ -1,7 +1,7 @@
 // server/api/alumni/usia.ts
 
-import { proper } from '@/server/database/schema/proper'
-import { db } from '@/server/db'
+import { proper } from '../../database/schema/proper'
+import { db } from '../../db'
 
 export default defineEventHandler(async (event) => {
   if (event.method !== 'GET') {

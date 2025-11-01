@@ -42,6 +42,7 @@ export default defineEventHandler(async (event) => {
       {
         userId: foundUser.id,
         username: foundUser.username,
+        name: foundUser.name,
         roleId: foundUser.roleId
       },
       process.env.JWT_SECRET || 'your-secret-key',

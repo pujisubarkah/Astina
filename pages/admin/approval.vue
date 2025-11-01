@@ -60,7 +60,7 @@
 <script setup>
 // Tambahkan logic approval proyek di sini
 definePageMeta({
-  layout: 'main'
+  layout: 'admin'
 })
 
 import { ref, onMounted } from 'vue'

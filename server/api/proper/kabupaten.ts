@@ -1,7 +1,7 @@
 // server/api/proper/index.ts
 
-import { proper } from '@/server/database/schema/proper'
-import { db } from '@/server/db'
+import { proper } from '../../database/schema/proper'
+import { db } from '../../db'
 import { sql } from 'drizzle-orm'
 import { createError } from 'h3'
 
@@ -10,8 +10,8 @@ export default defineEventHandler(async (event) => {
   try {
     if (event.method === 'GET') {
       // Summary jumlah proper per instansi_id, join instansi dan kabupaten untuk dapat svg_path, id_provinsi, id_kabupaten
-      const { instansi } = await import('@/server/database/schema/instansi')
-      const { kabupaten } = await import('@/server/database/schema/kabupaten')
+      const { instansi } = await import('../../database/schema/instansi')
+      const { kabupaten } = await import('../../database/schema/kabupaten')
       const query = getQuery(event)
       const idProvinsi = query.id_provinsi ? Number(query.id_provinsi) : undefined
 

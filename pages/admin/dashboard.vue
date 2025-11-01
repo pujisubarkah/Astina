@@ -11,6 +11,6 @@
 
 // Set layout
 definePageMeta({
-  layout: 'main'
+  layout: 'admin'
 })
 </script>

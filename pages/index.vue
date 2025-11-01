@@ -200,7 +200,22 @@
             Menjadi jembatan kolaborasi lintas instansi untuk berbagi best practice, 
             pembelajaran, dan inovasi transformasi birokrasi di seluruh Indonesia.
           </p>
-          <!-- Primary hero CTAs removed as requested -->
+          
+          <!-- Hero CTAs -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/daftar-proyek" class="btn btn-warning btn-lg shadow-lg hover:shadow-xl transition-all duration-300">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Produk Pembelajaran
+            </a>
+            <a href="/sipendar" class="btn btn-outline btn-lg text-white border-white hover:bg-white hover:text-blue-700 shadow-lg hover:shadow-xl transition-all duration-300">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Sipendar
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -428,10 +443,10 @@
 
       <div class="container mx-auto px-4 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
-          <h2 class="text-4xl font-bold text-blue-900 mb-6">Apa itu Astina?</h2>
-          <div class="text-lg text-blue-800 leading-relaxed space-y-4">
+          <h2 class="text-4xl font-bold mb-6" style="color: #4A90A4;">Apa itu Astina?</h2>
+          <div class="text-lg leading-relaxed space-y-4" style="color: #5B9BD5;">
             <p>
-              <strong class="text-blue-900">Astina (Aplikasi Sentral Transformasi Inovasi dan Nilai Aparatur)</strong> 
+              <strong style="color: #4A90A4;">Astina (Aplikasi Sentral Transformasi Inovasi dan Nilai Aparatur)</strong> 
               adalah platform digital yang didedikasikan untuk mengumpulkan, mengelola, dan membagikan 
               seluruh Produk Pembelajaran yang dihasilkan oleh peserta program pelatihan kepemimpinan di Indonesia.
             </p>
@@ -442,15 +457,15 @@
             </p>
             <div class="grid md:grid-cols-2 gap-6 mt-8 text-left">
               <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="font-bold text-blue-900 mb-3">📚 Yang Tersedia</h3>
-                <p class="text-blue-700">
+                <h3 class="font-bold mb-3" style="color: #4A90A4;">📚 Yang Tersedia</h3>
+                <p style="color: #5B9BD5;">
                   Akses mudah ke ribuan Produk Pembelajaran yang telah terbukti berhasil, lengkap dengan 
                   dokumentasi, pembelajaran, dan panduan implementasi untuk diadaptasi di instansi Anda.
                 </p>
               </div>
               <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="font-bold text-blue-900 mb-3">🤝 Kolaborasi Lintas Instansi</h3>
-                <p class="text-blue-700">
+                <h3 class="font-bold mb-3" style="color: #4A90A4;">🤝 Kolaborasi Lintas Instansi</h3>
+                <p style="color: #5B9BD5;">
                   Platform berbagi pengalaman dan best practice antar alumni PKN untuk mempercepat 
                   replikasi inovasi dan menghindari duplikasi effort dalam transformasi birokrasi.
                 </p>
@@ -472,9 +487,9 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div v-for="program in summaryProgram" :key="program.programId" class="stat bg-base-100 rounded-lg shadow-lg">
+          <div v-for="program in summaryProgram" :key="program.programId" class="stat bg-base-100 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div class="stat-title">{{ program.programNama }}</div>
-            <div class="stat-value text-blue-600">{{ program.count.toLocaleString() }}</div>
+            <div class="stat-value text-5xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">{{ program.count.toLocaleString() }}</div>
             <div class="stat-desc">Jumlah produk</div>
           </div>
         </div>
@@ -531,5 +546,10 @@ useHead({
 </script>
 
 <style scoped>
+/* Custom hover effects for buttons */
+.btn-outline:hover {
+  color: #8BB8C7 !important;
+}
+
 /* Additional page-specific styles can be added here if needed */
 </style>

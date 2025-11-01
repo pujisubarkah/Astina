@@ -18,7 +18,7 @@
           <span class="text-sm text-gray-600">{{ fileName || 'Belum ada file yang dipilih' }}</span>
         </label>
 
-        <a class="ml-4 text-sm link" :href="templateUrl" download>Contoh daftar nama peserta (.xls)</a>
+        <a class="ml-4 text-sm link link-primary" :href="templateUrl" download>📥 Download Template Peserta (.xls)</a>
 
         <div class="ml-auto">
           <button :disabled="!selectedFile || uploading" @click="submitFile" class="btn btn-success btn-sm">Kirim</button>
