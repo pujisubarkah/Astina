@@ -25,12 +25,38 @@
           <li><a href="/peta" class="hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 rounded-lg">Peta Sebaran</a></li>
           <li class="divider my-1"></li>
             <li class="dropdown dropdown-hover">
-              <a tabindex="0" class="hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 rounded-lg">Showcase</a>
-                <ul class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md rounded-box w-52 border border-gray-200 absolute left-full top-0 ml-2 hidden group-hover:block submenu-right">
-                <li><a href="/showcase" class="hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 rounded-lg font-medium py-2 px-3">PKN I</a></li>
-                <li><a href="/showcase?type=pkn2" class="hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 rounded-lg font-medium py-2 px-3">PKN II</a></li>
-                <li><a href="/showcase?type=pka" class="hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 rounded-lg font-medium py-2 px-3">PKA</a></li>
-                <li><a class="opacity-60 cursor-not-allowed rounded-lg font-medium py-2 px-3 text-gray-400">PKP</a></li>
+              <a tabindex="0" class="hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 rounded-lg font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                Showcase
+              </a>
+              <ul class="dropdown-content menu p-2 shadow-xl bg-white rounded-xl w-56 border-2 border-blue-300 absolute left-full top-0 ml-2 hidden group-hover:block submenu-right">
+                <li>
+                  <a href="/showcase" class="hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 hover:text-white transition-all duration-200 rounded-lg font-medium py-2 px-3 flex items-center gap-2 text-slate-800">
+                    <span class="w-6 h-6 bg-blue-500 rounded text-white text-xs flex items-center justify-center font-bold">I</span>
+                    PKN I
+                  </a>
+                </li>
+                <li>
+                  <a href="/showcase?type=pkn2" class="hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-600 hover:text-white transition-all duration-200 rounded-lg font-medium py-2 px-3 flex items-center gap-2 text-slate-800">
+                    <span class="w-6 h-6 bg-purple-500 rounded text-white text-xs flex items-center justify-center font-bold">II</span>
+                    PKN II
+                  </a>
+                </li>
+                <li>
+                  <a href="/showcase?type=pka" class="hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 hover:text-white transition-all duration-200 rounded-lg font-medium py-2 px-3 flex items-center gap-2 text-slate-800">
+                    <span class="w-6 h-6 bg-green-500 rounded text-white text-xs flex items-center justify-center font-bold">A</span>
+                    PKA
+                  </a>
+                </li>
+                <li>
+                  <a class="opacity-60 cursor-not-allowed rounded-lg font-medium py-2 px-3 text-gray-600 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-gray-300 rounded text-white text-xs flex items-center justify-center font-bold">P</span>
+                    PKP
+                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full ml-auto">Soon</span>
+                  </a>
+                </li>
               </ul>
             </li>
           <!-- Authentication links for mobile -->
@@ -95,22 +121,82 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </a>
-          <ul class="dropdown-content menu p-2 shadow-2xl bg-white rounded-box w-52 border-2 border-blue-200 mt-2 animate-in slide-in-from-top-2 duration-200 z-[9999] relative">
-            <li><a href="/showcase" class="hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 rounded-lg font-medium py-2 px-3">PKN I</a></li>
-                <li><a href="/showcase?type=pkn2" class="hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 rounded-lg font-medium py-2 px-3">PKN II</a></li>
-            <li><a class="opacity-60 cursor-not-allowed rounded-lg font-medium py-2 px-3 text-gray-400">PKA</a></li>
-            <li><a class="opacity-60 cursor-not-allowed rounded-lg font-medium py-2 px-3 text-gray-400">PKP</a></li>
+          <ul class="dropdown-content menu p-3 shadow-2xl bg-white rounded-2xl w-64 border-2 border-blue-300 mt-2 z-[9999] relative">
+            <!-- Header Submenu -->
+            <li class="mb-2">
+              <div class="text-xs font-bold text-blue-800 uppercase tracking-wider px-3 py-1 bg-blue-100 rounded-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                Pilih Program
+              </div>
+            </li>
+            
+            <!-- PKN I -->
+            <li>
+              <a href="/showcase" class="group relative overflow-hidden hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 hover:text-white transition-all duration-300 rounded-xl font-medium py-3 px-4 flex items-center gap-3 shadow-sm hover:shadow-lg transform hover:scale-105 text-slate-800">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm group-hover:rotate-12 transition-transform duration-300 shadow-md">
+                  I
+                </div>
+                <div class="flex-1">
+                  <div class="font-bold text-sm">PKN I</div>
+                  <div class="text-xs opacity-75">Tingkat Nasional I</div>
+                </div>
+                <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </li>
+            
+            <!-- PKN II -->
+            <li>
+              <a href="/showcase?type=pkn2" class="group relative overflow-hidden hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-600 hover:text-white transition-all duration-300 rounded-xl font-medium py-3 px-4 flex items-center gap-3 shadow-sm hover:shadow-lg transform hover:scale-105 text-slate-800">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm group-hover:rotate-12 transition-transform duration-300 shadow-md">
+                  II
+                </div>
+                <div class="flex-1">
+                  <div class="font-bold text-sm">PKN II</div>
+                  <div class="text-xs opacity-75">Tingkat Nasional II</div>
+                </div>
+                <svg class="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </li>
+            
+            <!-- PKA -->
+            <li>
+              <a class="group relative overflow-hidden opacity-60 cursor-not-allowed rounded-xl font-medium py-3 px-4 flex items-center gap-3 bg-gray-100 text-slate-800">
+                <div class="w-10 h-10 bg-gradient-to-br from-gray-300 to-gray-400 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md">
+                  A
+                </div>
+                <div class="flex-1">
+                  <div class="font-bold text-sm text-gray-600">PKA</div>
+                  <div class="text-xs text-gray-500">Segera Hadir</div>
+                </div>
+                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-semibold">Soon</span>
+              </a>
+            </li>
+            
+            <!-- PKP -->
+            <li>
+              <a class="group relative overflow-hidden opacity-60 cursor-not-allowed rounded-xl font-medium py-3 px-4 flex items-center gap-3 bg-gray-100 text-slate-800">
+                <div class="w-10 h-10 bg-gradient-to-br from-gray-300 to-gray-400 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md">
+                  P
+                </div>
+                <div class="flex-1">
+                  <div class="font-bold text-sm text-gray-600">PKP</div>
+                  <div class="text-xs text-gray-500">Segera Hadir</div>
+                </div>
+                <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-semibold">Soon</span>
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
     </div>
 
     <div class="navbar-end">
-      <!-- Debug info (remove after testing) -->
-      <div class="text-xs text-white/50 mr-2">
-        Auth: {{ isLoggedIn ? 'Logged In' : 'Not Logged In' }}
-      </div>
-
       <!-- Always show login button for testing (remove after fix) -->
       <div class="flex gap-2">
         <button @click="openLoginModal" class="btn bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-blue-900 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 font-semibold px-6">
