@@ -9,7 +9,7 @@
 					</svg>
 				</div>
 				<h1 class="text-5xl font-extrabold bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent mb-3">
-					Alumni Diklat Kepemimpinan
+					Alumni Pelatihan
 				</h1>
 				<p class="text-lg text-gray-600 max-w-2xl mx-auto">
 					📊 Ringkasan dan visualisasi alumni pelatihan kepemimpinan nasional 

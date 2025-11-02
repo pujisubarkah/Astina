@@ -3,37 +3,22 @@
     <div class="max-w-7xl mx-auto">
       <!-- Header -->
       <div class="mb-8">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div class="btn-group">
+              <button :class="['btn', viewMode === 'map' ? 'btn-primary' : 'btn-ghost']" @click="viewMode = 'map'">Produk</button>
+              <button :class="['btn', viewMode === 'alumni' ? 'btn-primary' : 'btn-ghost']" @click="viewMode = 'alumni'">Alumni</button>
+            </div>
+          </div>
           <div>
             <h1 class="text-4xl font-bold text-blue-900 mb-2">Peta Sebaran Produk Pembelajaran</h1>
             <p class="text-blue-700">Klik pada provinsi untuk melihat detail produk pembelajaran di wilayah tersebut</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="btn-group">
-              <button :class="['btn', viewMode === 'map' ? 'btn-primary' : 'btn-ghost']" @click="viewMode = 'map'">Peta</button>
-              <button :class="['btn', viewMode === 'alumni' ? 'btn-primary' : 'btn-ghost']" @click="viewMode = 'alumni'">Alumni</button>
-            </div>
-            <div v-if="viewMode === 'map'" class="flex gap-2">
-              <select class="select select-bordered" v-model="selectedCategory">
-                <option value="">Semua Kategori</option>
-                <option value="digitalisasi">Digitalisasi</option>
-                <option value="sakip">SAKIP & Reformasi</option>
-                <option value="inovasi">Inovasi</option>
-                <option value="manajemen">Manajemen Perubahan</option>
-              </select>
-              <select class="select select-bordered" v-model="selectedStatus">
-                <option value="">Semua Status</option>
-                <option value="completed">Selesai</option>
-                <option value="ongoing">Berjalan</option>
-                <option value="planning">Perencanaan</option>
-              </select>
-            </div>
           </div>
         </div>
       </div>
 
       <!-- Stats Overview -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div class="stat bg-white rounded-lg shadow-lg">
           <div class="stat-figure text-blue-600">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,28 +39,6 @@
           <div class="stat-title">Total Proyek</div>
           <div class="stat-value text-green-600">{{ stats.totalProjects }}</div>
           <div class="stat-desc">di seluruh Indonesia</div>
-        </div>
-        
-        <div class="stat bg-white rounded-lg shadow-lg">
-          <div class="stat-figure text-orange-600">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-          </div>
-          <div class="stat-title">Peserta Aktif</div>
-          <div class="stat-value text-orange-600">{{ stats.totalParticipants }}</div>
-          <div class="stat-desc">dari berbagai K/L</div>
-        </div>
-        
-        <div class="stat bg-white rounded-lg shadow-lg">
-          <div class="stat-figure text-purple-600">
-            <div class="radial-progress text-purple-600" :style="`--value:${stats.completionRate}; --size:3rem; --thickness: 4px;`">
-              <span class="text-sm font-bold">{{ stats.completionRate }}%</span>
-            </div>
-          </div>
-          <div class="stat-title">Tingkat Penyelesaian</div>
-          <div class="stat-value text-purple-600">{{ stats.completionRate }}%</div>
-          <div class="stat-desc">rata-rata nasional</div>
         </div>
       </div>
 
@@ -183,14 +146,14 @@
                   {{ selectedProvinceData ? `Detail ${getProvinceName(selectedProvinceData.code)}` : 'Detail Provinsi' }}
                 </h2>
                 <button 
-                  v-if="selectedProvinceData && kabupatenData.length"
+                  v-if="selectedProvinceData"
                   class="btn btn-primary btn-sm"
-                  @click="openKabupatenModal = true"
+                  @click="openProvinceModal = true"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Lihat Peta Detail
+                  Detail Provinsi
                 </button>
               </div>
               
@@ -231,7 +194,7 @@
                     <h4 class="font-medium text-gray-700">Preview Peta Kabupaten</h4>
                     <span class="text-xs text-gray-500">Klik tombol di atas untuk detail</span>
                   </div>
-                  <div class="bg-blue-50 rounded-lg p-2 cursor-pointer hover:bg-blue-100 transition-colors" @click="openKabupatenModal = true">
+                  <div class="bg-blue-50 rounded-lg p-2 cursor-pointer hover:bg-blue-100 transition-colors" @click="openProvinceModal = true">
                     <svg 
                       viewBox="0 0 1000 600" 
                       class="w-full h-32"
@@ -285,6 +248,151 @@
       <!-- Alumni dashboard embedded when user switches to Alumni view -->
       <div v-else class="mt-6">
         <AlumniDiklat />
+      </div>
+    </div>
+  </div>
+
+  <!-- Province Detail Modal -->
+  <div v-if="openProvinceModal && selectedProvinceData" class="modal modal-open">
+    <div class="modal-box max-w-4xl">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="font-bold text-2xl text-gray-800">{{ getProvinceName(selectedProvinceData.code) }}</h3>
+          <p class="text-gray-600">Informasi detail provinsi dan sebaran kabupaten/kota</p>
+        </div>
+        <button class="btn btn-sm btn-circle btn-ghost" @click="openProvinceModal = false">✕</button>
+      </div>
+      
+      <div class="space-y-6">
+        <!-- Province Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="stat bg-blue-50 rounded-lg p-4">
+            <div class="stat-figure text-blue-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+            </div>
+            <div class="stat-title">Total Kabupaten/Kota</div>
+            <div class="stat-value text-blue-600">{{ kabupatenData.length }}</div>
+            <div class="stat-desc">wilayah administratif</div>
+          </div>
+          
+          <div class="stat bg-green-50 rounded-lg p-4">
+            <div class="stat-figure text-green-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h10M7 15h10" />
+              </svg>
+            </div>
+            <div class="stat-title">Total Produk Pembelajaran</div>
+            <div class="stat-value text-green-600">{{ selectedProvinceData.totalProjects || 0 }}</div>
+            <div class="stat-desc">di seluruh wilayah</div>
+          </div>
+          
+          <div class="stat bg-purple-50 rounded-lg p-4">
+            <div class="stat-figure text-purple-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+            <div class="stat-title">Rata-rata per Kabupaten</div>
+            <div class="stat-value text-purple-600">{{ kabupatenData.length > 0 ? Math.round((selectedProvinceData.totalProjects || 0) / kabupatenData.length) : 0 }}</div>
+            <div class="stat-desc">produk pembelajaran</div>
+          </div>
+        </div>
+
+        <!-- Province Description -->
+        <div class="card bg-white border">
+          <div class="card-body">
+            <h4 class="font-semibold text-gray-800 mb-3">Deskripsi Provinsi</h4>
+            <p class="text-gray-700 leading-relaxed">
+              {{ getProvinceName(selectedProvinceData.code) }} merupakan salah satu provinsi di Indonesia dengan 
+              {{ kabupatenData.length }} kabupaten/kota yang telah mengembangkan berbagai produk pembelajaran 
+              dalam rangka peningkatan kapasitas aparatur sipil negara. Total terdapat 
+              {{ selectedProvinceData.totalProjects || 0 }} produk pembelajaran yang tersebar di wilayah ini.
+            </p>
+          </div>
+        </div>
+
+        <!-- Top Performing Kabupaten -->
+        <div class="card bg-white border">
+          <div class="card-body">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-semibold text-gray-800">Top Kabupaten/Kota</h4>
+              <div class="badge badge-info">{{ kabupatenData.length }} wilayah</div>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="table table-zebra w-full">
+                <thead>
+                  <tr>
+                    <th>Peringkat</th>
+                    <th>Nama Kabupaten/Kota</th>
+                    <th>Jumlah Produk</th>
+                    <th>Kategori</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(kab, index) in sortedKabupatenData.slice(0, 10)" :key="kab.id_kabupaten || kab.id">
+                    <td>
+                      <div class="flex items-center gap-2">
+                        <div class="badge" :class="index < 3 ? 'badge-warning' : 'badge-neutral'">
+                          {{ index + 1 }}
+                        </div>
+                        <svg v-if="index === 0" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      </div>
+                    </td>
+                    <td class="font-medium">{{ kab.nama_kabupaten || kab.nama || 'Kabupaten' }}</td>
+                    <td>
+                      <div class="flex items-center gap-2">
+                        <span class="font-bold text-blue-600">{{ kab.jumlah || 0 }}</span>
+                        <div class="w-20 bg-gray-200 rounded-full h-2">
+                          <div class="bg-blue-600 h-2 rounded-full transition-all" :style="`width: ${getKabupatenProgress(kab.jumlah || 0)}%`"></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="badge badge-sm" :class="getKabupatenBadgeClass(kab.jumlah || 0)">
+                        {{ getKabupatenCategory(kab.jumlah || 0) }}
+                      </div>
+                    </td>
+                    <td>
+                      <button class="btn btn-xs btn-outline" @click="selectKabupaten(kab); openProvinceModal = false; openKabupatenModal = true;">
+                        Detail
+                      </button>
+                    </td>
+                  </tr>
+                  <tr v-if="kabupatenData.length === 0">
+                    <td colspan="5" class="text-center text-gray-500 py-8">
+                      <div class="flex flex-col items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                        </svg>
+                        Belum ada data kabupaten/kota
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-action">
+        <button 
+          class="btn btn-primary" 
+          @click="openProvinceModal = false; openKabupatenModal = true"
+          :disabled="kabupatenData.length === 0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+          </svg>
+          Lihat Peta Kabupaten
+        </button>
+        <button class="btn btn-ghost" @click="openProvinceModal = false">Tutup</button>
       </div>
     </div>
   </div>
@@ -553,6 +661,7 @@ const selectedKabupaten = ref(null)
 const kabupatenData = ref([])
 const loadingKabupaten = ref(false)
 const openKabupatenModal = ref(false)
+const openProvinceModal = ref(false)
 const kabupatenView = ref('map') // 'map' or 'list'
 
 // Stats data
@@ -813,6 +922,7 @@ async function selectProvince(code) {
   kabupatenData.value = []
   selectedKabupaten.value = null
   openKabupatenModal.value = false
+  openProvinceModal.value = true
   if (!selectedProvinceData.value) return
   
   // Fetch kabupaten data
