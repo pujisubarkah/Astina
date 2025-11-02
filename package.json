@@ -16,7 +16,6 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:test": "node scripts/test-db-connection.mjs",
     "template:peserta": "node scripts/generate-template-peserta.mjs"
   },
   "dependencies": {
