@@ -7,9 +7,8 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
         </svg>
       </div>
-      <h1 class="netflix-title">Showcase</h1>
+      <h1 class="netflix-title">Produk Pembelajaran Showcase</h1>
       <hr class="netflix-divider">
-      <p class="text-lg text-blue-700 mb-6">Galeri Inovasi Showcase</p>
     </div>
 
     <div class="showcase-wrapper">
@@ -90,18 +89,18 @@
     </div>
 
     <!-- Rating & Comments Modal -->
-    <div v-if="showRatingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+    <div v-if="showRatingModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div class="bg-white/95 backdrop-blur-xl border border-blue-200/50 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl animate-pulse-neon">
         <!-- Modal Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
+        <div class="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500 text-white p-6 border-b border-blue-100">
           <div class="flex items-start justify-between">
             <div class="flex-1">
-              <h3 class="text-xl font-bold mb-2">{{ selectedItem?.title }}</h3>
-              <p class="text-blue-100 text-sm">{{ selectedItem?.author }} - {{ selectedItem?.instansi }}</p>
+              <h3 class="text-xl font-bold mb-2 bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent">{{ selectedItem?.title }}</h3>
+              <p class="text-cyan-200/80 text-sm font-medium">{{ selectedItem?.author }} - {{ selectedItem?.instansi }}</p>
             </div>
             <button 
               @click="closeRatingModal"
-              class="text-white hover:text-gray-200 text-2xl font-bold ml-4"
+              class="text-white/90 hover:text-cyan-300 text-2xl font-bold ml-4 transition-all duration-300 hover:scale-110 hover:rotate-90"
             >
               ×
             </button>
@@ -109,51 +108,54 @@
         </div>
 
         <!-- Modal Content -->
-        <div class="p-6 max-h-[calc(90vh-140px)] overflow-y-auto">
+        <div class="p-6 max-h-[calc(90vh-140px)] overflow-y-auto bg-white">
           <!-- Rating Section -->
           <div class="mb-8">
             <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="w-5 h-5 text-yellow-500 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
-              Berikan Rating
+              <span class="bg-gradient-to-r from-yellow-500 via-orange-500 to-pink-500 bg-clip-text text-transparent font-bold">Berikan Rating</span>
             </h4>
             
-            <div class="bg-gray-50 rounded-xl p-6">
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200/50 rounded-2xl p-6 hover:from-blue-100 hover:to-indigo-100 transition-all duration-500 hover:border-blue-300/70 hover:shadow-lg hover:shadow-blue-400/20">
               <div class="text-center mb-6">
-                <div class="flex justify-center items-center gap-2 mb-4">
+                <div class="flex justify-center items-center gap-3 mb-6">
                   <span 
                     v-for="star in 5" 
                     :key="star"
                     @click="rateItem(selectedItem.id, star)"
                     @mouseover="hoverRating(selectedItem.id, star)"
                     @mouseleave="hoverRating(selectedItem.id, 0)"
-                    class="cursor-pointer text-4xl transition-all duration-200 hover:scale-110"
+                    class="cursor-pointer text-5xl transition-all duration-300 hover:scale-125 hover:rotate-12 filter drop-shadow-lg hover:drop-shadow-2xl"
                     :class="getStarClass(selectedItem.id, star)"
+                    :style="getStarClass(selectedItem.id, star).includes('text-yellow-400') ? 'text-shadow: 0 0 20px #fbbf24, 0 0 40px #f59e0b, 0 0 60px #d97706;' : ''"
                   >
                     ★
                   </span>
                 </div>
-                <div class="text-sm text-gray-600">
-                  Rating rata-rata: <span class="font-semibold text-lg">{{ getAverageRating(selectedItem.id) }}/5</span>
-                  dari {{ getRatingCount(selectedItem.id) }} pengguna
+                <div class="bg-gradient-to-r from-white/70 to-blue-50/70 backdrop-blur-sm border border-blue-200/50 rounded-xl p-4">
+                  <div class="text-gray-700 text-sm">
+                    Rating rata-rata: <span class="font-bold text-xl bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent animate-pulse">{{ getAverageRating(selectedItem.id) }}/5</span>
+                    dari <span class="text-blue-600 font-semibold">{{ getRatingCount(selectedItem.id) }}</span> pengguna
+                  </div>
                 </div>
               </div>
 
               <!-- Rating Breakdown -->
-              <div class="space-y-2">
-                <div v-for="rating in [5,4,3,2,1]" :key="rating" class="flex items-center gap-3">
-                  <span class="text-sm text-gray-600 w-2">{{ rating }}</span>
-                  <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+              <div class="space-y-3">
+                <div v-for="rating in [5,4,3,2,1]" :key="rating" class="flex items-center gap-4 group hover:bg-blue-50/70 p-2 rounded-lg transition-all duration-300">
+                  <span class="text-sm text-gray-700 w-3 font-bold">{{ rating }}</span>
+                  <svg class="w-4 h-4 text-yellow-500 group-hover:animate-spin transition-all duration-300" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
-                  <div class="flex-1 bg-gray-200 rounded-full h-2">
+                  <div class="flex-1 bg-gray-200 backdrop-blur-sm rounded-full h-3 overflow-hidden border border-gray-300">
                     <div 
-                      class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                      :style="`width: ${getRatingPercentage(selectedItem.id, rating)}%`"
+                      class="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 h-3 rounded-full transition-all duration-1000 ease-out shadow-lg shadow-yellow-400/50"
+                      :style="`width: ${getRatingPercentage(selectedItem.id, rating)}%; box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);`"
                     ></div>
                   </div>
-                  <span class="text-sm text-gray-600 w-8">{{ getRatingCount(selectedItem.id, rating) }}</span>
+                  <span class="text-sm text-blue-600 w-8 font-semibold">{{ getRatingCount(selectedItem.id, rating) }}</span>
                 </div>
               </div>
             </div>
@@ -162,44 +164,45 @@
           <!-- Comments Section -->
           <div>
             <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+              <svg class="w-5 h-5 text-blue-500 animate-bounce" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
               </svg>
-              Komentar ({{ getCommentsCount(selectedItem.id) }})
+              <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent font-bold">Komentar</span>
+              <span class="bg-gradient-to-r from-blue-500 to-purple-500 px-3 py-1 rounded-full text-white text-sm font-bold shadow-lg shadow-blue-500/30 animate-pulse">({{ getCommentsCount(selectedItem.id) }})</span>
             </h4>
 
             <!-- Add Comment Form -->
-            <div v-if="isLoggedIn" class="bg-blue-50 rounded-xl p-4 mb-6">
+            <div v-if="isLoggedIn" class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200/50 rounded-2xl p-6 mb-6 hover:from-blue-100 hover:to-indigo-100 transition-all duration-500 hover:border-blue-300/70 hover:shadow-lg hover:shadow-blue-400/20">
               <textarea 
                 v-model="newComment[selectedItem.id]"
                 placeholder="Tulis komentar Anda..."
-                class="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full p-4 bg-white/80 backdrop-blur-lg border border-blue-300/50 rounded-xl resize-none text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all duration-300"
                 rows="3"
               ></textarea>
-              <div class="flex justify-end mt-3">
+              <div class="flex justify-end mt-4">
                 <button 
                   @click="addComment(selectedItem.id)"
                   :disabled="!newComment[selectedItem.id]?.trim()"
-                  class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+                  class="px-8 py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-cyan-400 hover:via-blue-400 hover:to-purple-400 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-400/30 active:scale-95"
                 >
-                  Kirim Komentar
+                  ✨ Kirim Komentar
                 </button>
               </div>
             </div>
 
             <!-- Login Required Message -->
-            <div v-else class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
-              <div class="flex items-center gap-3">
-                <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+            <div v-else class="bg-gradient-to-r from-yellow-50 via-orange-50 to-amber-50 border border-yellow-200/70 rounded-2xl p-6 mb-6 shadow-lg shadow-yellow-300/20">
+              <div class="flex items-center gap-4">
+                <svg class="w-6 h-6 text-yellow-600 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                 </svg>
                 <div>
-                  <p class="text-yellow-800 font-medium">Silakan login untuk memberikan komentar</p>
+                  <p class="text-gray-800 font-semibold text-lg mb-2">🔐 Silakan login untuk memberikan komentar</p>
                   <button 
                     @click="openLoginModal"
-                    class="text-blue-600 hover:text-blue-800 font-medium text-sm mt-1"
+                    class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-400 hover:to-purple-400 text-white font-medium px-6 py-2 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-400/30"
                   >
-                    Login sekarang →
+                    ✨ Login sekarang →
                   </button>
                 </div>
               </div>
@@ -210,28 +213,28 @@
               <div 
                 v-for="comment in getComments(selectedItem.id)" 
                 :key="comment.id"
-                class="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow duration-200"
+                class="bg-gradient-to-br from-white/90 to-blue-50/60 backdrop-blur-lg border border-blue-200/50 rounded-2xl p-5 hover:from-blue-50/80 hover:to-indigo-50/70 hover:border-blue-300/70 hover:shadow-lg hover:shadow-blue-400/20 transition-all duration-500 group"
               >
-                <div class="flex items-start justify-between mb-2">
-                  <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg group-hover:animate-pulse">
                       {{ comment.author.charAt(0).toUpperCase() }}
                     </div>
                     <div>
-                      <div class="font-semibold text-gray-800">{{ comment.author }}</div>
-                      <div class="text-xs text-gray-500">{{ formatDate(comment.date) }}</div>
+                      <div class="font-bold text-gray-800 text-lg">{{ comment.author }}</div>
+                      <div class="text-xs text-blue-600 font-medium">{{ formatDate(comment.date) }}</div>
                     </div>
                   </div>
                 </div>
-                <div class="text-gray-700 ml-11">{{ comment.text }}</div>
+                <div class="text-gray-700 ml-14 text-base leading-relaxed">{{ comment.text }}</div>
               </div>
               
-              <div v-if="getComments(selectedItem.id).length === 0" class="text-center py-8 text-gray-500">
-                <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div v-if="getComments(selectedItem.id).length === 0" class="text-center py-12 bg-gradient-to-br from-blue-50/80 to-indigo-50/60 border border-blue-200/50 rounded-2xl">
+                <svg class="w-16 h-16 mx-auto mb-6 text-blue-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
-                <p class="text-lg font-medium mb-2">Belum ada komentar</p>
-                <p class="text-sm">Jadilah yang pertama memberikan komentar!</p>
+                <p class="text-xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">💬 Belum ada komentar</p>
+                <p class="text-gray-600 text-base">Jadilah yang pertama memberikan komentar!</p>
               </div>
             </div>
           </div>
@@ -486,8 +489,82 @@ const loadSavedData = () => {
     if (savedComments) {
       comments.value = JSON.parse(savedComments)
     }
+    
+    // Add dummy data if no saved data exists
+    if (Object.keys(comments.value).length === 0) {
+      loadDummyData()
+    }
   } catch (error) {
     console.error('Error loading saved data:', error)
+    loadDummyData()
+  }
+}
+
+// Load dummy data for demonstration
+const loadDummyData = () => {
+  // Add dummy ratings for first few items
+  ratings.value = {
+    1: [5, 4, 5, 3, 4, 5, 4, 3, 5, 4],
+    2: [4, 5, 3, 4, 5, 4, 3, 5, 4, 4],
+    3: [5, 5, 4, 5, 3, 4, 5, 4, 5, 3]
+  }
+  
+  // Add dummy comments
+  comments.value = {
+    1: [
+      {
+        id: 1,
+        text: "Proyek yang sangat inspiratif! Implementasinya sangat inovatif dan bisa diterapkan di berbagai daerah. Semoga bisa menjadi best practice untuk instansi lain.",
+        author: "Dr. Ahmad Suryadi",
+        date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() // 2 hours ago
+      },
+      {
+        id: 2,
+        text: "Luar biasa! Pendekatan digitalnya sangat modern dan user-friendly. Data yang disajikan juga sangat komprehensif dan mudah dipahami.",
+        author: "Siti Nurhaliza, M.Si",
+        date: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString() // 5 hours ago
+      },
+      {
+        id: 3,
+        text: "Metodologi yang digunakan sangat solid. Hasil analisisnya memberikan insight yang valuable untuk pengambilan keputusan strategis. 👏",
+        author: "Budi Santoso",
+        date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() // 1 day ago
+      }
+    ],
+    2: [
+      {
+        id: 4,
+        text: "Konsep yang brilliant! Integrasi teknologi dengan pelayanan publik sangat well-executed. Dampaknya terhadap efisiensi pelayanan sangat signifikan.",
+        author: "Prof. Maria Indrawati",
+        date: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString() // 3 hours ago
+      },
+      {
+        id: 5,
+        text: "Presentasi yang sangat menarik dan informatif. Design thinking approach-nya patut diacungi jempol! 🚀",
+        author: "Rizki Pratama, S.T",
+        date: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString() // 8 hours ago
+      }
+    ],
+    3: [
+      {
+        id: 6,
+        text: "Solusi yang sangat kreatif untuk masalah klasik! Implementation roadmap-nya juga sangat detailed dan realistic. Sukses selalu!",
+        author: "Dina Marlina, M.Pd",
+        date: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString() // 4 hours ago
+      },
+      {
+        id: 7,
+        text: "Impressed dengan level inovasi yang ditunjukkan. Sustainability aspect-nya juga sudah dipertimbangkan dengan baik. Great work! 💪",
+        author: "Eko Prasetyo",
+        date: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString() // 12 hours ago
+      },
+      {
+        id: 8,
+        text: "Collaboration approach yang digunakan sangat inspiring. Stakeholder engagement-nya comprehensive dan well-structured.",
+        author: "Lestari Wulandari, S.E",
+        date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
+      }
+    ]
   }
 }
 
@@ -821,6 +898,47 @@ onMounted(() => {
   0% { transform: scale(1); }
   50% { transform: scale(1.2); }
   100% { transform: scale(1); }
+}
+
+/* Neon Animation Effects */
+@keyframes pulse-neon {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2), 0 0 40px rgba(147, 51, 234, 0.15), 0 0 60px rgba(6, 182, 212, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.3), 0 0 60px rgba(147, 51, 234, 0.2), 0 0 90px rgba(6, 182, 212, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+}
+
+.animate-pulse-neon {
+  animation: pulse-neon 3s ease-in-out infinite;
+}
+
+/* Glassmorphism Modal Enhancements */
+.modal-glassmorphism {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Star Neon Effect */
+.star-neon {
+  filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 20px currentColor) drop-shadow(0 0 30px currentColor);
+}
+
+/* Animated Gradient Text */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  background-size: 400% 400%;
+  animation: gradient-shift 3s ease infinite;
 }
 
 /* Responsive adjustments */
