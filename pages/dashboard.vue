@@ -7,6 +7,52 @@
         <p class="text-blue-700">Statistik dan visualisasi produk pembelajaran secara real-time</p>
       </div>
 
+      <!-- Tab Navigation -->
+      <div class="mb-8">
+        <div class="tabs tabs-boxed bg-white shadow-lg p-2">
+          <a 
+            class="tab tab-lg" 
+            :class="{ 'tab-active': activeTab === 'sdgs' }"
+            @click="activeTab = 'sdgs'"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            SDGs dan Asta Cita
+          </a>
+          <a 
+            class="tab tab-lg" 
+            :class="{ 'tab-active': activeTab === 'ekonomi' }"
+            @click="activeTab = 'ekonomi'"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Dampak Ekonomi
+          </a>
+          <a 
+            class="tab tab-lg" 
+            :class="{ 'tab-active': activeTab === 'ngram' }"
+            @click="activeTab = 'ngram'"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            Analisis N-Gram
+          </a>
+          <a 
+            class="tab tab-lg" 
+            :class="{ 'tab-active': activeTab === 'google' }"
+            @click="activeTab = 'google'"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            Statistik Google Search
+          </a>
+        </div>
+      </div>
+
       <!-- Loading State -->
       <div v-if="pending" class="mb-8">
         <div class="alert alert-info">
@@ -22,33 +68,25 @@
 
       <!-- Dashboard Components -->
       <div v-else>
-        <!-- Skip heavy components for now - load only fast components -->
-        
-        <!-- Stats Cards - SKIPPED for now -->
-        <!-- <MonitoringStatsCards :data="dashboardData" /> -->
+        <!-- Tab Content -->
+        <div v-show="activeTab === 'sdgs'">
+          <MonitoringSdgsAstaCita />
+        </div>
 
-        <!-- Main Charts - SKIPPED for now -->
-        <!-- <MonitoringMainCharts 
-          :data="dashboardData" 
-          @show-detail="showInstansiDetail" 
-        /> -->
+        <div v-show="activeTab === 'ekonomi'">
+          <MonitoringEconomicImpact />
+        </div>
 
-        <!-- Keyword Analysis - SKIPPED for now -->
-        <!-- <MonitoringKeywordAnalysis :data="dashboardData" /> -->
+        <div v-show="activeTab === 'ngram'">
+          <MonitoringGoogleScholar />
+        </div>
 
-        <!-- Only show lightweight static components -->
-        
-        <!-- SDGs and Asta Cita -->
-        <MonitoringSdgsAstaCita />
-
-        <!-- Economic Impact -->
-        <MonitoringEconomicImpact />
-
-        <!-- Google Scholar -->
-        <MonitoringGoogleScholar />
+        <div v-show="activeTab === 'google'">
+          <MonitoringGoogleSearch />
+        </div>
         
         <!-- Development Controls -->
-        <div class="mb-8">
+        <div class="mt-8">
           <div class="alert alert-warning">
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.498 0L4.316 15.5c-.77.833.192 2.5 1.732 2.5z" />
@@ -71,6 +109,9 @@
 </template>
 
 <script setup>
+// Active tab state
+const activeTab = ref('sdgs')
+
 // Temporarily disable heavy API call - use mock data for testing
 const dashboardData = ref({
   summary_program: { total_program: 0, programs: [] },
@@ -130,5 +171,15 @@ useHead({
 }
 .card:hover {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.tab {
+  transition: all 0.2s ease;
+}
+
+.tab-active {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  font-weight: 600;
 }
 </style>
