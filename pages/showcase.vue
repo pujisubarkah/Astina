@@ -302,8 +302,8 @@ const pkn2Data = [
 ];
 
 const pkaData = [
-  { img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000375/ta8aut2ni68m2n8ylhyf.png" },
-  { img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000374/eyiupn3dp2ohzye6wy9u.png" },
+  //{ img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000375/ta8aut2ni68m2n8ylhyf.png" },
+  //{ img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000374/eyiupn3dp2ohzye6wy9u.png" },
   { img: "https://lh3.googleusercontent.com/sitesv/AAzXCkcUYsH1-WVSgJFe8x_ABnfrU900rhmNFsmwDVmQntm8VnMXGCIgoTTbJxl64d-PKR466BF9GCkkQJx2NfjgenqySk0mXxWPtiExJaYmpdMbWN7Yc9IBxs5398g0619urFvYlKVGdatPKX8Gl1VM2tRr1m-qcMYjclsGLgUlsokT_CK0UrDsrWhZbcsimqAv9tMPIrbXt87RWd0XWUgZ5lcCF1mS10n5kKSYK-w=w1280" },
   { img: "https://lh3.googleusercontent.com/sitesv/AAzXCkdqD9xiQOYlaS8x2WN8VdqoP3VhTFq-dh0i1DnPh345itLTtTPZ0dNM_LoTJvItmhYgc4NLIgakYoWcimVd3D45j7W8TULMEuOdtTZ3UHP8KpDPPCu7qH88jtxYC79pq86Ovk7qxjAxNfwRa3AZfIYmGnZhZxeiZ8i2QODA6riDwDogDNV4bax1P_TpzzNEh2FM8g_rZYQ1Z9etiD1opTbecKO7C-_oYieLCKc=w1280" },
   { img: "https://lh3.googleusercontent.com/sitesv/AAzXCkfOjAJZa7J58K6S4MkUzLaTSl12-5UsUC_xwhbSn4lWmAfVBOEuXoqjlXQL1UOOek9czYCljFRFu_RU2C4zdc6ooG-HSR5wB_5RbEqjmPVbSzLn4gZYzIaIf5CMbCYU9VkgjAi4zEHuvRqTpBR3JHjruOVmNJgHcJQ98OMB6iLErCkf70CElzRZDPwKolr9goOdlJSqa1FtlTHbQ7jcOoP-pFwWouAaEa6gf50=w1280" },
@@ -613,22 +613,27 @@ onMounted(() => {
 }
 .expo-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 400px;
-  gap: 1.2rem;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
   padding-bottom: 1rem;
   justify-content: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem 1rem;
 }
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .expo-grid {
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 340px;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   .expo-grid {
-    grid-template-columns: repeat(6, 1fr);
-    grid-auto-rows: 300px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1536px) {
+  .expo-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 .netflix-card {
@@ -639,21 +644,21 @@ onMounted(() => {
   cursor: pointer;
   position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  aspect-ratio: 16 / 9;
   border: 1px solid rgba(255,255,255,0.8);
   backdrop-filter: blur(10px);
+  height: auto;
+  width: 100%;
 }
 .netflix-card:hover {
-  transform: translateY(-8px) scale(1.02) rotateX(5deg);
+  transform: translateY(-8px) scale(1.02);
   box-shadow: 0 20px 40px rgba(22,87,141,0.15), 0 8px 20px rgba(22,87,141,0.1);
   z-index: 10;
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
 .netflix-poster {
   width: 100%;
-  height: 85%;
+  height: 100%;
   object-fit: cover;
   display: block;
 }
@@ -670,7 +675,6 @@ onMounted(() => {
   backdrop-filter: blur(12px);
   color: #1a202c;
   padding: 0.75rem;
-  min-height: 15%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -730,6 +734,8 @@ onMounted(() => {
 .netflix-card .relative {
   position: relative;
   overflow: hidden;
+  height: 100%;
+  width: 100%;
 }
 
 .netflix-card .relative::before {
@@ -739,7 +745,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 20%, transparent 60%, rgba(0,0,0,0.6) 100%);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 30%, transparent 60%, rgba(0,0,0,0.7) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -753,14 +759,29 @@ onMounted(() => {
 /* Title overlay styling */
 .netflix-card .absolute.bottom-0 {
   z-index: 2;
-  opacity: 0;
-  transform: translateY(10px);
+  opacity: 1;
+  transform: translateY(0);
   transition: all 0.3s ease;
 }
 
-.netflix-card:hover .absolute.bottom-0 {
-  opacity: 1;
-  transform: translateY(0);
+.netflix-card .absolute.bottom-0 h3 {
+  font-size: 1rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.netflix-card .absolute.bottom-0 p {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Rating overlay on image */
@@ -942,7 +963,19 @@ onMounted(() => {
 }
 
 /* Responsive adjustments */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .netflix-card {
+    aspect-ratio: 16 / 10;
+  }
+  
+  .netflix-card .absolute.bottom-0 h3 {
+    font-size: 0.875rem;
+  }
+  
+  .netflix-card .absolute.bottom-0 p {
+    font-size: 0.75rem;
+  }
+  
   .netflix-card-info {
     padding: 0.5rem;
   }
@@ -960,6 +993,29 @@ onMounted(() => {
   }
   
   .comment-item {
+    font-size: 0.7rem;
+  }
+
+  .expo-grid {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .netflix-card {
+    aspect-ratio: 16 / 11;
+  }
+  
+  .netflix-card .absolute.bottom-0 {
+    padding: 0.5rem;
+  }
+  
+  .netflix-card .absolute.bottom-0 h3 {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 1;
+  }
+  
+  .netflix-card .absolute.bottom-0 p {
     font-size: 0.7rem;
   }
 }
