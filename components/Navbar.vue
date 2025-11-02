@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 text-white shadow-xl backdrop-blur-sm bg-opacity-95 border-b border-white/10">
+  <div class="navbar bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 text-white shadow-xl backdrop-blur-sm bg-opacity-95 border-b border-white/10 relative z-50">
     <div class="navbar-start">
       <div class="dropdown">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle lg:hidden hover:bg-white/20 transition-all duration-300">
@@ -87,7 +87,7 @@
         <li>
           <a href="/dashboard" class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg group">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
             <span class="font-medium">Monitoring</span>
           </a>
@@ -109,7 +109,7 @@
             <span class="font-medium">Peta Sebaran</span>
           </a>
         </li>
-        <li class="dropdown dropdown-hover">
+        <li class="dropdown dropdown-hover relative z-[100]">
           <a tabindex="0" class="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg group">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
@@ -120,7 +120,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </a>
-          <ul class="dropdown-content menu p-3 shadow-2xl bg-white rounded-2xl w-64 border-2 border-blue-300 mt-2 z-[9999] relative">
+          <ul class="dropdown-content menu p-3 shadow-2xl bg-white rounded-2xl w-64 border-2 border-blue-300 mt-2 z-[9999] absolute">
             <!-- Header Submenu -->
             <li class="mb-2">
               <div class="text-xs font-bold text-blue-800 uppercase tracking-wider px-3 py-1 bg-blue-100 rounded-lg flex items-center gap-2">
@@ -391,7 +391,7 @@ const closeRegisterModal = () => {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   z-index: 9999 !important;
-  position: relative;
+  position: absolute;
 }
 
 .dropdown-content li a {
@@ -460,15 +460,37 @@ const closeRegisterModal = () => {
 /* Force high z-index for all dropdowns */
 .dropdown-content {
   z-index: 9999 !important;
+  position: absolute !important;
 }
 
 .menu .dropdown-content {
+  z-index: 9999 !important;
+  position: absolute !important;
+}
+
+/* Showcase dropdown specific z-index */
+.dropdown-hover .dropdown-content {
+  z-index: 9999 !important;
+}
+
+.navbar-center .dropdown {
+  position: relative;
+  z-index: 100;
+}
+
+.navbar-center .dropdown-content {
+  position: absolute !important;
   z-index: 9999 !important;
 }
 
 /* Ensure submenu is not clipped by parent sections */
 .navbar, .menu, .dropdown, .dropdown-content, .menu > li {
   overflow: visible !important;
+}
+
+.navbar {
+  position: relative;
+  z-index: 50;
 }
 
 .submenu-right {
