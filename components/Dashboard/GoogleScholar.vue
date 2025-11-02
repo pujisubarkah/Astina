@@ -1,125 +1,105 @@
 <template>
   <div class="mb-8">
-    <h2 class="text-3xl font-bold text-blue-900 mb-6">Google Scholar</h2>
-    <p class="text-blue-700 mb-6">Pencarian dan analisis publikasi ilmiah alumni di Google Scholar</p>
+    <h2 class="text-3xl font-bold text-blue-900 mb-6">N-Grams Analysis</h2>
+    <p class="text-blue-700 mb-6">Analisis kata-kata penting dari produk pembelajaran alumni (setelah menghilangkan stopwords)</p>
     
-    <!-- Search Form -->
+    <!-- N-Gram Type Selection -->
     <div class="card bg-white shadow-lg mb-6">
       <div class="card-body">
-        <h3 class="card-title text-xl text-blue-800 mb-4">Pencarian Alumni</h3>
+        <h3 class="card-title text-xl text-blue-800 mb-4">Pilih Jenis Analisis</h3>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <!-- Batch Selection -->
-          <div>
-            <label class="block text-sm font-medium text-blue-900 mb-2">Angkatan:</label>
-            <select 
-              v-model="selectedBatch" 
-              class="select select-bordered w-full"
-            >
-              <option value="">Pilih Angkatan</option>
-              <option value="pka-vi">PKA Angkatan VI</option>
-              <option value="pkn-ii-angkatan-ii">PKN Tk. II Angkatan II</option>
-              <option value="pkn-ii-angkatan-x">PKN Tk. II Angkatan X</option>
-              <option value="pkn-ii-angkatan-xv">PKN Tk. II Angkatan XV</option>
-              <option value="pkn-i-angkatan-lxii">PKN Tk. I Angkatan LXII</option>
-              <option value="pkn-i-angkatan-lxiii">PKN Tk. I Angkatan LXIII</option>
-            </select>
-          </div>
-
-          <!-- Alumni Selection -->
-          <div>
-            <label class="block text-sm font-medium text-blue-900 mb-2">Alumni:</label>
-            <select 
-              v-model="selectedAlumni" 
-              :disabled="!selectedBatch"
-              class="select select-bordered w-full"
-            >
-              <option value="">Pilih Alumni</option>
-              <option 
-                v-for="alumni in availableAlumni" 
-                :key="alumni.id" 
-                :value="alumni.id"
-              >
-                {{ alumni.name }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Search Button -->
-        <div class="flex justify-center">
-          <button 
-            @click="searchGoogleScholar" 
-            :disabled="!selectedAlumni || isSearching"
-            class="btn btn-primary"
-          >
-            <span v-if="isSearching" class="loading loading-spinner loading-sm"></span>
-            {{ isSearching ? 'Mencari...' : 'Cari di Google Scholar' }}
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Search Results -->
-    <div v-if="searchResults.length > 0" class="card bg-white shadow-lg">
-      <div class="card-body">
-        <h3 class="card-title text-xl text-blue-800 mb-4">
-          Hasil Pencarian: {{ selectedAlumniName }}
-        </h3>
-
-        <!-- Summary Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div class="stat bg-blue-50 rounded-lg">
-            <div class="stat-title text-blue-700">Total Publikasi</div>
-            <div class="stat-value text-blue-900">{{ searchResults.length }}</div>
-          </div>
-          <div class="stat bg-green-50 rounded-lg">
-            <div class="stat-title text-green-700">Total Sitasi</div>
-            <div class="stat-value text-green-900">{{ totalCitations }}</div>
-          </div>
-          <div class="stat bg-yellow-50 rounded-lg">
-            <div class="stat-title text-yellow-700">H-Index</div>
-            <div class="stat-value text-yellow-900">{{ hIndex }}</div>
-          </div>
-          <div class="stat bg-purple-50 rounded-lg">
-            <div class="stat-title text-purple-700">i10-Index</div>
-            <div class="stat-value text-purple-900">{{ i10Index }}</div>
-          </div>
-        </div>
-
-        <!-- Publications List -->
-        <div class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div 
-            v-for="(publication, index) in searchResults" 
-            :key="index"
-            class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
+            v-for="type in ngramTypes" 
+            :key="type.value"
+            class="cursor-pointer"
+            @click="selectedNGramType = type.value"
           >
-            <h4 class="font-semibold text-blue-900 mb-2">{{ publication.title }}</h4>
-            <p class="text-gray-700 text-sm mb-2">{{ publication.authors }}</p>
-            <p class="text-gray-600 text-sm mb-2">{{ publication.journal }} - {{ publication.year }}</p>
-            <div class="flex items-center justify-between">
-              <span class="text-green-600 text-sm">Sitasi: {{ publication.citations }}</span>
-              <a 
-                :href="publication.url" 
-                target="_blank" 
-                class="btn btn-sm btn-outline btn-primary"
-              >
-                Lihat Publikasi
-              </a>
+            <div 
+              class="p-4 rounded-lg border-2 transition-all"
+              :class="selectedNGramType === type.value 
+                ? 'border-blue-500 bg-blue-50' 
+                : 'border-gray-200 hover:border-gray-300'"
+            >
+              <div class="flex items-center">
+                <input 
+                  type="radio" 
+                  :value="type.value"
+                  v-model="selectedNGramType"
+                  class="radio radio-primary mr-3"
+                />
+                <div>
+                  <h4 class="font-semibold text-gray-900">{{ type.label }}</h4>
+                  <p class="text-sm text-gray-600 mt-1">
+                    {{ type.value === 'unigrams' ? 'Analisis kata per kata' :
+                       type.value === 'bigrams' ? 'Analisis kombinasi 2 kata' :
+                       'Analisis kombinasi 3 kata' }}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- No Results -->
-    <div v-else-if="hasSearched && !isSearching" class="card bg-white shadow-lg">
-      <div class="card-body text-center">
-        <div class="text-gray-500 text-lg mb-4">
-          <i class="fas fa-search text-4xl mb-2"></i>
+    <!-- N-Grams Chart -->
+    <div class="card bg-white shadow-lg mb-6">
+      <div class="card-body">
+        <div v-if="ngramsData.length > 0" class="mb-4">
+          <apexchart 
+            type="bar" 
+            :options="chartOptions" 
+            :series="chartSeries"
+            height="400"
+          ></apexchart>
         </div>
-        <h3 class="text-xl text-gray-700 mb-2">Tidak ada publikasi ditemukan</h3>
-        <p class="text-gray-600">Coba pilih alumni lain atau periksa ejaan nama.</p>
+        
+        <div v-else-if="productsPending" class="text-center py-8">
+          <div class="loading loading-spinner loading-lg text-blue-600"></div>
+          <p class="text-blue-700 mt-4">Memproses data...</p>
+        </div>
+        
+        <div v-else class="text-center py-8 text-gray-500">
+          <i class="fas fa-chart-bar text-4xl mb-4"></i>
+          <p>Tidak ada data untuk dianalisis</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top N-Grams List -->
+    <div v-if="ngramsData.length > 0" class="card bg-white shadow-lg">
+      <div class="card-body">
+        <h3 class="card-title text-xl text-blue-800 mb-4">
+          Top 30 {{ selectedNGramType === 'unigrams' ? 'Kata' : 
+                    selectedNGramType === 'bigrams' ? 'Bigram' : 'Trigram' }}
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div 
+            v-for="(ngram, index) in ngramsData.slice(0, 30)" 
+            :key="index"
+            class="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 hover:shadow-md transition-shadow"
+          >
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex-1 min-w-0">
+                <span class="font-semibold text-blue-900 text-sm block truncate" :title="ngram.text">
+                  {{ ngram.text }}
+                </span>
+              </div>
+              <div class="flex flex-col items-end ml-2">
+                <span class="badge badge-primary badge-sm">{{ ngram.frequency }}</span>
+                <span class="text-xs text-blue-700 mt-1">{{ ngram.percentage }}%</span>
+              </div>
+            </div>
+            <div class="w-full bg-blue-200 rounded-full h-2">
+              <div 
+                class="bg-blue-600 h-2 rounded-full" 
+                :style="`width: ${Math.min(100, (ngram.frequency / ngramsData[0].frequency) * 100)}%`"
+              ></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -128,13 +108,14 @@
       <div class="card-body">
         <h3 class="card-title text-blue-900 mb-4">
           <i class="fas fa-info-circle mr-2"></i>
-          Informasi Google Scholar
+          Tentang N-Grams Analysis
         </h3>
         <div class="text-blue-800 text-sm space-y-2">
-          <p><strong>H-Index:</strong> Jumlah publikasi (h) yang masing-masing dikutip setidaknya h kali</p>
-          <p><strong>i10-Index:</strong> Jumlah publikasi yang dikutip setidaknya 10 kali</p>
-          <p><strong>Sitasi:</strong> Jumlah kali publikasi dirujuk oleh karya ilmiah lain</p>
-          <p class="mt-4"><strong>Catatan:</strong> Data diambil dari Google Scholar dan dapat berubah setiap saat</p>
+          <p><strong>Unigrams:</strong> Analisis kata tunggal yang paling sering muncul</p>
+          <p><strong>Bigrams:</strong> Analisis kombinasi 2 kata yang sering muncul bersama</p>
+          <p><strong>Trigrams:</strong> Analisis kombinasi 3 kata yang sering muncul bersama</p>
+          <p><strong>Stopwords:</strong> Kata-kata umum (seperti "dan", "yang", "di") yang telah dihilangkan dari analisis</p>
+          <p class="mt-4"><strong>Tujuan:</strong> Mengidentifikasi tema, pola, dan topik utama dalam proyek perubahan alumni</p>
         </div>
       </div>
     </div>
@@ -143,135 +124,168 @@
 
 <script setup>
 // State
-const selectedBatch = ref('')
-const selectedAlumni = ref('')
-const searchResults = ref([])
-const isSearching = ref(false)
-const hasSearched = ref(false)
+const selectedNGramType = ref('unigrams')
 
-// Sample Alumni Data (in real app, this would come from API)
-const alumniData = {
-  'pka-vi': [
-    { id: 'alumni1', name: 'Dr. Ahmad Rizki, M.Si.' },
-    { id: 'alumni2', name: 'Prof. Dr. Siti Nurhaliza, M.Pd.' },
-    { id: 'alumni3', name: 'Dr. Ir. Budi Santoso, M.T.' }
-  ],
-  'pkn-ii-angkatan-ii': [
-    { id: 'alumni4', name: 'Dr. Indra Wijaya, M.M.' },
-    { id: 'alumni5', name: 'Dr. Ir. Heru Kustanto, M.Si.' },
-    { id: 'alumni6', name: 'Prof. Dr. Maya Sari, M.Pd.' }
-  ],
-  'pkn-ii-angkatan-x': [
-    { id: 'alumni7', name: 'Dr. Rudi Hartono, M.Si.' },
-    { id: 'alumni8', name: 'Dr. Ir. Fitri Ramadhani, M.T.' }
-  ],
-  'pkn-ii-angkatan-xv': [
-    { id: 'alumni9', name: 'Dr. Andi Kurniawan, M.M.' },
-    { id: 'alumni10', name: 'Prof. Dr. Lisa Permata, M.Pd.' }
-  ],
-  'pkn-i-angkatan-lxii': [
-    { id: 'alumni11', name: 'Prof. Dr. Ir. Joko Widodo, M.T.' },
-    { id: 'alumni12', name: 'Dr. Ratna Dewi, M.Si.' }
-  ],
-  'pkn-i-angkatan-lxiii': [
-    { id: 'alumni13', name: 'Dr. Bambang Sutrisno, M.M.' },
-    { id: 'alumni14', name: 'Prof. Dr. Ani Yudhoyono, M.Pd.' }
-  ]
+// Fetch learning products data from API - get all data for N-grams analysis
+const { data: productsData, pending: productsPending, error: productsError } = await useFetch('/api/product?all=true')
+
+// Indonesian stopwords
+const stopwords = new Set([
+  'dan', 'atau', 'yang', 'di', 'ke', 'dari', 'pada', 'untuk', 'dengan', 'dalam', 'oleh',
+  'adalah', 'akan', 'dapat', 'bisa', 'telah', 'sudah', 'belum', 'masih', 'juga', 'saja',
+  'ini', 'itu', 'tersebut', 'para', 'sebuah', 'suatu', 'satu', 'dua', 'tiga', 'empat',
+  'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh', 'tidak', 'bukan', 'tanpa',
+  'jika', 'apabila', 'bila', 'ketika', 'saat', 'waktu', 'setiap', 'semua', 'seluruh',
+  'beberapa', 'banyak', 'sedikit', 'lebih', 'kurang', 'sangat', 'cukup', 'terlalu',
+  'agar', 'supaya', 'karena', 'sebab', 'akibat', 'dampak', 'hasil', 'melalui', 'lewat',
+  'antara', 'antar', 'hingga', 'sampai', 'terhadap', 'tentang', 'mengenai', 'sekitar'
+])
+
+// Text preprocessing function
+function preprocessText(text) {
+  if (!text) return []
+  
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s]/g, ' ') // Remove punctuation
+    .split(/\s+/)
+    .filter(word => word.length > 2 && !stopwords.has(word))
+    .filter(word => !/^\d+$/.test(word)) // Remove pure numbers
 }
 
-// Sample Publications Data (in real app, this would come from Google Scholar API)
-const samplePublications = {
-  'alumni1': [
-    {
-      title: 'Sustainable Development in Indonesian Public Administration',
-      authors: 'Ahmad Rizki, John Doe, Jane Smith',
-      journal: 'Journal of Public Administration',
-      year: 2023,
-      citations: 15,
-      url: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=example&citation_for_view=example:example'
-    },
-    {
-      title: 'Digital Transformation in Government Services',
-      authors: 'Ahmad Rizki, Alice Johnson',
-      journal: 'International Review of Administrative Sciences',
-      year: 2022,
-      citations: 28,
-      url: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=example&citation_for_view=example:example'
-    }
-  ],
-  'alumni2': [
-    {
-      title: 'Educational Policy Implementation in Remote Areas',
-      authors: 'Siti Nurhaliza, Michael Brown',
-      journal: 'Educational Policy Review',
-      year: 2023,
-      citations: 12,
-      url: 'https://scholar.google.com/citations?view_op=view_citation&hl=en&user=example&citation_for_view=example:example'
-    }
-  ]
+// Generate N-grams
+function generateNGrams(words, n) {
+  const ngrams = []
+  for (let i = 0; i <= words.length - n; i++) {
+    const ngram = words.slice(i, i + n).join(' ')
+    ngrams.push(ngram)
+  }
+  return ngrams
 }
 
-// Computed properties
-const availableAlumni = computed(() => {
-  return selectedBatch.value ? (alumniData[selectedBatch.value] || []) : []
+// Count frequency of N-grams
+function countNGrams(ngrams) {
+  const counts = {}
+  ngrams.forEach(ngram => {
+    counts[ngram] = (counts[ngram] || 0) + 1
+  })
+  
+  // Convert to array, filter frequency > 1, and sort by frequency
+  return Object.entries(counts)
+    .map(([text, frequency]) => ({ text, frequency }))
+    .filter(item => item.frequency > 1) // Only show items with frequency > 1
+    .sort((a, b) => b.frequency - a.frequency)
+}
+
+// Process N-grams data
+const ngramsData = computed(() => {
+  if (!productsData.value?.data) return []
+
+  // Combine all project change titles
+  const allTexts = productsData.value.data
+    .map(product => product.proyekPerubahan)
+    .filter(Boolean)
+
+  if (allTexts.length === 0) return []
+
+  // Process based on selected N-gram type
+  let allNGrams = []
+  
+  allTexts.forEach(text => {
+    const words = preprocessText(text)
+    
+    if (selectedNGramType.value === 'unigrams') {
+      allNGrams.push(...words)
+    } else if (selectedNGramType.value === 'bigrams') {
+      allNGrams.push(...generateNGrams(words, 2))
+    } else if (selectedNGramType.value === 'trigrams') {
+      allNGrams.push(...generateNGrams(words, 3))
+    }
+  })
+
+  const ngramCounts = countNGrams(allNGrams)
+  const totalCount = ngramCounts.reduce((sum, item) => sum + item.frequency, 0)
+  
+  // Add percentage and limit to top 50
+  return ngramCounts
+    .slice(0, 50)
+    .map(item => ({
+      ...item,
+      percentage: ((item.frequency / totalCount) * 100).toFixed(1)
+    }))
 })
 
-const selectedAlumniName = computed(() => {
-  if (!selectedAlumni.value || !selectedBatch.value) return ''
-  const alumni = availableAlumni.value.find(a => a.id === selectedAlumni.value)
-  return alumni ? alumni.name : ''
-})
-
-const totalCitations = computed(() => {
-  return searchResults.value.reduce((total, pub) => total + pub.citations, 0)
-})
-
-const hIndex = computed(() => {
-  const citations = searchResults.value.map(pub => pub.citations).sort((a, b) => b - a)
-  let hIndex = 0
-  for (let i = 0; i < citations.length; i++) {
-    if (citations[i] >= i + 1) {
-      hIndex = i + 1
-    } else {
-      break
+// Chart configuration
+const chartOptions = computed(() => ({
+  chart: {
+    type: 'bar',
+    height: 400,
+    toolbar: {
+      show: false
+    }
+  },
+  plotOptions: {
+    bar: {
+      horizontal: true,
+      dataLabels: {
+        position: 'top'
+      }
+    }
+  },
+  dataLabels: {
+    enabled: true,
+    offsetX: -6,
+    style: {
+      fontSize: '12px',
+      colors: ['#fff']
+    }
+  },
+  xaxis: {
+    categories: ngramsData.value.slice(0, 15).map(item => item.text),
+    title: {
+      text: 'Frekuensi'
+    }
+  },
+  yaxis: {
+    title: {
+      text: selectedNGramType.value === 'unigrams' ? 'Kata' : 
+            selectedNGramType.value === 'bigrams' ? 'Bigram' : 'Trigram'
+    }
+  },
+  colors: ['#3B82F6'],
+  title: {
+    text: `Top 15 ${selectedNGramType.value === 'unigrams' ? 'Kata' : 
+                    selectedNGramType.value === 'bigrams' ? 'Bigram' : 'Trigram'} 
+           dari Proyek Perubahan`,
+    align: 'center',
+    style: {
+      fontSize: '16px',
+      fontWeight: 'bold',
+      color: '#1E40AF'
+    }
+  },
+  grid: {
+    borderColor: '#e7e7e7',
+    row: {
+      colors: ['#f3f3f3', 'transparent'],
+      opacity: 0.5
     }
   }
-  return hIndex
-})
+}))
 
-const i10Index = computed(() => {
-  return searchResults.value.filter(pub => pub.citations >= 10).length
-})
-
-// Watch for batch changes to reset alumni selection
-watch(selectedBatch, () => {
-  selectedAlumni.value = ''
-  searchResults.value = []
-  hasSearched.value = false
-})
-
-// Functions
-async function searchGoogleScholar() {
-  if (!selectedAlumni.value) return
-  
-  isSearching.value = true
-  hasSearched.value = false
-  
-  try {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // In real app, this would be an API call to Google Scholar
-    searchResults.value = samplePublications[selectedAlumni.value] || []
-    
-  } catch (error) {
-    console.error('Error searching Google Scholar:', error)
-    searchResults.value = []
-  } finally {
-    isSearching.value = false
-    hasSearched.value = true
+const chartSeries = computed(() => ([
+  {
+    name: 'Frekuensi',
+    data: ngramsData.value.slice(0, 15).map(item => item.frequency)
   }
-}
+]))
+
+// N-gram type options
+const ngramTypes = [
+  { value: 'unigrams', label: 'Unigrams (Kata Tunggal)' },
+  { value: 'bigrams', label: 'Bigrams (2 Kata)' },
+  { value: 'trigrams', label: 'Trigrams (3 Kata)' }
+]
 </script>
 
 <style scoped>
