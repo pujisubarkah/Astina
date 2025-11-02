@@ -1,7 +1,6 @@
-// server/api/dashboard/keywords-cache.ts
+// server/api/monitoring/keywords-cache.ts
 // Lightweight endpoint untuk keyword data saja dengan caching
 
-import { defineEventHandler, createError } from 'h3'
 import { abstract } from '../../database/schema/abstract'
 import { proper } from '../../database/schema/proper'
 import { instansi } from '../../database/schema/instansi'

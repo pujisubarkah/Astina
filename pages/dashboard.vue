@@ -25,27 +25,27 @@
         <!-- Skip heavy components for now - load only fast components -->
         
         <!-- Stats Cards - SKIPPED for now -->
-        <!-- <DashboardStatsCards :data="dashboardData" /> -->
+        <!-- <MonitoringStatsCards :data="dashboardData" /> -->
 
         <!-- Main Charts - SKIPPED for now -->
-        <!-- <DashboardMainCharts 
+        <!-- <MonitoringMainCharts 
           :data="dashboardData" 
           @show-detail="showInstansiDetail" 
         /> -->
 
         <!-- Keyword Analysis - SKIPPED for now -->
-        <!-- <DashboardKeywordAnalysis :data="dashboardData" /> -->
+        <!-- <MonitoringKeywordAnalysis :data="dashboardData" /> -->
 
         <!-- Only show lightweight static components -->
         
         <!-- SDGs and Asta Cita -->
-        <DashboardSdgsAstaCita />
+        <MonitoringSdgsAstaCita />
 
         <!-- Economic Impact -->
-        <DashboardEconomicImpact />
+        <MonitoringEconomicImpact />
 
         <!-- Google Scholar -->
-        <DashboardGoogleScholar />
+        <MonitoringGoogleScholar />
         
         <!-- Development Controls -->
         <div class="mb-8">
@@ -91,7 +91,7 @@ const error = ref(null)
 /*
 const { data: dashboardData, pending, error } = await useAsyncData('dashboard-summary', async () => {
   try {
-    const res = await fetch('/api/dashboard/summary')
+    const res = await fetch('/api/monitoring/summary')
     const json = await res.json()
     console.log('Dashboard API Response:', json)
     if (json.success && json.data) {

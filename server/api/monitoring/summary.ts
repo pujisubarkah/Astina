@@ -1,7 +1,6 @@
-// server/api/dashboard/summary.ts
+// server/api/monitoring/summary.ts
 // Endpoint gabungan untuk summary program, kata kunci, dan instansi
 
-import { defineEventHandler, createError } from 'h3'
 import { proper } from '../../database/schema/proper'
 import { pelatihan } from '../../database/schema/pelatihan'
 import { instansi } from '../../database/schema/instansi'
@@ -83,7 +82,7 @@ export default defineEventHandler(async (event) => {
       console.timeLog('Dashboard Summary API', 'Fetching keywords from cache')
       let keywordsResponse
       try {
-        const keywordsRes = await $fetch('/api/dashboard/keywords-cache')
+        const keywordsRes = await $fetch('/api/monitoring/keywords-cache')
         keywordsResponse = (keywordsRes && 'total_instansi' in keywordsRes) ? keywordsRes : {
           total_instansi: 0,
           total_kategori: 0,

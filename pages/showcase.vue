@@ -33,11 +33,36 @@
           </div>
         </template>
         <template v-else>
-          <div v-for="item in newsItems" :key="item.id" class="netflix-card" @click="handleItemClick(item.id)">
-            <img :src="item.image" :alt="item.title" class="netflix-poster" />
-            <div class="netflix-card-info">
-              <h3>{{ item.title }}</h3>
-              <p>{{ item.author }} - {{ item.instansi }}</p>
+          <div v-for="item in newsItems" :key="item.id" class="netflix-card">
+            <div class="relative w-full h-full">
+              <img :src="item.image" :alt="item.title" class="netflix-poster-full" @click="handleItemClick(item.id)" />
+              
+              <!-- Rating Overlay on Image -->
+              <div class="absolute top-3 left-3 bg-black bg-opacity-70 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
+                <svg class="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                <span class="text-white text-sm font-semibold">{{ getAverageRating(item.id) || '0.0' }}</span>
+                <span class="text-gray-300 text-xs">({{ getRatingCount(item.id) }})</span>
+              </div>
+
+              <!-- Three Dots Menu -->
+              <div class="absolute top-3 right-3">
+                <button 
+                  @click.stop="openRatingModal(item)"
+                  class="bg-black bg-opacity-70 backdrop-blur-sm rounded-full p-2 hover:bg-opacity-90 transition-all duration-200 group"
+                >
+                  <svg class="w-4 h-4 text-white group-hover:text-yellow-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Title Overlay at Bottom -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-3">
+                <h3 @click="handleItemClick(item.id)" class="cursor-pointer hover:text-yellow-400 text-white font-bold text-sm mb-1 transition-colors duration-200">{{ item.title }}</h3>
+                <p class="text-gray-300 text-xs">{{ item.author }} - {{ item.instansi }}</p>
+              </div>
             </div>
           </div>
         </template>
@@ -63,6 +88,156 @@
         </button>
       </div>
     </div>
+
+    <!-- Rating & Comments Modal -->
+    <div v-if="showRatingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <h3 class="text-xl font-bold mb-2">{{ selectedItem?.title }}</h3>
+              <p class="text-blue-100 text-sm">{{ selectedItem?.author }} - {{ selectedItem?.instansi }}</p>
+            </div>
+            <button 
+              @click="closeRatingModal"
+              class="text-white hover:text-gray-200 text-2xl font-bold ml-4"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="p-6 max-h-[calc(90vh-140px)] overflow-y-auto">
+          <!-- Rating Section -->
+          <div class="mb-8">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              Berikan Rating
+            </h4>
+            
+            <div class="bg-gray-50 rounded-xl p-6">
+              <div class="text-center mb-6">
+                <div class="flex justify-center items-center gap-2 mb-4">
+                  <span 
+                    v-for="star in 5" 
+                    :key="star"
+                    @click="rateItem(selectedItem.id, star)"
+                    @mouseover="hoverRating(selectedItem.id, star)"
+                    @mouseleave="hoverRating(selectedItem.id, 0)"
+                    class="cursor-pointer text-4xl transition-all duration-200 hover:scale-110"
+                    :class="getStarClass(selectedItem.id, star)"
+                  >
+                    ★
+                  </span>
+                </div>
+                <div class="text-sm text-gray-600">
+                  Rating rata-rata: <span class="font-semibold text-lg">{{ getAverageRating(selectedItem.id) }}/5</span>
+                  dari {{ getRatingCount(selectedItem.id) }} pengguna
+                </div>
+              </div>
+
+              <!-- Rating Breakdown -->
+              <div class="space-y-2">
+                <div v-for="rating in [5,4,3,2,1]" :key="rating" class="flex items-center gap-3">
+                  <span class="text-sm text-gray-600 w-2">{{ rating }}</span>
+                  <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  <div class="flex-1 bg-gray-200 rounded-full h-2">
+                    <div 
+                      class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                      :style="`width: ${getRatingPercentage(selectedItem.id, rating)}%`"
+                    ></div>
+                  </div>
+                  <span class="text-sm text-gray-600 w-8">{{ getRatingCount(selectedItem.id, rating) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comments Section -->
+          <div>
+            <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+              </svg>
+              Komentar ({{ getCommentsCount(selectedItem.id) }})
+            </h4>
+
+            <!-- Add Comment Form -->
+            <div v-if="isLoggedIn" class="bg-blue-50 rounded-xl p-4 mb-6">
+              <textarea 
+                v-model="newComment[selectedItem.id]"
+                placeholder="Tulis komentar Anda..."
+                class="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                rows="3"
+              ></textarea>
+              <div class="flex justify-end mt-3">
+                <button 
+                  @click="addComment(selectedItem.id)"
+                  :disabled="!newComment[selectedItem.id]?.trim()"
+                  class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  Kirim Komentar
+                </button>
+              </div>
+            </div>
+
+            <!-- Login Required Message -->
+            <div v-else class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+              <div class="flex items-center gap-3">
+                <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <div>
+                  <p class="text-yellow-800 font-medium">Silakan login untuk memberikan komentar</p>
+                  <button 
+                    @click="openLoginModal"
+                    class="text-blue-600 hover:text-blue-800 font-medium text-sm mt-1"
+                  >
+                    Login sekarang →
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comments List -->
+            <div class="space-y-4">
+              <div 
+                v-for="comment in getComments(selectedItem.id)" 
+                :key="comment.id"
+                class="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow duration-200"
+              >
+                <div class="flex items-start justify-between mb-2">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                      {{ comment.author.charAt(0).toUpperCase() }}
+                    </div>
+                    <div>
+                      <div class="font-semibold text-gray-800">{{ comment.author }}</div>
+                      <div class="text-xs text-gray-500">{{ formatDate(comment.date) }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-gray-700 ml-11">{{ comment.text }}</div>
+              </div>
+              
+              <div v-if="getComments(selectedItem.id).length === 0" class="text-center py-8 text-gray-500">
+                <svg class="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <p class="text-lg font-medium mb-2">Belum ada komentar</p>
+                <p class="text-sm">Jadilah yang pertama memberikan komentar!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -78,6 +253,19 @@ const totalPages = 20
 const newsItems = ref([])
 const route = useRoute()
 const type = computed(() => route.query.type || 'pkn1')
+
+// Rating and Comments State
+const ratings = ref({}) // { itemId: [rating1, rating2, ...] }
+const hoverRatings = ref({}) // { itemId: hoverValue }
+const comments = ref({}) // { itemId: [comment1, comment2, ...] }
+const newComment = ref({}) // { itemId: commentText }
+
+// Modal State
+const showRatingModal = ref(false)
+const selectedItem = ref(null)
+
+// Auth State (mock - replace with real auth)
+const isLoggedIn = ref(false) // Change to true for testing
 
 const pkn2Data = [
   {
@@ -168,14 +356,165 @@ const handleItemClick = (id) => {
   window.open(`https://properexpo.lan.go.id/web/proper/detail/${id}`, '_blank')
 }
 
+// Rating Functions
+const rateItem = (itemId, rating) => {
+  if (!ratings.value[itemId]) {
+    ratings.value[itemId] = []
+  }
+  ratings.value[itemId].push(rating)
+  
+  // Save to localStorage
+  localStorage.setItem('showcase-ratings', JSON.stringify(ratings.value))
+}
+
+const hoverRating = (itemId, rating) => {
+  hoverRatings.value[itemId] = rating
+}
+
+const getStarClass = (itemId, starNumber) => {
+  const hoverValue = hoverRatings.value[itemId] || 0
+  const avgRating = parseFloat(getAverageRating(itemId))
+  
+  if (hoverValue > 0) {
+    return starNumber <= hoverValue ? 'text-yellow-400' : 'text-gray-300'
+  }
+  return starNumber <= avgRating ? 'text-yellow-400' : 'text-gray-300'
+}
+
+const getAverageRating = (itemId) => {
+  const itemRatings = ratings.value[itemId] || []
+  if (itemRatings.length === 0) return '0.0'
+  const sum = itemRatings.reduce((a, b) => a + b, 0)
+  const average = sum / itemRatings.length
+  return average.toFixed(1)
+}
+
+
+
+// Modal Functions
+const openRatingModal = (item) => {
+  selectedItem.value = item
+  showRatingModal.value = true
+  document.body.style.overflow = 'hidden'
+}
+
+const closeRatingModal = () => {
+  showRatingModal.value = false
+  selectedItem.value = null 
+  document.body.style.overflow = 'auto'
+}
+
+const openLoginModal = () => {
+  // Use global event to trigger login modal in navbar
+  if (process.client) {
+    window.dispatchEvent(new CustomEvent('open-login-modal'))
+  }
+}
+
+// Comments Functions
+const addComment = (itemId) => {
+  if (!isLoggedIn.value) {
+    openLoginModal()
+    return
+  }
+  
+  const commentText = newComment.value[itemId]?.trim()
+  if (!commentText) return
+  
+  if (!comments.value[itemId]) {
+    comments.value[itemId] = []
+  }
+  
+  const comment = {
+    id: Date.now(),
+    text: commentText,
+    author: 'John Doe', // In real app, get from auth user
+    date: new Date().toISOString()
+  }
+  
+  comments.value[itemId].push(comment)
+  newComment.value[itemId] = ''
+  
+  // Save to localStorage
+  localStorage.setItem('showcase-comments', JSON.stringify(comments.value))
+}
+
+// Rating breakdown functions
+const getRatingCount = (itemId, specificRating = null) => {
+  const itemRatings = ratings.value[itemId] || []
+  if (specificRating) {
+    return itemRatings.filter(rating => rating === specificRating).length
+  }
+  return itemRatings.length
+}
+
+const getRatingPercentage = (itemId, rating) => {
+  const totalRatings = getRatingCount(itemId)
+  if (totalRatings === 0) return 0
+  const ratingCount = getRatingCount(itemId, rating)
+  return Math.round((ratingCount / totalRatings) * 100)
+}
+
+const getComments = (itemId) => {
+  return comments.value[itemId] || []
+}
+
+const getCommentsCount = (itemId) => {
+  return comments.value[itemId]?.length || 0
+}
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffInMinutes = Math.floor((now - date) / (1000 * 60))
+  
+  if (diffInMinutes < 1) return 'Baru saja'
+  if (diffInMinutes < 60) return `${diffInMinutes}m`
+  if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h`
+  return `${Math.floor(diffInMinutes / 1440)}d`
+}
+
+// Load saved data from localStorage
+const loadSavedData = () => {
+  try {
+    const savedRatings = localStorage.getItem('showcase-ratings')
+    if (savedRatings) {
+      ratings.value = JSON.parse(savedRatings)
+    }
+    
+    const savedComments = localStorage.getItem('showcase-comments')
+    if (savedComments) {
+      comments.value = JSON.parse(savedComments)
+    }
+  } catch (error) {
+    console.error('Error loading saved data:', error)
+  }
+}
+
 // Watch for currentPage changes
 watch(currentPage, () => {
   fetchBeritaFromAPI()
 })
 
-// Fetch data on component mount
+// Close modal on escape key
 onMounted(() => {
+  loadSavedData()
   fetchBeritaFromAPI()
+  
+  // Handle escape key
+  const handleEscape = (e) => {
+    if (e.key === 'Escape' && showRatingModal.value) {
+      closeRatingModal()
+    }
+  }
+  
+  document.addEventListener('keydown', handleEscape)
+  
+  // Cleanup
+  onUnmounted(() => {
+    document.removeEventListener('keydown', handleEscape)
+    document.body.style.overflow = 'auto'
+  })
 })
 </script>
 
@@ -198,7 +537,7 @@ onMounted(() => {
 .expo-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 320px;
+  grid-auto-rows: 400px;
   gap: 1.2rem;
   padding-bottom: 1rem;
   justify-content: center;
@@ -206,63 +545,304 @@ onMounted(() => {
 @media (min-width: 600px) {
   .expo-grid {
     grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 260px;
+    grid-auto-rows: 340px;
   }
 }
 @media (min-width: 1024px) {
   .expo-grid {
-    grid-template-columns: repeat(7, 1fr);
-    grid-auto-rows: 220px;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 300px;
   }
 }
 .netflix-card {
-  background: #fff;
-  border-radius: 14px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
   cursor: pointer;
   position: relative;
-  transition: transform 0.18s, box-shadow 0.18s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  border: 1px solid rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
 }
 .netflix-card:hover {
-  transform: translateY(-6px) scale(1.04);
-  box-shadow: 0 8px 32px rgba(22,87,141,0.18);
-  z-index: 2;
+  transform: translateY(-8px) scale(1.02) rotateX(5deg);
+  box-shadow: 0 20px 40px rgba(22,87,141,0.15), 0 8px 20px rgba(22,87,141,0.1);
+  z-index: 10;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 .netflix-poster {
   width: 100%;
-  height: 70%;
+  height: 85%;
   object-fit: cover;
   display: block;
 }
+
+.netflix-poster-full {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+}
 .netflix-card-info {
-  background: linear-gradient(0deg, #f5f6fa 90%, rgba(245,246,250,0.7) 100%);
-  color: #222;
-  padding: 0.7rem 0.6rem 0.5rem 0.6rem;
-  min-height: 30%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.9) 100%);
+  backdrop-filter: blur(12px);
+  color: #1a202c;
+  padding: 0.75rem;
+  min-height: 15%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  border-top: 1px solid rgba(255,255,255,0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.netflix-card-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.netflix-card:hover .netflix-card-info::before {
+  opacity: 1;
 }
 .netflix-card-info h3 {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 0.18rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
   line-height: 1.2;
-  color: #16578d;
+  color: #1e40af;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.netflix-card:hover .netflix-card-info h3 {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #1d4ed8, #2563eb, #3b82f6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .netflix-card-info p {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #444;
   margin: 0;
 }
 
 .netflix-bg {
-  background: #f5f6fa;
-  color: #222;
+  background: #ffffff;
+  color: #1a202c;
   min-height: 100vh;
+}
+
+/* Full Frame Image Styling */
+.netflix-card .relative {
+  position: relative;
+  overflow: hidden;
+}
+
+.netflix-card .relative::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 20%, transparent 60%, rgba(0,0,0,0.6) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.netflix-card:hover .relative::before {
+  opacity: 1;
+}
+
+/* Title overlay styling */
+.netflix-card .absolute.bottom-0 {
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.netflix-card:hover .absolute.bottom-0 {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Rating overlay on image */
+.netflix-card .absolute {
+  z-index: 2;
+}
+
+.netflix-card .absolute.top-3.left-3 {
+  animation: fadeInScale 0.3s ease;
+}
+
+.netflix-card .absolute.top-3.right-3 button {
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+}
+
+.netflix-card:hover .absolute.top-3.right-3 button {
+  transform: scale(1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes fadeInScale {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.8); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.05); 
+  }
+}
+
+/* Rating and Comments Styling */
+.rating-section {
+  border-top: 1px solid rgba(226, 232, 240, 0.6);
+  padding-top: 0.75rem;
+  margin-top: 0.5rem;
+  position: relative;
+}
+
+.rating-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+}
+
+.comments-section {
+  background: linear-gradient(135deg, rgba(249, 250, 251, 0.8) 0%, rgba(243, 244, 246, 0.6) 100%);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.comment-item {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(248, 250, 252, 0.5) 100%);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.2s ease;
+}
+
+.comment-item:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.7) 100%);
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.add-comment textarea {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.add-comment textarea:focus {
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+.add-comment button {
+  font-size: 0.8rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border: none;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.add-comment button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+/* Star rating hover effects */
+.rating-section span {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.rating-section span:hover {
+  transform: scale(1.1);
+  text-shadow: 0 2px 4px rgba(251, 191, 36, 0.5);
+}
+
+.rating-section span.text-yellow-400 {
+  animation: starGlow 0.3s ease;
+}
+
+@keyframes starGlow {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .netflix-card-info {
+    padding: 0.5rem;
+  }
+  
+  .netflix-card-info h3 {
+    font-size: 0.8rem;
+  }
+  
+  .netflix-card-info p {
+    font-size: 0.7rem;
+  }
+  
+  .rating-section {
+    font-size: 0.75rem;
+  }
+  
+  .comment-item {
+    font-size: 0.7rem;
+  }
 }
 </style>
