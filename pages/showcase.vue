@@ -334,26 +334,6 @@ const selectedItem = ref(null)
 const isLoggedIn = ref(false) // Change to true for testing
 
 const pkn2Data = [
-  {
-    img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000375/ta8aut2ni68m2n8ylhyf.png",
-    link: "https://drive.google.com/file/d/1qRz7gsm3SxDHjvewMt8WPGBairGqLHda/view?usp=sharing"
-  },
-  {
-    img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000375/uaerrtumvsxxrpm5mpbz.png",
-    link: "https://drive.google.com/file/d/1fQOtxUvEVU-3iP5hLG02-l1Mj_u0mxsl/view?usp=sharing"
-  },
-  {
-    img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000375/fz3weppo3o9hxjpvepmk.png",
-    link: "https://drive.google.com/file/d/1hFv41o2yZhVgg86IGVw5AcBMmrpkbql0/view?usp=sharing"
-  },
-  {
-    img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000374/eyiupn3dp2ohzye6wy9u.png",
-    link: "https://drive.google.com/file/d/1LmtX2e-VJs49Wr4f1JAJj1vknJ5ujqHf/view?usp=sharing"
-  },
-  {
-    img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000374/fsibofqeup9w1vdpih89.png",
-    link: "https://drive.google.com/file/d/1sR1NgCV5FGMEUdbHZRGHKcQV7mmgo6ue/view?usp=sharing"
-  },
  
 ];
 
