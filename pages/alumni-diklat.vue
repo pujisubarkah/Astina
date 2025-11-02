@@ -3,11 +3,11 @@
 		<div class="max-w-7xl mx-auto">
 			<!-- Enhanced Header with Animation -->
 			<div class="mb-8 text-center">
-				<div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4 shadow-lg">
-					<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-					</svg>
-				</div>
+			<div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4 shadow-lg">
+				<svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+				</svg>
+			</div>
 				<h1 class="text-5xl font-extrabold bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent mb-3">
 					Alumni Pelatihan
 				</h1>
@@ -38,18 +38,18 @@
 			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
 				<!-- PKN Tingkat I Card -->
 				<div class="group card bg-gradient-to-br from-blue-600 to-blue-700 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-0">
-					<div class="card-body text-white">
+					<div class="card-body text-black">
 						<div class="flex items-center justify-between">
 							<div class="flex-1">
 								<div class="flex items-center gap-2 mb-2">
 									<div class="badge badge-blue-100 badge-sm text-blue-700">PKN I</div>
 								</div>
-								<p class="text-blue-100 text-sm font-medium">Tingkat I</p>
-								<p class="text-3xl font-bold text-white mb-1">{{ formatNumber(totals.pkn1) }}</p>
-								<div class="text-xs text-blue-200">Alumni Terdaftar</div>
+								<p class="text-gray-800 text-sm font-medium">Tingkat I</p>
+								<p class="text-3xl font-bold text-black mb-1">{{ formatNumber(totals.pkn1) }}</p>
+								<div class="text-xs text-gray-700">Alumni Terdaftar</div>
 							</div>
 							<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
-								<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2M7 7h10M7 11h10M7 15h10" />
 								</svg>
 							</div>
@@ -57,7 +57,7 @@
 						<!-- Progress indicator -->
 						<div class="mt-3">
 							<div class="w-full bg-blue-500/30 rounded-full h-1.5">
-								<div class="bg-white h-1.5 rounded-full transition-all duration-1000" :style="`width: ${Math.min(100, (totals.pkn1 / Math.max(totals.pkn1, totals.pkn2, totals.pka, totals.pkp)) * 100)}%`"></div>
+								<div class="bg-black h-1.5 rounded-full transition-all duration-1000" :style="`width: ${Math.min(100, (totals.pkn1 / Math.max(totals.pkn1, totals.pkn2, totals.pka, totals.pkp)) * 100)}%`"></div>
 							</div>
 						</div>
 					</div>
@@ -65,25 +65,25 @@
 
 				<!-- PKN Tingkat II Card -->
 				<div class="group card bg-gradient-to-br from-purple-600 to-purple-700 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-0">
-					<div class="card-body text-white">
+					<div class="card-body text-black">
 						<div class="flex items-center justify-between">
 							<div class="flex-1">
 								<div class="flex items-center gap-2 mb-2">
 									<div class="badge badge-purple-100 badge-sm text-purple-700">PKN II</div>
 								</div>
-								<p class="text-purple-100 text-sm font-medium">Tingkat II</p>
-								<p class="text-3xl font-bold text-white mb-1">{{ formatNumber(totals.pkn2) }}</p>
-								<div class="text-xs text-purple-200">Alumni Terdaftar</div>
+								<p class="text-gray-800 text-sm font-medium">Tingkat II</p>
+								<p class="text-3xl font-bold text-black mb-1">{{ formatNumber(totals.pkn2) }}</p>
+								<div class="text-xs text-gray-700">Alumni Terdaftar</div>
 							</div>
 							<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
-								<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
 								</svg>
 							</div>
 						</div>
 						<div class="mt-3">
 							<div class="w-full bg-purple-500/30 rounded-full h-1.5">
-								<div class="bg-white h-1.5 rounded-full transition-all duration-1000" :style="`width: ${Math.min(100, (totals.pkn2 / Math.max(totals.pkn1, totals.pkn2, totals.pka, totals.pkp)) * 100)}%`"></div>
+								<div class="bg-black h-1.5 rounded-full transition-all duration-1000" :style="`width: ${Math.min(100, (totals.pkn2 / Math.max(totals.pkn1, totals.pkn2, totals.pka, totals.pkp)) * 100)}%`"></div>
 							</div>
 						</div>
 					</div>
@@ -91,25 +91,25 @@
 
 				<!-- PKA Card -->
 				<div class="group card bg-gradient-to-br from-emerald-600 to-emerald-700 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-0">
-					<div class="card-body text-white">
+					<div class="card-body text-black">
 						<div class="flex items-center justify-between">
 							<div class="flex-1">
 								<div class="flex items-center gap-2 mb-2">
 									<div class="badge badge-emerald-100 badge-sm text-emerald-700">PKA</div>
 								</div>
-								<p class="text-emerald-100 text-sm font-medium">Administrator</p>
-								<p class="text-3xl font-bold text-white mb-1">{{ formatNumber(totals.pka) }}</p>
-								<div class="text-xs text-emerald-200">Alumni Terdaftar</div>
+								<p class="text-gray-800 text-sm font-medium">Administrator</p>
+								<p class="text-3xl font-bold text-black mb-1">{{ formatNumber(totals.pka) }}</p>
+								<div class="text-xs text-gray-700">Alumni Terdaftar</div>
 							</div>
-							<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
-								<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-								</svg>
-							</div>
+						<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
+							<svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 713.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+							</svg>
+						</div>
 						</div>
 						<div class="mt-3">
 							<div class="w-full bg-emerald-500/30 rounded-full h-1.5">
-								<div class="bg-white h-1.5 rounded-full transition-all duration-1000" :style="`width: ${Math.min(100, (totals.pka / Math.max(totals.pkn1, totals.pkn2, totals.pka, totals.pkp)) * 100)}%`"></div>
+								<div class="bg-black h-1.5 rounded-full transition-all duration-1000" :style="`width: ${Math.min(100, (totals.pka / Math.max(totals.pkn1, totals.pkn2, totals.pka, totals.pkp)) * 100)}%`"></div>
 							</div>
 						</div>
 					</div>
@@ -117,18 +117,18 @@
 
 				<!-- PKP Card -->
 				<div class="group card bg-gradient-to-br from-amber-600 to-amber-700 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-0">
-					<div class="card-body text-white">
+					<div class="card-body text-black">
 						<div class="flex items-center justify-between">
 							<div class="flex-1">
 								<div class="flex items-center gap-2 mb-2">
 									<div class="badge badge-amber-100 badge-sm text-amber-700">PKP</div>
 								</div>
-								<p class="text-amber-100 text-sm font-medium">Pengawas</p>
-								<p class="text-3xl font-bold text-white mb-1">{{ formatNumber(totals.pkp) }}</p>
-								<div class="text-xs text-amber-200">Alumni Terdaftar</div>
+								<p class="text-gray-800 text-sm font-medium">Pengawas</p>
+								<p class="text-3xl font-bold text-black mb-1">{{ formatNumber(totals.pkp) }}</p>
+								<div class="text-xs text-gray-700">Alumni Terdaftar</div>
 							</div>
 							<div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center group-hover:bg-white/30 transition-colors">
-								<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
 								</svg>
@@ -136,7 +136,7 @@
 						</div>
 						<div class="mt-3">
 							<div class="w-full bg-amber-500/30 rounded-full h-1.5">
-								<div class="bg-white h-1.5 rounded-full transition-all duration-1000" :style="`width: ${Math.min(100, (totals.pkp / Math.max(totals.pkn1, totals.pkn2, totals.pka, totals.pkp)) * 100)}%`"></div>
+								<div class="bg-black h-1.5 rounded-full transition-all duration-1000" :style="`width: ${Math.min(100, (totals.pkp / Math.max(totals.pkn1, totals.pkn2, totals.pka, totals.pkp)) * 100)}%`"></div>
 							</div>
 						</div>
 					</div>
@@ -149,25 +149,25 @@
 					<div class="card-body">
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-6">
-								<div class="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center">
-									<svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-									</svg>
-								</div>
-								<div class="text-white">
-									<h3 class="text-2xl font-bold">Total Alumni Keseluruhan</h3>
+							<div class="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center">
+								<svg class="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 515.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+								</svg>
+							</div>
+							<div class="text-black">
+								<h3 class="text-2xl font-bold">Total Alumni Keseluruhan</h3>
 									<p class="text-4xl font-extrabold text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text">
 										{{ formatNumber(totalAlumni) }}
 									</p>
 									<p class="text-slate-300">Alumni dari seluruh program diklat kepemimpinan</p>
 								</div>
 							</div>
-							<div class="text-right text-white">
-								<div class="stats stats-vertical shadow">
-									<div class="stat bg-white/10">
-										<div class="stat-title text-slate-300">Rata-rata per Program</div>
-										<div class="stat-value text-lg text-white">{{ formatNumber(Math.round(totalAlumni / 4)) }}</div>
-									</div>
+						<div class="text-right text-black">
+							<div class="stats stats-vertical shadow">
+								<div class="stat bg-white/10">
+									<div class="stat-title text-slate-300">Rata-rata per Program</div>
+									<div class="stat-value text-lg text-black">{{ formatNumber(Math.round(totalAlumni / 4)) }}</div>
+								</div>
 									<div class="stat bg-white/10">
 										<div class="stat-title text-slate-300">Program Aktif</div>
 										<div class="stat-value text-lg text-cyan-400">4</div>
@@ -400,7 +400,7 @@ const SummaryCard = {
 		return { displayValue: 0, rafId: null }
 	},
 	template: `
-		<div :class="['p-4 rounded-lg shadow-md text-white flex items-center gap-4', bgClass]">
+		<div :class="['p-4 rounded-lg shadow-md text-black flex items-center gap-4', bgClass]">
 			<div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
 				<svg v-if="icon==='users'" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20v-2a4 4 0 00-3-3.87"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20v-2a4 4 0 013-3.87"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7a4 4 0 100-8 4 4 0 000 8z"/></svg>
 				<svg v-else-if="icon==='layers'" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l9 4.5-9 4.5-9-4.5L12 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13.5l9 4.5-9 4.5-9-4.5 9-4.5z"/></svg>
