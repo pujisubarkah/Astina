@@ -14,20 +14,83 @@
     <div class="showcase-wrapper">
       <div class="expo-grid">
         <template v-if="type === 'pkn2'">
-          <div v-for="item in pkn2Data" :key="item.img" class="netflix-card" @click="window.open(item.link, '_blank')">
-            <img :src="item.img" :alt="item.title" class="netflix-poster" />
-            <div class="netflix-card-info">
-              <h3>PKN Tingkat II</h3>
-              <p>Inovasi dari alumni PKN II</p>
+          <div v-for="(item, index) in pkn2Data" :key="item.img" class="netflix-card">
+            <div class="relative w-full h-full">
+              <img :src="item.img" :alt="item.title || `PKN II Item ${index + 1}`" class="netflix-poster-full" @click="window.open(item.link, '_blank')" />
+              
+              <!-- Rating Overlay on Image -->
+              <div class="absolute top-3 left-3 bg-black bg-opacity-70 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
+                <svg class="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                <span class="text-white text-sm font-semibold">{{ getAverageRating(`pkn2_${index}`) || '0.0' }}</span>
+                <span class="text-gray-300 text-xs">({{ getRatingCount(`pkn2_${index}`) }})</span>
+              </div>
+
+              <!-- Three Dots Menu -->
+              <div class="absolute top-3 right-3">
+                <button 
+                  @click.stop="openRatingModal({
+                    id: `pkn2_${index}`,
+                    title: `PKN Tingkat II - Inovasi ${index + 1}`,
+                    author: 'Alumni PKN II',
+                    instansi: 'Program Kepemimpinan Nasional Tingkat II',
+                    image: item.img,
+                    link: item.link
+                  })"
+                  class="bg-black bg-opacity-70 backdrop-blur-sm rounded-full p-2 hover:bg-opacity-90 transition-all duration-200 group"
+                >
+                  <svg class="w-4 h-4 text-white group-hover:text-yellow-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Title Overlay at Bottom -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-3">
+                <h3 @click="window.open(item.link, '_blank')" class="cursor-pointer hover:text-yellow-400 text-white font-bold text-sm mb-1 transition-colors duration-200">PKN Tingkat II - Inovasi {{ index + 1 }}</h3>
+                <p class="text-gray-300 text-xs">Alumni PKN II - Program Kepemimpinan Nasional</p>
+              </div>
             </div>
           </div>
         </template>
         <template v-else-if="type === 'pka'">
-          <div v-for="item in pkaData" :key="item.img" class="netflix-card" @click="window.open(item.img, '_blank')">
-            <img :src="item.img" :alt="item.title" class="netflix-poster" />
-            <div class="netflix-card-info">
-              <h3>PKA Innovation</h3>
-              <p>Program Kepemimpinan Administrator</p>
+          <div v-for="(item, index) in pkaData" :key="item.img" class="netflix-card">
+            <div class="relative w-full h-full">
+              <img :src="item.img" :alt="item.title || `PKA Item ${index + 1}`" class="netflix-poster-full" @click="window.open(item.img, '_blank')" />
+              
+              <!-- Rating Overlay on Image -->
+              <div class="absolute top-3 left-3 bg-black bg-opacity-70 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
+                <svg class="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                <span class="text-white text-sm font-semibold">{{ getAverageRating(`pka_${index}`) || '0.0' }}</span>
+                <span class="text-gray-300 text-xs">({{ getRatingCount(`pka_${index}`) }})</span>
+              </div>
+
+              <!-- Three Dots Menu -->
+              <div class="absolute top-3 right-3">
+                <button 
+                  @click.stop="openRatingModal({
+                    id: `pka_${index}`,
+                    title: `PKA Innovation - Program ${index + 1}`,
+                    author: 'Alumni PKA',
+                    instansi: 'Program Kepemimpinan Administrator',
+                    image: item.img
+                  })"
+                  class="bg-black bg-opacity-70 backdrop-blur-sm rounded-full p-2 hover:bg-opacity-90 transition-all duration-200 group"
+                >
+                  <svg class="w-4 h-4 text-white group-hover:text-yellow-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Title Overlay at Bottom -->
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-3">
+                <h3 @click="window.open(item.img, '_blank')" class="cursor-pointer hover:text-yellow-400 text-white font-bold text-sm mb-1 transition-colors duration-200">PKA Innovation - Program {{ index + 1 }}</h3>
+                <p class="text-gray-300 text-xs">Alumni PKA - Program Kepemimpinan Administrator</p>
+              </div>
             </div>
           </div>
         </template>
@@ -211,7 +274,7 @@
             <!-- Comments List -->
             <div class="space-y-4">
               <div 
-                v-for="comment in getComments(selectedItem.id)" 
+                v-for="comment in getComments(selectedItem?.id)" 
                 :key="comment.id"
                 class="bg-gradient-to-br from-white/90 to-blue-50/60 backdrop-blur-lg border border-blue-200/50 rounded-2xl p-5 hover:from-blue-50/80 hover:to-indigo-50/70 hover:border-blue-300/70 hover:shadow-lg hover:shadow-blue-400/20 transition-all duration-500 group"
               >
@@ -229,7 +292,7 @@
                 <div class="text-gray-700 ml-14 text-base leading-relaxed">{{ comment.text }}</div>
               </div>
               
-              <div v-if="getComments(selectedItem.id).length === 0" class="text-center py-12 bg-gradient-to-br from-blue-50/80 to-indigo-50/60 border border-blue-200/50 rounded-2xl">
+              <div v-if="getComments(selectedItem?.id).length === 0" class="text-center py-12 bg-gradient-to-br from-blue-50/80 to-indigo-50/60 border border-blue-200/50 rounded-2xl">
                 <svg class="w-16 h-16 mx-auto mb-6 text-blue-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
@@ -272,33 +335,26 @@ const isLoggedIn = ref(false) // Change to true for testing
 
 const pkn2Data = [
   {
-    img: "https://lh3.googleusercontent.com/sitesv/AAzXCkdLLedifsI8LmQC9n644g7w4t4KnZ6b0xxb46ZBVqeFC3XqChnOH8fTIf47ZCfmOjuQxnQije6Q1mTDCq54sgbvPhPd04egiovejTPW6NO8sqRjZgArjagiUUhOfLvUJ4kH22JNMieHv2Wj6KW0RhWXYGeaU7oPRRyZRmZRE8gjgnqxUfKoeW2inPifdI5KdUQF6bcNODEsCXzEQvZUsYMbsYEiP2OW1h0EAnE=w1280",
+    img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000375/ta8aut2ni68m2n8ylhyf.png",
     link: "https://drive.google.com/file/d/1qRz7gsm3SxDHjvewMt8WPGBairGqLHda/view?usp=sharing"
   },
   {
-    img: "https://lh3.googleusercontent.com/sitesv/AAzXCkddtwjwDwR-J24m5JgoewosJxZ9Y9gKGzQD7S6X9VqwR1j2f4GNG2bjdG3uhWJ0nuBxTyYH-8sOT4hFuggF63PibN-z4RxFBOSvcevYgsNq7oVPyXCs0irrLwE7Yi8-060oJF4F9J5uYY31q2J8s7tHh-OQt9nLQJ-fIRjshJW3w5nBhh84ErcVQHp55qOEVOj7YzGrOtYcqGs2CVlmG6Kw9MrYbEvzmXN3zpWk=w1280",
+    img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000375/uaerrtumvsxxrpm5mpbz.png",
     link: "https://drive.google.com/file/d/1fQOtxUvEVU-3iP5hLG02-l1Mj_u0mxsl/view?usp=sharing"
   },
   {
-    img: "https://lh3.googleusercontent.com/sitesv/AAzXCkeKUkq5Vgnxlv2tme3QukrIaumwComQTRFaUow5VTqOax0FqOqYsiyozIeV3DhBJtmgCa_ks1ZkacVqemBOl428vDY4CdYerdhZcWssuyVYcMMO5DTR0uJjPDmL_6hzNuLQ9sDqat53V76DsAwHcONtZp6N7gPImtCN3xX2cCEZsR2LzHVmWN_n5mN1sUF6V1dXfHPbnyunSW8RJFC19lb_cclKl3SSxDwh=w1280",
+    img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000375/fz3weppo3o9hxjpvepmk.png",
     link: "https://drive.google.com/file/d/1hFv41o2yZhVgg86IGVw5AcBMmrpkbql0/view?usp=sharing"
   },
   {
-    img: "https://lh3.googleusercontent.com/sitesv/AAzXCke6v8AmT5CxDolWBday2Fy8TiuPi0i5Hh4VKC2HkoyrlOehVvmUUiU_ElyvAyujNSzJGs6gbIZ2eiqVXgqZnFUo6Pt0TJ12OacJBnN9ufQ1bO0oCz5oUhC7j-VZLaO16zJYH_XqYVNpRt1aMVolw5R2qMn0pUgFF6C0TnI8Q_KhD7WT4y3iO_7BQvYj3Qdm0QF2ycJBPQiotQmC5HVM2wAjuGkxTYyYR1zY=w1280",
+    img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000374/eyiupn3dp2ohzye6wy9u.png",
     link: "https://drive.google.com/file/d/1LmtX2e-VJs49Wr4f1JAJj1vknJ5ujqHf/view?usp=sharing"
   },
   {
-    img: "https://lh3.googleusercontent.com/sitesv/AAzXCkdyCF23rTke7LxKnJVCvE5Emg8WThJPhYMvLp5nHIRxQ6vcwMpxZWjckb7_HdsQGghJlneTO0gbfW6CVugC4rF0Q7oxA2-w_sVFJx5X7MjVzIKB90xvvCXUNYYXDkY88C67WNmdF-69PZGCIdjK9-dfZ1549C-913w_9pyU4qJcOTsegd3vBlluVmOnzg2ueoE7XFMUIDolLeNPRHvRJM5zBjYHMSzvJpM0=w1280",
+    img: "https://res.cloudinary.com/dqlfyyigk/image/upload/v1762000374/fsibofqeup9w1vdpih89.png",
     link: "https://drive.google.com/file/d/1sR1NgCV5FGMEUdbHZRGHKcQV7mmgo6ue/view?usp=sharing"
   },
-  {
-    img: "https://lh3.googleusercontent.com/sitesv/AAzXCkeEGdidicpS72Qm_CrjCXmmRg_ygj-luN5szM_ClwNosbCcrTfPbFO_BhgJWQFT5nHu4-LGBxUUk19AQcII8krVUWA1Yu42geXSbqUCvoS_ciwpTKhARkFmuKVyOfssNBjQDmEfmO-zpvgBt81udrOBaHtSrC6wTFlyQaWc6PN4b-q63Rj8HmirglK-I0k-b3nqt2oaExbio5K86mx08B8cQeb8e0kaIlhcS5g=w1280",
-    link: "https://drive.google.com/file/d/1p3SYHwDYEYbVJ23qJBlvJlhIx7DMM-vf/view?usp=sharing"
-  },
-  {
-    img: "https://lh3.googleusercontent.com/sitesv/AAzXCkeNd22_7HtNdTXxdhIr9Uy7tBtXfxwa6ayUAUfHXX5zCEyuflGMrVvoxRJ2cS11oGrexMbnkvjOtbA-hIpNkpJQ4NMjOQlSgaeZcFpo-SzrSoLvTwgZl_VNFcwZizmqx7jW37o7kIdsnw90g6R8zdOjj235fXG-rEXRbZ5ubwyBFgIdizr1IwPhRTNRb-VBLdX1uP68zzfeFV7zmzU81T-lb14NYJ4WhIsf=w1280",
-    link: "https://drive.google.com/file/d/1KpYz8rqBA7SNzqdoZtxeb0mo1LTW4MLA/view?usp=sharing"
-  },
+ 
 ];
 
 const pkaData = [
@@ -457,11 +513,28 @@ const getRatingPercentage = (itemId, rating) => {
 }
 
 const getComments = (itemId) => {
-  return comments.value[itemId] || []
+  if (!itemId) return []
+  
+  // Try both string and number versions of the ID
+  let commentsForId = comments.value[itemId] || 
+                     comments.value[itemId.toString()] || 
+                     comments.value[parseInt(itemId)]
+  
+  // If no specific comments found, use default fallback
+  if (!commentsForId || commentsForId.length === 0) {
+    commentsForId = comments.value['default'] || []
+  }
+  
+  console.log(`Getting comments for ID ${itemId}:`, commentsForId)
+  return commentsForId
 }
 
 const getCommentsCount = (itemId) => {
-  return comments.value[itemId]?.length || 0
+  if (!itemId) return 0
+  
+  const commentsForId = getComments(itemId)
+  console.log(`Comment count for ID ${itemId}:`, commentsForId.length)
+  return commentsForId.length
 }
 
 const formatDate = (dateString) => {
@@ -500,70 +573,176 @@ const loadSavedData = () => {
 
 // Load dummy data for demonstration
 const loadDummyData = () => {
-  // Add dummy ratings for first few items
+  console.log('Loading dummy data...')
+  
+  // Add dummy ratings for first few items - using both string and number keys to ensure compatibility
   ratings.value = {
+    // PKN I ratings
     1: [5, 4, 5, 3, 4, 5, 4, 3, 5, 4],
     2: [4, 5, 3, 4, 5, 4, 3, 5, 4, 4],
-    3: [5, 5, 4, 5, 3, 4, 5, 4, 5, 3]
+    3: [5, 5, 4, 5, 3, 4, 5, 4, 5, 3],
+    '1': [5, 4, 5, 3, 4, 5, 4, 3, 5, 4],
+    '2': [4, 5, 3, 4, 5, 4, 3, 5, 4, 4],
+    '3': [5, 5, 4, 5, 3, 4, 5, 4, 5, 3],
+    
+    // PKN II ratings
+    'pkn2_0': [4, 5, 4, 5, 3, 4, 5, 4, 4, 5],
+    'pkn2_1': [5, 4, 5, 4, 5, 3, 4, 5, 4, 5],
+    'pkn2_2': [4, 4, 5, 3, 4, 5, 5, 4, 3, 4],
+    'pkn2_3': [5, 5, 4, 4, 5, 4, 3, 5, 4, 5],
+    'pkn2_4': [4, 5, 5, 4, 4, 5, 4, 3, 5, 4],
+    
+    // PKA ratings
+    'pka_0': [5, 4, 4, 5, 4, 3, 5, 4, 5, 3],
+    'pka_1': [4, 5, 4, 4, 5, 4, 5, 3, 4, 5],
+    'pka_2': [5, 5, 3, 4, 4, 5, 4, 5, 4, 3],
+    'pka_3': [4, 4, 5, 5, 3, 4, 5, 4, 4, 5],
+    'pka_4': [5, 3, 4, 5, 4, 5, 4, 4, 5, 3]
   }
   
-  // Add dummy comments
-  comments.value = {
-    1: [
-      {
-        id: 1,
-        text: "Proyek yang sangat inspiratif! Implementasinya sangat inovatif dan bisa diterapkan di berbagai daerah. Semoga bisa menjadi best practice untuk instansi lain.",
-        author: "Dr. Ahmad Suryadi",
-        date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() // 2 hours ago
-      },
-      {
-        id: 2,
-        text: "Luar biasa! Pendekatan digitalnya sangat modern dan user-friendly. Data yang disajikan juga sangat komprehensif dan mudah dipahami.",
-        author: "Siti Nurhaliza, M.Si",
-        date: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString() // 5 hours ago
-      },
-      {
-        id: 3,
-        text: "Metodologi yang digunakan sangat solid. Hasil analisisnya memberikan insight yang valuable untuk pengambilan keputusan strategis. 👏",
-        author: "Budi Santoso",
-        date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() // 1 day ago
-      }
-    ],
-    2: [
-      {
-        id: 4,
-        text: "Konsep yang brilliant! Integrasi teknologi dengan pelayanan publik sangat well-executed. Dampaknya terhadap efisiensi pelayanan sangat signifikan.",
-        author: "Prof. Maria Indrawati",
-        date: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString() // 3 hours ago
-      },
-      {
-        id: 5,
-        text: "Presentasi yang sangat menarik dan informatif. Design thinking approach-nya patut diacungi jempol! 🚀",
-        author: "Rizki Pratama, S.T",
-        date: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString() // 8 hours ago
-      }
-    ],
-    3: [
-      {
-        id: 6,
-        text: "Solusi yang sangat kreatif untuk masalah klasik! Implementation roadmap-nya juga sangat detailed dan realistic. Sukses selalu!",
-        author: "Dina Marlina, M.Pd",
-        date: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString() // 4 hours ago
-      },
-      {
-        id: 7,
-        text: "Impressed dengan level inovasi yang ditunjukkan. Sustainability aspect-nya juga sudah dipertimbangkan dengan baik. Great work! 💪",
-        author: "Eko Prasetyo",
-        date: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString() // 12 hours ago
-      },
-      {
-        id: 8,
-        text: "Collaboration approach yang digunakan sangat inspiring. Stakeholder engagement-nya comprehensive dan well-structured.",
-        author: "Lestari Wulandari, S.E",
-        date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
-      }
-    ]
+  // Add dummy comments for various IDs - create a fallback system
+  const baseDummyComments = [
+    {
+      id: 1,
+      text: "Proyek yang sangat inspiratif! Implementasinya sangat inovatif dan bisa diterapkan di berbagai daerah. Semoga bisa menjadi best practice untuk instansi lain.",
+      author: "Dr. Ahmad Suryadi",
+      date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() // 2 hours ago
+    },
+    {
+      id: 2,
+      text: "Luar biasa! Pendekatan digitalnya sangat modern dan user-friendly. Data yang disajikan juga sangat komprehensif dan mudah dipahami.",
+      author: "Siti Nurhaliza, M.Si",
+      date: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString() // 5 hours ago
+    },
+    {
+      id: 3,
+      text: "Metodologi yang digunakan sangat solid. Hasil analisisnya memberikan insight yang valuable untuk pengambilan keputusan strategis. 👏",
+      author: "Budi Santoso",
+      date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() // 1 day ago
+    }
+  ]
+  
+  const additionalComments = [
+    {
+      id: 4,
+      text: "Konsep yang brilliant! Integrasi teknologi dengan pelayanan publik sangat well-executed. Dampaknya terhadap efisiensi pelayanan sangat signifikan.",
+      author: "Prof. Maria Indrawati",
+      date: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString() // 3 hours ago
+    },
+    {
+      id: 5,
+      text: "Presentasi yang sangat menarik dan informatif. Design thinking approach-nya patut diacungi jempol! 🚀",
+      author: "Rizki Pratama, S.T",
+      date: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString() // 8 hours ago
+    },
+    {
+      id: 6,
+      text: "Solusi yang sangat kreatif untuk masalah klasik! Implementation roadmap-nya juga sangat detailed dan realistic. Sukses selalu!",
+      author: "Dina Marlina, M.Pd",
+      date: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString() // 4 hours ago
+    },
+    {
+      id: 7,
+      text: "Impressed dengan level inovasi yang ditunjukkan. Sustainability aspect-nya juga sudah dipertimbangkan dengan baik. Great work! 💪",
+      author: "Eko Prasetyo",
+      date: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString() // 12 hours ago
+    },
+    {
+      id: 8,
+      text: "Collaboration approach yang digunakan sangat inspiring. Stakeholder engagement-nya comprehensive dan well-structured.",
+      author: "Lestari Wulandari, S.E",
+      date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
+    }
+  ]
+  
+  // PKN II specific comments
+  const pkn2Comments = [
+    {
+      id: 101,
+      text: "Program PKN II ini memberikan dampak yang luar biasa! Transformasi kepemimpinan di tingkat nasional sangat terasa. Metodologi yang digunakan sangat aplikatif dan mudah diimplementasikan.",
+      author: "Dr. Ratna Sari, M.M",
+      date: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString() // 1 hour ago
+    },
+    {
+      id: 102,
+      text: "Inovasi yang ditampilkan alumni PKN II benar-benar inspiring! Pendekatan holistik dalam penyelesaian masalah publik patut diapresiasi. Great leadership exemplified! 🌟",
+      author: "Prof. Bambang Wijaya",
+      date: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString() // 3 hours ago
+    },
+    {
+      id: 103,
+      text: "Sebagai sesama alumni PKN, saya sangat bangga dengan pencapaian ini. Kolaborasi lintas sektor yang ditunjukkan sangat excellent dan sustainable. Keep up the great work!",
+      author: "Dra. Siti Aminah, M.Si",
+      date: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString() // 6 hours ago
+    },
+    {
+      id: 104,
+      text: "Outstanding! Implementasi strategic thinking di PKN II level ini memang different. Digital transformation approach-nya sangat well-structured dan measurable. 💪",
+      author: "Ir. Agus Prasetyo, M.T",
+      date: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString() // 10 hours ago
+    }
+  ]
+
+  // PKA specific comments
+  const pkaComments = [
+    {
+      id: 201,
+      text: "Program PKA ini sangat comprehensive! Pendekatan administratif yang modern dan strategic sangat membantu dalam pengelolaan birokrasi. Excellent program design! 🎯",
+      author: "Dr. Indira Sari, M.AP",
+      date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() // 2 hours ago
+    },
+    {
+      id: 202,
+      text: "Innovation in public administration ini benar-benar game-changer! Systematic approach dan evidence-based decision making sangat well-implemented. Truly inspiring!",
+      author: "Drs. Hendra Kusuma, M.PA",
+      date: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString() // 4 hours ago
+    },
+    {
+      id: 203,
+      text: "Administrative leadership yang ditunjukkan alumni PKA sangat remarkable. Digital governance approach-nya modern dan sustainable. Keep innovating! 💡",
+      author: "Prof. Dr. Maya Sari, M.Si",
+      date: new Date(Date.now() - 7 * 60 * 60 * 1000).toISOString() // 7 hours ago
+    }
+  ]
+
+  // Create comments for all possible IDs (both the original few and fallback for any ID)
+  const dummyComments = {
+    // PKN I - Specific items with their own comments
+    1: baseDummyComments,
+    2: [additionalComments[0], additionalComments[1]],
+    3: [additionalComments[2], additionalComments[3], additionalComments[4]],
+    
+    // PKN II comments
+    'pkn2_0': [pkn2Comments[0], pkn2Comments[1]],
+    'pkn2_1': [pkn2Comments[1], pkn2Comments[2], pkn2Comments[3]],
+    'pkn2_2': [pkn2Comments[0], pkn2Comments[3]],
+    'pkn2_3': [pkn2Comments[2], pkn2Comments[0]],
+    'pkn2_4': [pkn2Comments[3], pkn2Comments[1], pkn2Comments[0]],
+    
+    // PKA comments
+    'pka_0': [pkaComments[0], pkaComments[1]],
+    'pka_1': [pkaComments[1], pkaComments[2]],
+    'pka_2': [pkaComments[0], pkaComments[2]],
+    'pka_3': [pkaComments[2], pkaComments[0]],
+    'pka_4': [pkaComments[1], pkaComments[0], pkaComments[2]],
+    
+    // Fallback - any other ID will get a subset of comments
+    'default': baseDummyComments.slice(0, 2) // First 2 comments as fallback
   }
+  
+  // Set comments with both string and number keys
+  comments.value = {}
+  Object.keys(dummyComments).forEach(key => {
+    comments.value[key] = dummyComments[key]
+    if (key !== 'default') {
+      comments.value[key.toString()] = dummyComments[key]
+    }
+  })
+  
+  // Set default fallback
+  comments.value['default'] = dummyComments['default']
+  
+  console.log('Dummy data loaded:', { ratings: ratings.value, comments: comments.value })
 }
 
 // Watch for currentPage changes
@@ -611,27 +790,22 @@ onMounted(() => {
 }
 .expo-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 400px;
+  gap: 1.2rem;
   padding-bottom: 1rem;
   justify-content: center;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1rem 1rem;
 }
-@media (min-width: 768px) {
-  .expo-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (min-width: 1280px) {
-  .expo-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (min-width: 1536px) {
+@media (min-width: 600px) {
   .expo-grid {
     grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 340px;
+  }
+}
+@media (min-width: 1024px) {
+  .expo-grid {
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 300px;
   }
 }
 .netflix-card {
@@ -642,21 +816,21 @@ onMounted(() => {
   cursor: pointer;
   position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   border: 1px solid rgba(255,255,255,0.8);
   backdrop-filter: blur(10px);
-  height: auto;
-  width: 100%;
 }
 .netflix-card:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-8px) scale(1.02) rotateX(5deg);
   box-shadow: 0 20px 40px rgba(22,87,141,0.15), 0 8px 20px rgba(22,87,141,0.1);
   z-index: 10;
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
 .netflix-poster {
   width: 100%;
-  height: 100%;
+  height: 85%;
   object-fit: cover;
   display: block;
 }
@@ -673,6 +847,7 @@ onMounted(() => {
   backdrop-filter: blur(12px);
   color: #1a202c;
   padding: 0.75rem;
+  min-height: 15%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -732,8 +907,6 @@ onMounted(() => {
 .netflix-card .relative {
   position: relative;
   overflow: hidden;
-  height: 100%;
-  width: 100%;
 }
 
 .netflix-card .relative::before {
@@ -743,7 +916,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 30%, transparent 60%, rgba(0,0,0,0.7) 100%);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 20%, transparent 60%, rgba(0,0,0,0.6) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -757,29 +930,14 @@ onMounted(() => {
 /* Title overlay styling */
 .netflix-card .absolute.bottom-0 {
   z-index: 2;
-  opacity: 1;
-  transform: translateY(0);
+  opacity: 0;
+  transform: translateY(10px);
   transition: all 0.3s ease;
 }
 
-.netflix-card .absolute.bottom-0 h3 {
-  font-size: 1rem;
-  line-height: 1.3;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.netflix-card .absolute.bottom-0 p {
-  font-size: 0.8rem;
-  opacity: 0.9;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.netflix-card:hover .absolute.bottom-0 {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Rating overlay on image */
@@ -961,19 +1119,7 @@ onMounted(() => {
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-  .netflix-card {
-    aspect-ratio: 16 / 10;
-  }
-  
-  .netflix-card .absolute.bottom-0 h3 {
-    font-size: 0.875rem;
-  }
-  
-  .netflix-card .absolute.bottom-0 p {
-    font-size: 0.75rem;
-  }
-  
+@media (max-width: 600px) {
   .netflix-card-info {
     padding: 0.5rem;
   }
@@ -991,29 +1137,6 @@ onMounted(() => {
   }
   
   .comment-item {
-    font-size: 0.7rem;
-  }
-
-  .expo-grid {
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .netflix-card {
-    aspect-ratio: 16 / 11;
-  }
-  
-  .netflix-card .absolute.bottom-0 {
-    padding: 0.5rem;
-  }
-  
-  .netflix-card .absolute.bottom-0 h3 {
-    font-size: 0.8rem;
-    -webkit-line-clamp: 1;
-  }
-  
-  .netflix-card .absolute.bottom-0 p {
     font-size: 0.7rem;
   }
 }

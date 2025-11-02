@@ -1,7 +1,9 @@
 <template>
   <div>
-    <!-- Chatbot hanya tampil di halaman utama, bukan di admin atau slug -->
-    <DashboardChatbot v-if="showChatbot" />
+    <!-- Chatbot tampil di semua halaman kecuali yang dikecualikan -->
+    <ClientOnly>
+      <DashboardChatbot v-if="showChatbot" />
+    </ClientOnly>
   </div>
 </template>
 
@@ -12,24 +14,19 @@ const route = useRoute()
 const showChatbot = computed(() => {
   const path = route.path
   
-  // Don't show chatbot in admin pages
-  if (path.startsWith('/admin')) {
+  // Don't show chatbot only in specific admin pages
+  if (path.startsWith('/admin') && path !== '/admin') {
     return false
   }
   
-  // Don't show chatbot in slug pages (pages with dynamic parameters)
-  // Examples: /provinsi/123, /project/abc, etc.
-  const slugPatterns = [
-    /^\/provinsi\/\d+/,  // /provinsi/[id]
-    /^\/project\/\w+/,   // /project/[id] 
-    /^\/[^\/]+\/[^\/]+$/ // any /something/something pattern
+  // Don't show chatbot in specific slug pages that have issues
+  const excludedPatterns = [
+    /^\/provinsi\/\d+$/ // Only exclude /provinsi/[number]
   ]
   
-  if (slugPatterns.some(pattern => pattern.test(path))) {
-    return false
-  }
+  const isExcluded = excludedPatterns.some(pattern => pattern.test(path))
   
-  // Show chatbot in main pages like /, /dashboard, /upload-proyek, etc.
-  return true
+  // Show chatbot in most pages - only exclude specific problematic ones
+  return !isExcluded
 })
 </script>

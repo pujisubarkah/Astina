@@ -9,7 +9,7 @@
           </svg>
         </div>
         <h1 class="text-5xl font-bold text-blue-900 mb-4">SIPENDAR</h1>
-        <p class="text-xl text-blue-700 font-medium">Sistem Pendaftaran Peserta Diklat Kepemimpinan</p>
+        <p class="text-xl text-blue-700 font-medium">Sistem Pendaftaran Daring</p>
       </div>
 
       <!-- Main Content -->
@@ -28,23 +28,8 @@
               <div class="flex-1">
                 <h2 class="text-2xl font-bold text-blue-900 mb-4">Tentang SIPENDAR</h2>
                 <p class="text-lg text-gray-700 leading-relaxed mb-6">
-                  <strong class="text-blue-800">SIPENDAR</strong> adalah sistem pendaftaran peserta Diklat Kepemimpinan (Diklatpim) yang bersifat daring (dalam jaringan/online).
+                  <strong class="text-blue-800">SIPENDAR (Sistem Pendaftaran Daring)</strong> adalah sistem pendaftaran peserta Diklat Kepemimpinan (Diklatpim) yang bersifat daring (dalam jaringan/online).
                 </p>
-                
-                <!-- Website Link -->
-                <div class="bg-blue-50 p-4 rounded-lg mb-6">
-                  <div class="flex items-center gap-3">
-                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
-                    </svg>
-                    <div>
-                      <p class="text-sm text-blue-700 font-medium">Alamat Situs SIPENDAR:</p>
-                      <a href="http://puskan.lan.go.id/sipendar" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold underline">
-                        http://puskan.lan.go.id/sipendar
-                      </a>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -167,16 +152,9 @@
 <script setup>
 // Function to open login modal
 const openLoginModal = () => {
-  // Try to find and click the login button in navbar
-  const loginBtn = document.querySelector('[data-login-modal]') || 
-                   document.querySelector('.btn:contains("Login")') ||
-                   document.getElementById('login-modal-trigger')
-  
-  if (loginBtn) {
-    loginBtn.click()
-  } else {
-    // Fallback: dispatch custom event that navbar can listen to
-    window.dispatchEvent(new CustomEvent('openLoginModal'))
+  // Dispatch custom event that navbar can listen to
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('open-login-modal'))
   }
 }
 
