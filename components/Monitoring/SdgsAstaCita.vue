@@ -44,7 +44,7 @@
               </div>
               <div>
                 <p class="text-sm font-medium text-green-700">Asta Cita</p>
-                <p class="text-2xl font-bold text-green-800">257</p>
+                <p class="text-2xl font-bold text-green-800">433</p>
                 <p class="text-xs text-green-600">Produk Pembelajaran</p>
               </div>
             </div>
@@ -59,7 +59,7 @@
               </div>
               <div>
                 <p class="text-sm font-medium text-purple-700">Total Keseluruhan</p>
-                <p class="text-2xl font-bold text-purple-800">{{ totalProdukSDGs + 257 }}</p>
+                <p class="text-2xl font-bold text-purple-800">{{ totalProdukSDGs }}</p>
                 <p class="text-xs text-purple-600">Produk Pembelajaran</p>
               </div>
             </div>
@@ -238,7 +238,9 @@ const sdgsData = computed(() => {
 
 // Static data untuk count produk per SDG (bisa diganti dengan API juga nanti)
 const sdgsProductCounts = {
-  1: 8, 2: 29, 3: 25, 4: 26, 5: 2, 6: 1, 7: 1, 8: 33, 9: 25, 10: 2, 11: 6, 12: 5, 13: 3, 14: 3, 15: 1, 16: 73, 17: 14
+  1: 16, 2: 37, 3: 34, 4: 45, 5: 5, 6: 5, 7: 3,
+   8: 49, 9: 50, 10: 4, 11: 14, 12: 6, 13: 6,
+    14: 4, 15: 3, 16: 125, 17: 27
 }
 
 // Function to get product count for each SDG
@@ -577,7 +579,7 @@ const astaCitaChartOptions = computed(() => ({
 
 const astaCitaChartSeries = computed(() => ([{
   name: 'Jumlah Produk',
-  data: [11, 70, 20, 1, 75, 25, 43, 12]
+  data: [28, 119, 36, 10, 128, 44, 52, 19]
 }]))
 </script>
 
