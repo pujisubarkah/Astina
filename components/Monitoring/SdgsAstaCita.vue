@@ -128,28 +128,26 @@
               </div>
 
               <!-- Top SDGs Cards with Scroll -->
-              <div class="max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-100 hover:scrollbar-thumb-blue-400 transition-all duration-300">
-                <div class="grid grid-cols-1 gap-3 pr-2">
-                  <div v-for="sdg in topSdgs" :key="sdg.tujuan_ke"
-                       class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300 cursor-pointer transform hover:scale-105">
-                    <div class="flex items-center gap-4">
-                      <div class="relative">
-                        <img :src="sdg.image" :alt="`SDG ${sdg.tujuan_ke}`"
-                             class="w-12 h-12 rounded-lg shadow-md border-2 border-white"
-                             @error="handleImageError" />
-                        <div class="absolute -top-2 -right-2 bg-blue-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg">
-                          {{ sdg.tujuan_ke }}
-                        </div>
+              <div class="grid grid-cols-1 gap-3">
+                <div v-for="sdg in allSdgsSorted" :key="sdg.tujuan_ke"
+                     class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300 cursor-pointer transform hover:scale-105">
+                  <div class="flex items-center gap-4">
+                    <div class="relative">
+                      <img :src="sdg.image" :alt="`SDG ${sdg.tujuan_ke}`"
+                           class="w-12 h-12 rounded-lg shadow-md border-2 border-white"
+                           @error="handleImageError" />
+                      <div class="absolute -top-2 -right-2 bg-blue-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg">
+                        {{ sdg.tujuan_ke }}
                       </div>
-                      <div class="flex-1">
-                        <h4 class="font-semibold text-blue-800 text-sm">{{ sdg.sdgs.split(' ').slice(0, 6).join(' ') }}...</h4>
-                        <p class="text-blue-600 font-bold">{{ getSDGCount(sdg.tujuan_ke) }} produk</p>
-                      </div>
-                      <div class="text-right">
-                        <div class="w-16 bg-blue-200 rounded-full h-2">
-                          <div class="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                               :style="`width: ${getSDGProgress(sdg.tujuan_ke)}%`"></div>
-                        </div>
+                    </div>
+                    <div class="flex-1">
+                      <h4 class="font-semibold text-blue-800 text-sm">{{ sdg.sdgs.split(' ').slice(0, 6).join(' ') }}...</h4>
+                      <p class="text-blue-600 font-bold">{{ getSDGCount(sdg.tujuan_ke) }} produk</p>
+                    </div>
+                    <div class="text-right">
+                      <div class="w-16 bg-blue-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                             :style="`width: ${getSDGProgress(sdg.tujuan_ke)}%`"></div>
                       </div>
                     </div>
                   </div>
@@ -193,31 +191,29 @@
             </div>
 
             <!-- Asta Cita Legend with Cards and Scroll -->
-            <div class="max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-green-300 scrollbar-track-green-100 hover:scrollbar-thumb-green-400 transition-all duration-300">
-              <div class="space-y-3 pr-2">
-                <h4 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Asta Cita Program
-                </h4>
+            <div class="space-y-3">
+              <h4 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Asta Cita Program
+              </h4>
 
-                <div v-for="(item, index) in astaCitaItems" :key="index"
-                     class="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-xl border border-green-200 hover:shadow-md transition-all duration-300 cursor-pointer transform hover:scale-102">
-                  <div class="flex items-start gap-3">
-                    <div class="flex-shrink-0">
-                      <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md">
-                        {{ index + 1 }}
-                      </div>
+              <div v-for="(item, index) in astaCitaItems" :key="index"
+                   class="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-xl border border-green-200 hover:shadow-md transition-all duration-300 cursor-pointer transform hover:scale-102">
+                <div class="flex items-start gap-3">
+                  <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-md">
+                      {{ index + 1 }}
                     </div>
-                    <div class="flex-1">
-                      <p class="text-gray-800 text-sm leading-relaxed">{{ item.text }}</p>
-                      <div class="mt-2 flex items-center gap-2">
-                        <div class="text-xs text-green-600 font-medium">{{ item.count }} produk</div>
-                        <div class="flex-1 bg-green-200 rounded-full h-1.5">
-                          <div class="bg-green-600 h-1.5 rounded-full transition-all duration-500"
-                               :style="`width: ${getAstaCitaProgress(item.count)}%`"></div>
-                        </div>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-gray-800 text-sm leading-relaxed">{{ item.text }}</p>
+                    <div class="mt-2 flex items-center gap-2">
+                      <div class="text-xs text-green-600 font-medium">{{ item.count }} produk</div>
+                      <div class="flex-1 bg-green-200 rounded-full h-1.5">
+                        <div class="bg-green-600 h-1.5 rounded-full transition-all duration-500"
+                             :style="`width: ${getAstaCitaProgress(item.count)}%`"></div>
                       </div>
                     </div>
                   </div>
@@ -264,6 +260,16 @@ const topSdgs = computed(() => {
     }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 5)
+})
+
+// All SDGs sorted by count (descending)
+const allSdgsSorted = computed(() => {
+  return sdgsData.value
+    .map(sdg => ({
+      ...sdg,
+      count: getSDGCount(sdg.tujuan_ke)
+    }))
+    .sort((a, b) => b.count - a.count)
 })
 
 // Asta Cita items with counts
